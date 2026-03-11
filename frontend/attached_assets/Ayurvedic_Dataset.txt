@@ -1,0 +1,79 @@
+Datasets Required for Ayurvedic Diet Management System
+To build a comprehensive and intelligent Ayurvedic Diet Management & Nutrient Analysis software, multiple datasets will be needed. These datasets can be layered to create a robust and scalable solution.
+
+1. Food & Nutritional Dataset (Base Layer)
+Purpose: Serves as the foundation for nutrient calculations.
+Contents: 
+- Food name (English + regional names) 
+- Category (cereal, pulse, vegetable, fruit, spice, oil, etc.) 
+- Macronutrients (calories, protein, carbs, fat) 
+- Micronutrients (vitamins & minerals) 
+- Portion size/serving size 
+- Preparation method (raw, boiled, fried)
+Sources: Indian Food Composition Tables (IFCT), USDA FoodData Central, FSSAI packaged food data.
+
+2. Ayurvedic Properties Dataset (Domain Layer)
+Purpose: Makes the solution unique by adding Ayurvedic context.
+Contents: 
+- Rasa (taste): sweet, sour, salty, pungent, bitter, astringent 
+- Virya (potency): Ushna (heating) / Shita (cooling) 
+- Vipaka (post-digestive effect) 
+- Guna (qualities): light, heavy, oily, dry, etc. 
+- Dosha impact: balances/aggravates Vata, Pitta, Kapha 
+- Seasonal recommendations (if available)
+Sources: Charaka Samhita, Ashtanga Hridaya, NCISM & CCRAS diet charts, validated Ayurvedic publications.
+
+3. Recipe Dataset (Derived Layer)
+Purpose: Supports dish-level planning and automated analysis.
+Contents: 
+- Recipe name 
+- Ingredient list (linked to food database) 
+- Preparation method - Nutrient breakdown (auto-calculated
+- Ayurvedic profile (dominant rasa, dosha effect)
+Sources: Open-source recipe datasets, Indian recipe websites, manual curation.
+
+4. Patient & Lifestyle Dataset (Usage Layer)
+Purpose: Enables personalization and tracking.
+Contents: 
+- Patient prakriti (body constitution) 
+- Vikriti (current imbalance) 
+- Health conditions, allergies, dislikes 
+- Dietary preferences and frequency 
+- Progress data (weight, BMI, symptoms) 
+- Feedback and adherence
+Sources: Captured dynamically through patient onboarding and follow-ups.
+
+5. Seasonal & Regional Dataset (Context Layer)
+Purpose: Adds contextual awareness to plans.
+Contents: 
+- Seasonal classification (6 Indian seasons) 
+- Recommended/avoid foods for each season 
+- Regional availability data
+Sources: Ayurvedic seasonal routines (Ritucharya), regional food surveys.
+
+6. Knowledge Base Dataset (Reasoning Layer)
+Purpose: Enables explainable AI and education.
+Contents: 
+- Text excerpts from Ayurvedic texts
+- Cause-effect mappings (e.g., symptom → dosha → diet advice) 
+- Explanations for food selection
+Sources: Digitized Ayurvedic texts, research papers, validated Ayurvedic experts’ notes.
+
+7. Symptom-to-Diet Mapping Dataset (Future AI Layer)
+Purpose: Powers semi-automatic dietary suggestions.
+Contents:
+ - Symptom mapping (acidity, bloating, insomnia, etc.) 
+- Probable dosha imbalance 
+- Recommended dietary adjustments 
+- Ayurvedic justification
+Sources: Clinical Ayurvedic case studies, practitioner input, public health datasets.
+
+Summary:
+The system will rely on a multi-layered dataset architecture: 
+1.Nutritional data for scientific accuracy. 
+2.Ayurvedic attributes for holistic context.
+3.Recipes for real-world meal planning. 
+4.Patient data for personalization. 
+5. Seasonal/regional data for contextual relevance. 
+6. Knowledge base for explainability. 
+7. Symptom mapping for AI-driven recommendations.

@@ -1,0 +1,14 @@
+{
+  "patient_portal": "Patient Portal",
+  "patient_portal_desc": "View personalized Ayurvedic diet charts, log sacred meals, and track your holistic wellness journey",
+  "login_as_patient": "Login as Patient",
+  "register_new_patient": "Register New Patient",
+  "vaidya_dashboard": "Vaidya Dashboard",
+  "vaidya_dashboard_desc": "Manage patients with ancient wisdom, create personalized diet plans, and monitor holistic healing outcomes",
+  "doctor_login": "Doctor Login",
+  "register_new_doctor": "Register New Doctor",
+  "admin_panel": "Admin Panel",
+  "admin_panel_desc": "Sacred clinic management, practitioner administration, and healing analytics dashboard",
+  "admin_login": "Admin Login",
+  "register_new_hospital": "Register New Hospital"
+}

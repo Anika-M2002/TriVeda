@@ -1,0 +1,42 @@
+[
+  {
+    "recipe_id": 1,
+    "name": "Pasta Primavera",
+    "ingredients": ["pasta", "tomato", "bell pepper", "olive oil"],
+    "servings": 2,
+    "prep_time": "20 mins",
+    "instructions": "Boil pasta. Sauté vegetables. Mix together."
+  },
+  {
+    "recipe_id": 2,
+    "name": "Fruit Salad",
+    "ingredients": ["apple", "banana", "orange"],
+    "servings": 4,
+    "prep_time": "10 mins",
+    "instructions": "Chop fruits and mix."
+  },
+  {
+    "recipe_id": 3,
+    "name": "Moong Dal Khichdi",
+    "ingredients": ["moong dal", "rice", "turmeric", "cumin", "ghee"],
+    "servings": 3,
+    "prep_time": "30 mins",
+    "instructions": "Cook dal and rice with spices. Temper with ghee."
+  },
+  {
+    "recipe_id": 4,
+    "name": "Spinach Curry",
+    "ingredients": ["spinach", "onion", "tomato", "spices", "ghee"],
+    "servings": 2,
+    "prep_time": "25 mins",
+    "instructions": "Sauté onion and tomato, add spinach and spices, cook until soft."
+  },
+  {
+    "recipe_id": 5,
+    "name": "Almond Lassi",
+    "ingredients": ["almonds", "yogurt", "honey", "cardamom"],
+    "servings": 2,
+    "prep_time": "10 mins",
+    "instructions": "Blend soaked almonds with yogurt, honey, and cardamom. Serve chilled."
+  }
+]

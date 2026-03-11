@@ -1,0 +1,7 @@
+{
+  "title": "Suggest Seasonal Guidelines",
+  "description": "Suggest guidelines for the current season based on patient profile.",
+  "submit": "Submit",
+  "success": "Guidelines submitted successfully!",
+  "error": "Failed to submit guidelines. Please try again."
+}

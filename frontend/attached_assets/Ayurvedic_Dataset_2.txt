@@ -1,0 +1,148 @@
+Here’s a sample dataset collection for each layer of the Ayurvedic Diet Management System. These are illustrative examples to help you and your developers understand the structure and attributes needed.
+
+1. Sample Food & Nutritional Dataset
+Food Name
+Category
+Serving Size (g)
+Calories
+Protein (g)
+Carbs (g)
+Fat (g)
+Vit C (mg)
+Iron (mg)
+Preparation
+Mung Dal (Raw)
+Pulse
+100
+347
+24.0
+63.0
+1.2
+4.8
+3.9
+Raw
+Rice (Cooked)
+Cereal
+100
+130
+2.7
+28.0
+0.3
+0.0
+0.2
+Boiled
+Spinach
+Vegetable
+50
+23
+2.9
+3.6
+0.4
+28.1
+2.7
+Raw/Steamed
+
+2. Sample Ayurvedic Properties Dataset
+Food Name
+Rasa (Taste)
+Virya (Potency)
+Vipaka (Post-digestive)
+Gunas (Qualities)
+Dosha Impact
+Mung Dal
+Madhura
+Shita (Cooling)
+Madhura
+Laghu (Light), Snigdha
+Balances Pitta & Kapha
+Rice (Cooked)
+Madhura
+Shita
+Madhura
+Laghu, Mridu
+Balances Vata, Pitta (excess aggravates Kapha)
+Spinach
+Tikta (Bitter)
+Ushna (Heating)
+Katu
+Laghu, Ruksha
+Balances Kapha, Aggravates Vata
+
+3. Sample Recipe Dataset
+Recipe Name
+Ingredients
+Method
+Calories
+Dominant Rasa
+Dosha Effect
+Khichdi
+Rice, Mung Dal, Ghee, Spices
+Boiled
+280
+Madhura
+Balances Vata & Pitta
+Palak Soup
+Spinach, Garlic, Water
+Boiled
+80
+Tikta
+Balances Kapha
+
+4. Sample Patient & Lifestyle Dataset
+Patient ID
+Name
+Age
+Gender
+Prakriti
+Vikriti
+Allergies
+Goal
+Bowel Movements
+Meal Frequency
+Feedback
+P001
+Ramesh
+35
+M
+Pitta
+Pitta
+None
+Weight Loss
+Regular
+3 meals
+Good
+
+5. Sample Seasonal & Regional Dataset
+Season
+Recommended Foods
+Avoid Foods
+Grishma (Summer)
+Cucumber, Coconut Water
+Fried foods, Excess spicy food
+Hemant (Winter)
+Sesame, Milk, Ghee
+Too much raw salad
+
+6. Sample Knowledge Base Dataset
+Condition/Symptom
+Explanation
+Recommended Foods
+Acidity
+Pitta aggravation due to heat and spicy food.
+Cucumber, Milk, Sweet fruits
+Constipation
+Vata imbalance, dryness.
+Warm water, Ghee, Soaked figs
+
+7. Sample Symptom-to-Diet Mapping Dataset
+Symptom
+Probable Dosha
+Dietary Recommendation
+Bloating
+Vata
+Warm, light foods, ginger tea, avoid cold drinks
+Skin Rash
+Pitta
+Cooling foods like cucumber, avoid spicy food
+
+These datasets can initially be small, curated manually, and expanded over time with crowdsourced or NLP-extracted data. The idea is to build a core knowledge base that is both machine-readable and clinically reliable.
