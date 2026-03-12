@@ -17,22 +17,22 @@ const practitionerMenuItems = [
   {
     label: "Dashboard",
     icon: <DashboardIcon fontSize="small" />,
-    href: "/practitioner/dashboard",
+    href: "/doctor/dashboard",
   },
   {
     label: "Prakriti Verification",
     icon: <AssessmentIcon fontSize="small" />,
-    href: "/practitioner/prakriti-verification",
+    href: "/doctor/prakriti-verification",
   },
   {
     label: "Diet Chart Generator",
     icon: <RestaurantMenuIcon fontSize="small" />,
-    href: "/practitioner/diet-chart-generator",
+    href: "/doctor/diet-chart-generator",
   },
   {
     label: "Monitoring",
     icon: <MonitorHeartIcon fontSize="small" />,
-    href: "/practitioner/monitoring",
+    href: "/doctor/monitoring",
   },
 ];
 
