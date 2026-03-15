@@ -275,7 +275,7 @@ const defaultManualChart = {
     },
   ],
   recommendations: [],
-  generatedBy: "Ayurvedic Practitioner",
+  generatedBy: "Ayurvedic Doctor",
   lastUpdated: new Date().toISOString().slice(0, 10),
 };
 
@@ -719,7 +719,7 @@ export default function DietChartGenerator() {
                   Dr. Ayurveda Specialist
                 </div>
                 <div className="text-xs text-slate-500">
-                  Certified Practitioner
+                  Certified Doctor
                 </div>
               </div>
               <div className="w-10 h-10 bg-[#1F5C3F] rounded-full flex items-center justify-center">

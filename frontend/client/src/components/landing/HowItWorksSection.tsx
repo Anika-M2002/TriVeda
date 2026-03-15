@@ -20,7 +20,7 @@ const steps = [
   {
     num: '03',
     icon: Stethoscope,
-    title: 'Connect with Practitioners',
+    title: 'Connect with Doctors',
     description:
       'Book consultations with certified Ayurvedic physicians who can review your data, adjust protocols, and monitor your progress.',
   },

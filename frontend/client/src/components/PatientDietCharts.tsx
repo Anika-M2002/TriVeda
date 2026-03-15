@@ -479,15 +479,15 @@ const ModalPopup: React.FC<ModalPopupProps> = ({
   );
 };
 
-// Enhanced Practitioner Card
-const assignedPractitioner = {
+// Enhanced Doctor Card
+const assignedDoctor = {
   name: "Dr. Aditi Sharma",
   specialty: "Ayurvedic Physician",
   avatar: "https://randomuser.me/api/portraits/women/44.jpg",
   status: "Ongoing Care",
 };
 
-const PractitionerCard = ({
+const DoctorCard = ({
   onAsk,
   onRequest,
 }: {
@@ -509,8 +509,8 @@ const PractitionerCard = ({
       <div className="flex items-center gap-6">
         <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm border-2 border-white/30 overflow-hidden">
           <img
-            src={assignedPractitioner.avatar}
-            alt="Practitioner Avatar"
+            src={assignedDoctor.avatar}
+            alt="Doctor Avatar"
             className="w-full h-full object-cover"
           />
         </div>
@@ -519,13 +519,13 @@ const PractitionerCard = ({
           <div className="flex items-center gap-2 mb-2">
             <User className="w-4 h-4 text-white/80" />
             <span className="text-sm text-white/80 font-medium">
-              Assigned Practitioner
+              Assigned Doctor
             </span>
           </div>
-          <h3 className="text-2xl font-bold mb-1">{assignedPractitioner.name}</h3>
-          <p className="text-white/90 mb-2">{assignedPractitioner.specialty}</p>
+          <h3 className="text-2xl font-bold mb-1">{assignedDoctor.name}</h3>
+          <p className="text-white/90 mb-2">{assignedDoctor.specialty}</p>
           <span className="inline-block px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium border border-white/30">
-            {assignedPractitioner.status}
+            {assignedDoctor.status}
           </span>
         </div>
       </div>
@@ -1138,13 +1138,13 @@ export default function AdvancedAyurvedicDietCharts() {
           </div>
         </motion.div>
 
-        {/* Practitioner Card */}
-        <PractitionerCard
+        {/* Doctor Card */}
+        <DoctorCard
           onAsk={() => setShowAskModal(true)}
           onRequest={() => {
             setAlertContent({
               title: "Appointment Requested!",
-              message: `Your appointment request has been sent to ${assignedPractitioner.name}. You will be notified once it is confirmed.`,
+              message: `Your appointment request has been sent to ${assignedDoctor.name}. You will be notified once it is confirmed.`,
             });
             setShowAlert(true);
           }}
@@ -1202,7 +1202,7 @@ export default function AdvancedAyurvedicDietCharts() {
           {/* Ask Question Modal */}
           {showAskModal && (
             <ModalPopup
-              title={`Ask a Question to ${assignedPractitioner.name}`}
+              title={`Ask a Question to ${assignedDoctor.name}`}
               onClose={() => setShowAskModal(false)}
             >
               <div className="space-y-4">
@@ -1227,7 +1227,7 @@ export default function AdvancedAyurvedicDietCharts() {
                       setAskMessage("");
                       setAlertContent({
                         title: "Message Sent!",
-                        message: `Your message has been sent to ${assignedPractitioner.name}. You will receive a reply soon.`,
+                        message: `Your message has been sent to ${assignedDoctor.name}. You will receive a reply soon.`,
                       });
                       setShowAlert(true);
                     }}

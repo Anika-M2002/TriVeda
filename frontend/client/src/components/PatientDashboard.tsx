@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -239,6 +239,31 @@ export default function AyurvedicPatientDashboard() {
   const [goalFilter, setGoalFilter] = useState<"all" | "health" | "mental" | "fitness">("all");
   
   const [notifications, setNotifications] = useState(3);
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const dailySchedule = [
+    { time: "06:00", label: "Morning Pranayama", icon: Wind, category: "yoga", color: "emerald", instruction: "Anulom Vilom breathing — 15 mins" },
+    { time: "07:00", label: "Yoga Session", icon: SunIcon, category: "yoga", color: "teal", instruction: "As prescribed by Dr. Suresh Iyer" },
+    { time: "08:00", label: "Breakfast", icon: CoffeeIcon, category: "meal", color: "amber", instruction: "Warm Oat Porridge, Fresh Berries, Herbal Tea" },
+    { time: "09:00", label: "Morning Medication", icon: Pill, category: "medicine", color: "blue", instruction: "Ashwagandha Capsules — 500mg" },
+    { time: "12:30", label: "Lunch", icon: Salad, category: "meal", color: "lime", instruction: "Quinoa Bowl, Steamed Vegetables, Turmeric Rice" },
+    { time: "18:00", label: "Evening Oil", icon: Droplets, category: "medicine", color: "purple", instruction: "Brahmi Oil — 5 drops on scalp" },
+    { time: "19:30", label: "Evening Walk", icon: Activity, category: "yoga", color: "green", instruction: "20-min gentle walk in fresh air" },
+    { time: "20:00", label: "Dinner", icon: Utensils, category: "meal", color: "orange", instruction: "Lentil Soup, Sautéed Greens, Chamomile Tea" },
+    { time: "21:30", label: "Night Medication", icon: Pill, category: "medicine", color: "indigo", instruction: "Triphala Churna — 1 tsp (Before Sleep)" },
+    { time: "22:00", label: "Meditation", icon: MoonIcon, category: "yoga", color: "violet", instruction: "Guided meditation before sleep — 10 mins" },
+  ];
+
+  const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+  const upcomingActivities = dailySchedule.filter(item => {
+    const [h, m] = item.time.split(':').map(Number);
+    return (h * 60 + m) >= currentMinutes;
+  });
 
   // Appointment Modal Component
   function AppointmentDetailModal({ 
@@ -1066,42 +1091,59 @@ export default function AyurvedicPatientDashboard() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <Activity className="w-5 h-5 text-emerald-600" />
-              Recent Vitals
+              Today's Schedule
             </h3>
-            <button 
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium"
-              onClick={() => setActiveTab(5)}
-            >
-              View All
-            </button>
+            <span className="text-xs text-gray-500 font-medium">
+              {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
           </div>
+          {upcomingActivities.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <CheckCircle className="w-10 h-10 text-emerald-400 mb-2" />
+              <p className="font-semibold text-gray-700">All done for today!</p>
+              <p className="text-sm text-gray-500">Great job following your schedule.</p>
+            </div>
+          ) : (
           <div className="space-y-3">
-            {healthRecords.slice(0, 3).map((record, index) => (
+            {upcomingActivities.slice(0, 4).map((item, index) => {
+              const Icon = item.icon;
+              const isNext = index === 0;
+              return (
               <motion.div
-                key={record.id}
+                key={item.label}
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100"
+                className={`flex items-center justify-between p-4 rounded-xl border ${
+                  isNext
+                    ? "bg-gradient-to-r from-emerald-50 to-[#10B981]/10 border-emerald-200 shadow-sm"
+                    : "bg-gradient-to-r from-gray-50 to-white border-gray-100"
+                }`}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-[#10B981]/10 flex items-center justify-center">
-                    <Heart className="w-6 h-6 text-[#1F5C3F]" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    isNext ? "bg-gradient-to-br from-emerald-100 to-[#10B981]/20" : "bg-gray-100"
+                  }`}>
+                    <Icon className={`w-5 h-5 ${isNext ? "text-[#1F5C3F]" : "text-gray-500"}`} />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">{record.type}</p>
-                    <p className="text-sm text-gray-600">{record.date}</p>
+                    <p className={`font-semibold ${ isNext ? "text-[#1F5C3F]" : "text-gray-900"}`}>{item.label}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{item.instruction}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-bold text-gray-900">{record.value}</p>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                    {record.status}
-                  </span>
+                <div className="text-right shrink-0 ml-3">
+                  <p className={`font-bold text-sm ${ isNext ? "text-[#1F5C3F]" : "text-gray-700"}`}>{item.time}</p>
+                  {isNext && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 mt-1">
+                      Up next
+                    </span>
+                  )}
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
+          )}
         </motion.div>
       </div>
     </motion.div>
@@ -1784,72 +1826,29 @@ export default function AyurvedicPatientDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#10B981] bg-clip-text text-transparent mb-2">
-                Priya's Journey
+                {patient.name}'s Journey
               </h1>
               <p className="text-gray-600 text-lg">Holistic health management for mind, body, and spirit</p>
             </div>
             
             {/* Notification Bell */}
-            <motion.div
-              className="relative cursor-pointer"
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setNotifications(0)}
+              className="relative w-11 h-11 rounded-full bg-white border border-emerald-100 shadow-sm hover:bg-emerald-50 transition-colors flex items-center justify-center"
+              aria-label="Open notifications"
             >
-              <Bell className="w-6 h-6 text-gray-600" />
+              <Bell className="w-5 h-5 text-[#1F5C3F]" />
               {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold leading-none">
                   {notifications}
                 </span>
               )}
-            </motion.div>
+            </motion.button>
           </div>
         </motion.div>
 
-        {/* Navigation Tabs */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 p-2 mb-8"
-        >
-          <nav className="flex flex-wrap gap-1">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <motion.button
-                  key={tab.id}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                    isActive
-                      ? `bg-gradient-to-r from-${tab.color}-500 to-${tab.color}-600 text-white shadow-lg`
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {tab.label}
-                </motion.button>
-              );
-            })}
-          </nav>
-        </motion.div>
-
-        {/* Tab Content with Animation */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {activeTab === 0 && renderOverview()}
-            {activeTab === 1 && renderDietPlan()}
-            {activeTab === 2 && renderMedications()}
-            {activeTab === 3 && renderAppointments()}
-            {activeTab === 4 && renderProgress()}
-            {activeTab === 5 && renderReports()}
-            {activeTab === 6 && renderFeedback()}
-          </motion.div>
-        </AnimatePresence>
+        {renderOverview()}
       </div>
     </div>
   );

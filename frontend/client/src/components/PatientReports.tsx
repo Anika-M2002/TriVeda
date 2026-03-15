@@ -44,7 +44,7 @@ const mockReports = [
       <b>Vitals:</b> All within normal range.<br/>
       <b>Deficiency:</b> Vitamin D (mild)<br/>
       <b>Recommendations:</b> Increase sun exposure, supplement if needed.<br/>
-  <b>Practitioner's Note:</b> Excellent progress. Keep up the good work!<br/>
+  <b>Doctor's Note:</b> Excellent progress. Keep up the good work!<br/>
       <b>Next Steps:</b> <span style='color:#059669'>No action required</span>`,
     actionable: false,
   },
@@ -62,7 +62,7 @@ const mockReports = [
       <b>Test:</b> HbA1c<br/>
       <b>Result:</b> 7.2% (target: < 7%)<br/>
       <b>Recommendations:</b> Reduce sugar intake, increase physical activity.<br/>
-  <b>Practitioner's Note:</b> Medication adjusted. Follow up in 3 months.<br/>
+  <b>Doctor's Note:</b> Medication adjusted. Follow up in 3 months.<br/>
       <b>Next Steps:</b> <span style='color:#f59e42'>Book follow-up appointment</span>`,
     actionable: true,
     actionLabel: "Book Follow-up",
@@ -82,7 +82,7 @@ const mockReports = [
       <b>Test:</b> Visual Acuity, Eye Pressure<br/>
       <b>Findings:</b> Normal vision, mild dryness.<br/>
       <b>Recommendations:</b> Use lubricating drops, reduce screen time.<br/>
-  <b>Practitioner's Note:</b> No major concerns.<br/>
+  <b>Doctor's Note:</b> No major concerns.<br/>
       <b>Next Steps:</b> <span style='color:#059669'>No action required</span>`,
     actionable: false,
   },
@@ -101,7 +101,7 @@ const mockReports = [
       <b>Test:</b> Lipid Profile, ECG<br/>
       <b>Findings:</b> LDL cholesterol slightly high, ECG normal.<br/>
       <b>Recommendations:</b> Start daily walks, reduce saturated fats.<br/>
-  <b>Practitioner's Note:</b> No medication needed at this time.<br/>
+  <b>Doctor's Note:</b> No medication needed at this time.<br/>
       <b>Next Steps:</b> <span style='color:#f59e42'>Update diet plan</span>`,
     actionable: true,
     actionLabel: "Update Diet Plan",
@@ -121,7 +121,7 @@ const mockReports = [
       <b>Test:</b> IgE Allergy Panel<br/>
       <b>Findings:</b> Mild reaction to peanuts, dust mites.<br/>
       <b>Recommendations:</b> Avoid exposure, carry antihistamines.<br/>
-  <b>Practitioner's Note:</b> Inform school/workplace.<br/>
+  <b>Doctor's Note:</b> Inform school/workplace.<br/>
       <b>Next Steps:</b> <span style='color:#f59e42'>Add to allergy list</span>`,
     actionable: true,
     actionLabel: "Add to Allergy List",
@@ -141,7 +141,7 @@ const mockReports = [
       <b>Session:</b> 8/12 completed<br/>
       <b>Progress:</b> Range of motion improved by 20%.<br/>
       <b>Recommendations:</b> Continue home exercises, next review in 2 weeks.<br/>
-  <b>Practitioner's Note:</b> Great effort!<br/>
+  <b>Doctor's Note:</b> Great effort!<br/>
       <b>Next Steps:</b> <span style='color:#f59e42'>Book next session</span>`,
     actionable: true,
     actionLabel: "Book Next Session",

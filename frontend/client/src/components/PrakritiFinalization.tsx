@@ -6,7 +6,7 @@ const PrakritiFinalization: React.FC = () => {
     {
       id: 1,
       patient: "John Doe",
-      practitioner: "Dr. Sharma",
+      Doctor: "Dr. Sharma",
       status: "Verified",
       prakritiType: "Vata-Pitta",
       submittedAt: "2025-09-18 14:32",
@@ -17,7 +17,7 @@ const PrakritiFinalization: React.FC = () => {
     {
       id: 2,
       patient: "Jane Smith",
-      practitioner: "Dr. Patel",
+      Doctor: "Dr. Patel",
       status: "Verified",
       prakritiType: "Kapha",
       submittedAt: "2025-09-19 10:15",
@@ -44,7 +44,7 @@ const PrakritiFinalization: React.FC = () => {
               <th className="p-3 font-semibold">Patient</th>
               <th className="p-3 font-semibold">Age</th>
               <th className="p-3 font-semibold">Gender</th>
-              <th className="p-3 font-semibold">Practitioner</th>
+              <th className="p-3 font-semibold">Doctor</th>
               <th className="p-3 font-semibold">Prakriti Type</th>
               <th className="p-3 font-semibold">Submitted</th>
               <th className="p-3 font-semibold">Status</th>
@@ -66,7 +66,7 @@ const PrakritiFinalization: React.FC = () => {
                 <td className="p-3">{a.age}</td>
                 <td className="p-3">{a.gender}</td>
                 <td className="p-3 text-[#1F5C3F] font-semibold">
-                  {a.practitioner}
+                  {a.Doctor}
                 </td>
                 <td className="p-3">
                   <span className="inline-block px-2 py-1 rounded bg-emerald-200 text-[#1F5C3F] font-semibold">

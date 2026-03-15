@@ -2,7 +2,7 @@
 
 ## Design Approach: Healthcare System-Based
 **Selected Framework**: Fluent Design System with healthcare-specific adaptations
-**Justification**: Professional medical interface requiring trust, clarity, and government-grade aesthetics for healthcare practitioners
+**Justification**: Professional medical interface requiring trust, clarity, and government-grade aesthetics for healthcare Doctors
 
 ## Core Design Elements
 
@@ -96,4 +96,4 @@
 - Mobile-first responsive design for patient portal
 - High contrast ratios for medical data readability
 
-This design system balances professional healthcare requirements with the holistic, natural principles of Ayurveda, creating a trustworthy platform suitable for medical practitioners and patients alike.
+This design system balances professional healthcare requirements with the holistic, natural principles of Ayurveda, creating a trustworthy platform suitable for medical Doctors and patients alike.

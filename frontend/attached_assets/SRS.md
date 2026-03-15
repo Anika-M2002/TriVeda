@@ -3,7 +3,7 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-The purpose of this software is to provide Ayurvedic dietitians and practitioners with a cloud-based, comprehensive platform to create, manage, and track patient-specific diet plans. Unlike existing nutrition software, this platform integrates Ayurvedic principles (Rasa, Virya, Vipaka, Dosha balancing) alongside modern nutritional data, improving accuracy, efficiency, and adherence.
+The purpose of this software is to provide Ayurvedic dietitians and Doctors with a cloud-based, comprehensive platform to create, manage, and track patient-specific diet plans. Unlike existing nutrition software, this platform integrates Ayurvedic principles (Rasa, Virya, Vipaka, Dosha balancing) alongside modern nutritional data, improving accuracy, efficiency, and adherence.
 
 ### 1.2 Scope
 - **Platform**: Web-based, cloud-hosted, with responsive support for mobile/tablet browsers.
@@ -41,7 +41,7 @@ This product is a standalone, cloud-based platform accessible via a web browser.
 #### Food Database Management
 - A comprehensive database of food items with standard nutritional information (calories, macros, micros).
 - Each food item will be tagged with its Ayurvedic properties (Rasa, Virya, Vipaka, effect on Doshas).
-- Ability for practitioners to add new foods and create custom recipes.
+- Ability for Doctors to add new foods and create custom recipes.
 
 #### Diet Chart Generation
 - Automatically generate diet plans based on patient profile, season, and specific Dosha imbalances.
@@ -71,7 +71,7 @@ This product is a standalone, cloud-based platform accessible via a web browser.
 |---------------------|-------------------------------------------------------------------------------------------------------------|
 | **Ayurvedic Dietitian** | **Primary user.** Requires detailed diet chart generation, nutrient + Ayurvedic analysis, and patient tracking. |
 | **Ayurvedic Doctor**  | **Secondary user.** Approves and monitors diet plans, integrates them with overall patient treatment protocols. |
-| **Patient**           | **End-user.** Views diet charts, tracks adherence, and can optionally log meals or provide feedback to the practitioner. |
+| **Patient**           | **End-user.** Views diet charts, tracks adherence, and can optionally log meals or provide feedback to the Doctor. |
 
 ## 3. Specific Requirements: Core Functionalities
 
@@ -82,19 +82,19 @@ The software must feature a large, searchable database of over 8,000 food items,
 The tool must classify foods based on Ayurvedic principles, showing whether a food balances or aggravates a Dosha, its digestive quality, and its impact on the patient’s constitution (Prakriti). This is in addition to standard nutritional data.
 
 ### 3.3 Automated Diet Chart Generation
-Practitioners must be able to input a patient’s complete profile—including age, gender, Prakriti, symptoms, lifestyle, bowel movements, and water intake—to instantly generate a ready-to-use diet chart that is both nutritionally balanced and aligned with Ayurvedic guidelines.
+Doctors must be able to input a patient’s complete profile—including age, gender, Prakriti, symptoms, lifestyle, bowel movements, and water intake—to instantly generate a ready-to-use diet chart that is both nutritionally balanced and aligned with Ayurvedic guidelines.
 
 ### 3.4 Recipe-Based Nutrient Analysis
-The tool must allow practitioners to create or modify recipes by adding ingredients and automatically calculate both the nutritional breakdown and the Ayurvedic properties (Rasa, Guna, Virya, etc.) of the resulting dish.
+The tool must allow Doctors to create or modify recipes by adding ingredients and automatically calculate both the nutritional breakdown and the Ayurvedic properties (Rasa, Guna, Virya, etc.) of the resulting dish.
 
 ### 3.5 Patient Management System
-The solution will serve as a practice management tool with secure storage for all patient records. This includes medical history, past diet charts, progress tracking, and automated follow-up reminders, enabling practitioners to dynamically adjust diets and monitor outcomes.
+The solution will serve as a practice management tool with secure storage for all patient records. This includes medical history, past diet charts, progress tracking, and automated follow-up reminders, enabling Doctors to dynamically adjust diets and monitor outcomes.
 
 ### 3.6 Reporting & Chart Sharing
-The software must generate printable or digitally shareable reports and diet plans in a clean, structured format. This allows practitioners to easily deliver plans to patients via email or as a physical copy.
+The software must generate printable or digitally shareable reports and diet plans in a clean, structured format. This allows Doctors to easily deliver plans to patients via email or as a physical copy.
 
 ### 3.7 Mobile & Cloud Support
-The system must be cloud-based to ensure practitioners can access patient data and manage diet plans from any location. It must also feature a mobile-friendly, responsive interface for on-the-go access.
+The system must be cloud-based to ensure Doctors can access patient data and manage diet plans from any location. It must also feature a mobile-friendly, responsive interface for on-the-go access.
 
 ### 3.8 Security & Compliance
 Given the handling of sensitive patient data, the solution must adhere to HIPAA or equivalent local health data privacy regulations, ensuring robust data encryption, secure storage, and controlled access.

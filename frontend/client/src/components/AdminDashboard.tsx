@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,6 @@ import {
   User,
   Plus,
   Search,
-  Settings,
   BarChart3,
   TrendingUp,
   AlertTriangle,
@@ -48,8 +47,6 @@ import {
   Mail,
   ChevronRight,
   Sparkles,
-  Moon,
-  Sun,
   Menu,
   X,
   Download,
@@ -89,7 +86,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 // Mock data with enhanced details
 const mockClinicStats = {
-  totalPractitioners: 12,
+  totalDoctors: 12,
   totalPatients: 348,
   activeCharts: 256,
   complianceRate: 82,
@@ -100,7 +97,7 @@ const mockClinicStats = {
   appointmentsToday: 45,
 };
 
-const mockPractitioners = [
+const mockDoctors = [
   {
     id: 1,
     name: "Dr. Anjali Verma",
@@ -294,12 +291,10 @@ const glowPulse = {
 function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTab, setSelectedTab] = useState("overview");
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [addUserOpen, setAddUserOpen] = useState(false);
-  const [addUserType, setAddUserType] = useState<"practitioner" | "patient">(
-    "practitioner"
+  const [addUserType, setAddUserType] = useState<"Doctor" | "patient">(
+    "Doctor"
   );
-  const [darkMode, setDarkMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, message: "New patient registered", time: "5 min ago", read: false },
@@ -307,7 +302,7 @@ function AdminDashboard() {
     { id: 3, message: "Lab results available", time: "2 hours ago", read: true },
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [selectedPractitioner, setSelectedPractitioner] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [form, setForm] = useState({
     name: "",
@@ -316,19 +311,10 @@ function AdminDashboard() {
     phone: "",
   });
 
-  useEffect(() => {
-    // Apply dark mode class to body
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
-  const filteredPractitioners = mockPractitioners.filter(
-    (practitioner) =>
-      practitioner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      practitioner.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDoctors = mockDoctors.filter(
+    (Doctor) =>
+      Doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      Doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredPatients = mockPatients.filter(
@@ -338,12 +324,8 @@ function AdminDashboard() {
   );
 
   const handleAddUser = (type: string) => {
-    setAddUserType(type === "patient" ? "patient" : "practitioner");
+    setAddUserType(type === "patient" ? "patient" : "Doctor");
     setAddUserOpen(true);
-  };
-
-  const handleSettingsClick = () => {
-    setSettingsOpen(true);
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -424,7 +406,7 @@ function AdminDashboard() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="sticky top-0 z-50 border-b border-white/20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg"
+        className="relative z-40 border-b border-white/20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg"
       >
         <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -481,21 +463,11 @@ function AdminDashboard() {
                 />
               </motion.div>
 
-              {/* Theme Toggle */}
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 180 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setDarkMode(!darkMode)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors relative"
-              >
-                {darkMode ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-600" />}
-              </motion.button>
-
               {/* Notifications */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="relative"
+                className="relative z-50"
               >
                 <motion.button
                   whileHover={{ scale: 1.1 }}
@@ -519,7 +491,7 @@ function AdminDashboard() {
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
+                      className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[120]"
                     >
                       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                         <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
@@ -549,15 +521,6 @@ function AdminDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 className="hidden md:flex items-center gap-3"
               >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-300 dark:hover:border-emerald-700 rounded-xl transition-all duration-300"
-                  onClick={handleSettingsClick}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
                 <Button
                   className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
                   data-testid="button-add-user"
@@ -600,122 +563,6 @@ function AdminDashboard() {
 
       {/* Main Content */}
       <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
-        {/* Stats Cards Grid */}
-        <motion.div 
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-          className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-5"
-        >
-          <StatCard icon={Stethoscope} title="Total Practitioners" value={mockClinicStats.totalPractitioners} trend={8} color="from-[#1F5C3F] to-[#1F5C3F]/90" delay={0} />
-          <StatCard icon={Users} title="Total Patients" value={mockClinicStats.totalPatients} trend={12} color="from-emerald-600 to-emerald-700" delay={0.1} />
-          <StatCard icon={Activity} title="Active Charts" value={mockClinicStats.activeCharts} trend={5} color="from-[#10B981] to-[#0D9488]" delay={0.2} />
-          <StatCard icon={Shield} title="Compliance Rate" value={`${mockClinicStats.complianceRate}%`} trend={2} color="from-[#0D9488] to-[#1F5C3F]" delay={0.3} />
-          <StatCard icon={TrendingUp} title="Monthly Growth" value={`${mockClinicStats.monthlyGrowth}%`} trend={15} color="from-[#1F5C3F]/80 to-[#10B981]/80" delay={0.4} />
-        </motion.div>
-
-        {/* Charts Section */}
-        <div className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
-          {/* Revenue Chart */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="min-w-0 xl:col-span-2"
-          >
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
-              <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex min-w-0 items-center space-x-2">
-                    <div className="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
-                      <LineChart className="h-5 w-5 text-[#1F5C3F] dark:text-[#10B981]" />
-                    </div>
-                    <CardTitle className="truncate text-gray-900 dark:text-white">Revenue Overview</CardTitle>
-                  </div>
-                  <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={mockRevenueData}>
-                      <defs>
-                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.1} />
-                      <XAxis dataKey="month" stroke="#6b7280" />
-                      <YAxis stroke="#6b7280" />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                          borderRadius: '12px',
-                          border: 'none',
-                          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-                        }} 
-                      />
-                      <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRevenue)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Condition Distribution */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden h-full">
-              <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
-                    <PieChart className="h-5 w-5 text-[#1F5C3F] dark:text-emerald-400" />
-                  </div>
-                  <CardTitle className="text-gray-900 dark:text-white">Condition Distribution</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RePieChart>
-                      <Pie
-                        data={mockConditionDistribution}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {mockConditionDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </RePieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {mockConditionDistribution.map((item, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                      <span className="text-sm text-gray-600 dark:text-gray-400">{item.name}</span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto">{item.value}%</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
 
         {/* Tabs Section */}
         <Tabs
@@ -724,7 +571,7 @@ function AdminDashboard() {
           className="space-y-6"
         >
           <TabsList className="h-auto w-full flex-wrap justify-start gap-2 rounded-2xl border border-gray-200 bg-white/80 p-1 shadow-lg backdrop-blur-xl dark:border-gray-700 dark:bg-gray-800/80">
-            {["overview", "practitioners", "patients", "analytics"].map((tab, index) => (
+            {["overview", "Doctors", "patients", "analytics"].map((tab, index) => (
               <TabsTrigger
                 key={tab}
                 value={tab}
@@ -825,7 +672,7 @@ function AdminDashboard() {
             </div>
           </TabsContent>
 
-          <TabsContent value="practitioners" className="space-y-6">
+          <TabsContent value="Doctors" className="space-y-6">
             <motion.div variants={staggerContainer} initial="initial" animate="animate">
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
                 <CardHeader className="border-b border-gray-200 dark:border-gray-700">
@@ -835,9 +682,9 @@ function AdminDashboard() {
                         <UserCog className="h-5 w-5 text-[#1F5C3F] dark:text-[#10B981]" />
                       </div>
                       <div className="min-w-0">
-                        <CardTitle className="truncate text-gray-900 dark:text-white">Practitioner Management</CardTitle>
+                        <CardTitle className="truncate text-gray-900 dark:text-white">Doctor Management</CardTitle>
                         <CardDescription className="text-gray-500 dark:text-gray-400">
-                          Manage practitioner profiles and access permissions
+                          Manage Doctor profiles and access permissions
                         </CardDescription>
                       </div>
                     </div>
@@ -845,57 +692,57 @@ function AdminDashboard() {
                       <div className="relative w-full sm:w-64">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input
-                          placeholder="Search practitioners..."
+                          placeholder="Search Doctors..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                           className="w-full rounded-xl border-gray-200 bg-white/50 pl-10 focus:border-[#10B981] focus:ring-[#10B981]/20 dark:border-gray-600 dark:bg-gray-700/50"
-                          data-testid="input-search-practitioners"
+                          data-testid="input-search-Doctors"
                         />
                       </div>
                       <Button
-                        onClick={() => handleAddUser("practitioner")}
+                        onClick={() => handleAddUser("Doctor")}
                         className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Practitioner
+                        Add Doctor
                       </Button>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {filteredPractitioners.map((practitioner, index) => (
+                    {filteredDoctors.map((Doctor, index) => (
                       <motion.div
-                        key={practitioner.id}
+                        key={Doctor.id}
                         variants={fadeInUp}
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ y: -5, scale: 1.02 }}
-                        className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer"
-                        onClick={() => setSelectedPractitioner(practitioner)}
+                        className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer min-h-[520px]"
+                        onClick={() => setSelectedDoctor(Doctor)}
                       >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-bl-full opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                        <div className="p-6">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center space-x-4">
+                        <div className="p-6 flex h-full flex-col">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex min-w-0 items-center space-x-4">
                               <Avatar className="h-16 w-16 border-4 border-white dark:border-gray-700 shadow-xl">
-                                <AvatarImage src={practitioner.image} />
+                                <AvatarImage src={Doctor.image} />
                                 <AvatarFallback className="bg-gradient-to-br from-[#1F5C3F] to-[#10B981] text-white text-lg">
-                                  {practitioner.name.split(" ").map(n => n[0]).join("")}
+                                  {Doctor.name.split(" ").map(n => n[0]).join("")}
                                 </AvatarFallback>
                               </Avatar>
-                              <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-[#1F5C3F] dark:group-hover:text-[#10B981] transition-colors">
-                                  {practitioner.name}
+                              <div className="min-w-0">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-[#1F5C3F] dark:group-hover:text-[#10B981] transition-colors leading-tight break-words">
+                                  {Doctor.name}
                                 </h3>
-                                <p className="text-gray-600 dark:text-gray-400 font-medium flex items-center">
-                                  <Stethoscope className="h-4 w-4 mr-1" />
-                                  {practitioner.specialization}
+                                <p className="text-gray-600 dark:text-gray-400 font-medium flex items-start mt-1">
+                                  <Stethoscope className="h-4 w-4 mr-1 mt-0.5 shrink-0" />
+                                  <span className="break-words leading-snug">{Doctor.specialization}</span>
                                 </p>
-                                <div className="flex items-center space-x-2 mt-2">
+                                <div className="flex flex-wrap items-center gap-2 mt-2">
                                   <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0">
-                                    ⭐ {practitioner.rating}
+                                    ⭐ {Doctor.rating}
                                   </Badge>
-                                  {getStatusBadge(practitioner.status)}
+                                  {getStatusBadge(Doctor.status)}
                                 </div>
                               </div>
                             </div>
@@ -910,42 +757,44 @@ function AdminDashboard() {
 
                           <div className="grid grid-cols-3 gap-4 mt-6">
                             <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
-                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-[#10B981]">{practitioner.patients}</p>
+                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-[#10B981]">{Doctor.patients}</p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">Patients</p>
                             </div>
                             <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">{practitioner.experience}</p>
+                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">{Doctor.experience}</p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">Experience</p>
                             </div>
                             <div className="text-center p-3 bg-[#10B981]/10 dark:bg-[#10B981]/10 rounded-xl">
-                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-emerald-400">₹{practitioner.revenue/1000}K</p>
+                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-emerald-400">₹{Doctor.revenue/1000}K</p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">Revenue</p>
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                            <div className="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                              <span className="flex items-center">
-                                <Mail className="h-4 w-4 mr-1" />
-                                {practitioner.email}
+                          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                            <div className="flex flex-wrap items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                              <span className="flex min-w-0 items-start flex-1">
+                                <Mail className="h-4 w-4 mr-1 mt-0.5 shrink-0" />
+                                <span className="break-all leading-snug">{Doctor.email}</span>
                               </span>
-                              <span className="flex items-center">
+                              <span className="flex items-center shrink-0">
                                 <MapPin className="h-4 w-4 mr-1" />
-                                {practitioner.location}
+                                <span className="break-words">{Doctor.location}</span>
                               </span>
                             </div>
-                            <motion.button
-                              whileHover={{ x: 5 }}
-                              className="text-[#1F5C3F] dark:text-[#10B981] font-medium text-sm flex items-center"
-                            >
-                              View Profile
-                              <ChevronRight className="h-4 w-4 ml-1" />
-                            </motion.button>
+                            <div className="flex justify-end">
+                              <motion.button
+                                whileHover={{ x: 5 }}
+                                className="text-[#1F5C3F] dark:text-[#10B981] font-medium text-sm flex items-center"
+                              >
+                                View Profile
+                                <ChevronRight className="h-4 w-4 ml-1" />
+                              </motion.button>
+                            </div>
                           </div>
 
-                          {practitioner.achievements && (
-                            <div className="flex flex-wrap gap-2 mt-4">
-                              {practitioner.achievements.map((achievement, i) => (
+                          {Doctor.achievements && (
+                            <div className="flex flex-wrap gap-2 mt-4 min-h-[32px] content-start">
+                              {Doctor.achievements.map((achievement, i) => (
                                 <Badge key={i} variant="outline" className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800">
                                   <Award className="h-3 w-3 mr-1" />
                                   {achievement}
@@ -1104,14 +953,119 @@ function AdminDashboard() {
             </motion.div>
           </TabsContent>
 
-          <TabsContent value="analytics">
+          <TabsContent value="analytics" className="space-y-8">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid lg:grid-cols-2 gap-6"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-5"
             >
-              {/* Analytics content here */}
+              <StatCard icon={Stethoscope} title="Total Doctors" value={mockClinicStats.totalDoctors} trend={8} color="from-[#1F5C3F] to-[#1F5C3F]/90" delay={0} />
+              <StatCard icon={Users} title="Total Patients" value={mockClinicStats.totalPatients} trend={12} color="from-emerald-600 to-emerald-700" delay={0.1} />
+              <StatCard icon={Activity} title="Active Charts" value={mockClinicStats.activeCharts} trend={5} color="from-[#10B981] to-[#0D9488]" delay={0.2} />
+              <StatCard icon={Shield} title="Compliance Rate" value={`${mockClinicStats.complianceRate}%`} trend={2} color="from-[#0D9488] to-[#1F5C3F]" delay={0.3} />
+              <StatCard icon={TrendingUp} title="Monthly Growth" value={`${mockClinicStats.monthlyGrowth}%`} trend={15} color="from-[#1F5C3F]/80 to-[#10B981]/80" delay={0.4} />
             </motion.div>
+
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="min-w-0 xl:col-span-2"
+              >
+                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
+                  <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex min-w-0 items-center space-x-2">
+                        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
+                          <LineChart className="h-5 w-5 text-[#1F5C3F] dark:text-[#10B981]" />
+                        </div>
+                        <CardTitle className="truncate text-gray-900 dark:text-white">Revenue Overview</CardTitle>
+                      </div>
+                      <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
+                        <Download className="h-4 w-4 mr-2" />
+                        Export
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={mockRevenueData}>
+                          <defs>
+                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.1} />
+                          <XAxis dataKey="month" stroke="#6b7280" />
+                          <YAxis stroke="#6b7280" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+                              borderRadius: '12px',
+                              border: 'none',
+                              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                            }} 
+                          />
+                          <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRevenue)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden h-full">
+                  <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center space-x-2">
+                      <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+                        <PieChart className="h-5 w-5 text-[#1F5C3F] dark:text-emerald-400" />
+                      </div>
+                      <CardTitle className="text-gray-900 dark:text-white">Condition Distribution</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RePieChart>
+                          <Pie
+                            data={mockConditionDistribution}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {mockConditionDistribution.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </RePieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      {mockConditionDistribution.map((item, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{item.name}</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto">{item.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
           </TabsContent>
         </Tabs>
 
@@ -1173,78 +1127,6 @@ function AdminDashboard() {
         </motion.footer>
       </div>
 
-      {/* Settings Modal */}
-      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-0 shadow-2xl rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-              <Settings className="h-6 w-6 mr-2 text-[#1F5C3F]" />
-              System Settings
-            </DialogTitle>
-            <DialogDescription className="text-gray-600 dark:text-gray-400">
-              Manage your admin preferences and system options.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Theme</label>
-              <RadioGroup defaultValue="light" className="flex gap-6">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="light" id="theme-light" />
-                  <label htmlFor="theme-light" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
-                    <Sun className="h-4 w-4" />
-                    <span>Light</span>
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="dark" id="theme-dark" />
-                  <label htmlFor="theme-dark" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
-                    <Moon className="h-4 w-4" />
-                    <span>Dark</span>
-                  </label>
-                </div>
-              </RadioGroup>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Notifications</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="notif"
-                  className="w-4 h-4 text-[#1F5C3F] rounded focus:ring-[#10B981]"
-                  defaultChecked
-                />
-                <label htmlFor="notif" className="text-sm text-gray-700 dark:text-gray-300">
-                  Enable system notifications
-                </label>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Language</label>
-              <select className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                <option>English</option>
-                <option>Hindi</option>
-                <option>Tamil</option>
-                <option>Telugu</option>
-              </select>
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" className="rounded-xl">Cancel</Button>
-            </DialogClose>
-            <Button 
-              onClick={() => setSettingsOpen(false)}
-              className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Save Changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* Add User Modal */}
       <Dialog open={addUserOpen} onOpenChange={setAddUserOpen}>
         <DialogContent className="max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-0 shadow-2xl rounded-2xl">
@@ -1261,17 +1143,17 @@ function AdminDashboard() {
           <div className="mb-6">
             <RadioGroup
               value={addUserType}
-              onValueChange={(v) => setAddUserType(v as "practitioner" | "patient")}
+              onValueChange={(v) => setAddUserType(v as "Doctor" | "patient")}
               className="flex gap-6 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg"
             >
               <div className="flex-1">
-                <RadioGroupItem value="practitioner" id="add-practitioner" className="peer sr-only" />
+                <RadioGroupItem value="Doctor" id="add-Doctor" className="peer sr-only" />
                 <label
-                  htmlFor="add-practitioner"
+                  htmlFor="add-Doctor"
                   className="flex items-center justify-center p-2 text-sm font-medium rounded-md cursor-pointer peer-data-[state=checked]:bg-white peer-data-[state=checked]:dark:bg-gray-700 peer-data-[state=checked]:text-[#1F5C3F] peer-data-[state=checked]:shadow-sm transition-all"
                 >
                   <Stethoscope className="h-4 w-4 mr-2" />
-                  Practitioner
+                  Doctor
                 </label>
               </div>
               <div className="flex-1">
@@ -1331,7 +1213,7 @@ function AdminDashboard() {
               />
             </div>
             
-            {addUserType === "practitioner" && (
+            {addUserType === "Doctor" && (
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Specialization

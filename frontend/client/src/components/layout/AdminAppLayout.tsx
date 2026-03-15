@@ -5,6 +5,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import GroupIcon from "@mui/icons-material/Group";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { motion } from "framer-motion";
 import BrandLogo from "@/components/common/BrandLogo";
 
@@ -29,6 +30,11 @@ const adminMenuItems = [
     icon: <LibraryBooksIcon fontSize="small" />,
     href: "/admin/wellness-network",
   },
+  {
+    label: "Settings",
+    icon: <SettingsIcon fontSize="small" />,
+    href: "/admin/settings",
+  },
 ];
 
 const AdminAppLayout: React.FC<AdminAppLayoutProps> = ({
@@ -37,9 +43,9 @@ const AdminAppLayout: React.FC<AdminAppLayoutProps> = ({
 }) => {
   const [location] = useLocation();
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row">
+    <div className="h-screen overflow-hidden bg-background flex flex-col md:flex-row">
       {showSidebar && (
-        <aside className="bg-sidebar w-full md:w-64 lg:w-72 border-r border-sidebar-border shrink-0 shadow-xl">
+        <aside className="bg-sidebar w-full md:w-64 lg:w-72 border-r border-sidebar-border shrink-0 shadow-xl flex flex-col">
           <div className="p-4 h-16 border-b border-sidebar-border flex items-center justify-between">
             <BrandLogo textClassName="text-2xl" iconClassName="h-9 w-9" />
             <ThemeToggle />
@@ -84,8 +90,8 @@ const AdminAppLayout: React.FC<AdminAppLayoutProps> = ({
           </nav>
         </aside>
       )}
-      <main className="flex-1 flex flex-col">
-        <header className="h-16 border-b border-border flex items-center justify-between px-4 md:px-6 bg-card">
+      <main className="flex-1 flex flex-col min-h-0">
+          <header className="h-16 border-b border-border flex items-center justify-between px-4 md:px-6 bg-card shrink-0">
           <div className="md:hidden">
             {showSidebar && (
               <button className="p-2 rounded-md hover:bg-sidebar-accent/50">

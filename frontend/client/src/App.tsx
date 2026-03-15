@@ -8,7 +8,7 @@ import { ThemeProvider } from "./lib/ThemeProvider";
 
 // Layout + Pages
 import AppLayout from "./components/layout/AppLayout";
-import PractitionerAppLayout from "./components/layout/PractitionerAppLayout";
+import DoctorAppLayout from "./components/layout/DoctorAppLayout";
 import NotFound from "@/pages/not-found";
 import LandingPage from "./components/LandingPage";
 import LoginForm from "./components/LoginForm";
@@ -22,15 +22,17 @@ import PatientReports from "./components/PatientReports";
 import PatientProfile from "./components/PatientProfile";
 import PatientSettings from "./components/PatientSettings";
 import PatientAppointments from "./components/PatientAppointments";
-import PractitionerDashboard from "./components/PractitionerDashboard";
+import DoctorDashboard from "./components/DoctorDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import PrakritiFinalization from "./components/PrakritiFinalization";
 import WellnessCenterNetwork from "./components/WellnessCenterNetwork";
 import AdminAppLayout from "./components/layout/AdminAppLayout";
-import PractitionerRegistration from "./components/PractitionerRegistration";
+import DoctorRegistration from "./components/DoctorRegistration";
 import PrakritiVerification from "./components/PrakritiVerification";
 import DietChartGenerator from "./components/DietChartGenerator";
 import Monitoring from "./components/Monitoring";
+import DoctorAppointmentsFlow from "./components/DoctorAppointmentsFlow";
+import AdminSettings from "./components/AdminSettings";
 
 //
 // Route Wrappers (avoid inline functions in <Route>)
@@ -77,22 +79,22 @@ const PatientAppointmentsPage = () => (
   </AppLayout>
 );
 
-const PractitionerDashboardPage = () => (
-  <PractitionerAppLayout>
-    <PractitionerDashboard />
-  </PractitionerAppLayout>
+const DoctorDashboardPage = () => (
+  <DoctorAppLayout>
+    <DoctorDashboard />
+  </DoctorAppLayout>
 );
 
-const PractitionerPatientProfilePage = ({ patientId }: { patientId: string }) => (
-  <PractitionerAppLayout>
-    <PractitionerDashboard patientId={patientId} />
-  </PractitionerAppLayout>
+const DoctorPatientProfilePage = ({ patientId }: { patientId: string }) => (
+  <DoctorAppLayout>
+    <DoctorDashboard patientId={patientId} />
+  </DoctorAppLayout>
 );
 
 // const DietChartCreationPage = () => (
-//   <PractitionerAppLayout>
+//   <DoctorAppLayout>
 //     <DietChartCreation />
-//   </PractitionerAppLayout>
+//   </DoctorAppLayout>
 // );
 
 const AdminDashboardPage = () => (
@@ -113,10 +115,16 @@ const AdminWellnessNetworkPage = () => (
   </AdminAppLayout>
 );
 
+const AdminSettingsPage = () => (
+  <AdminAppLayout>
+    <AdminSettings />
+  </AdminAppLayout>
+);
+
 const PrakritiVerificationPage = () => (
-  <PractitionerAppLayout>
+  <DoctorAppLayout>
     <PrakritiVerification />
-  </PractitionerAppLayout>
+  </DoctorAppLayout>
 );
 
 //
@@ -162,15 +170,15 @@ function Router() {
       <Route path="/patient/settings" component={PatientSettingsPage} />
       <Route path="/patient/appointments" component={PatientAppointmentsPage} />
 
-      {/* Practitioner Routes */}
+      {/* Doctor Routes */}
       <Route
         path="/doctor/dashboard"
-        component={PractitionerDashboardPage}
+        component={DoctorDashboardPage}
       />
-      {/* <Route path="/practitioner/diet-chart" component={DietChartCreationPage} /> */}
+      {/* <Route path="/Doctor/diet-chart" component={DietChartCreationPage} /> */}
       <Route
         path="/doctor/register"
-        component={() => <PractitionerRegistration />}
+        component={() => <DoctorRegistration />}
       />
       <Route
         path="/doctor/prakriti-verification"
@@ -179,23 +187,31 @@ function Router() {
       <Route
         path="/doctor/diet-chart-generator"
         component={() => (
-          <PractitionerAppLayout>
+          <DoctorAppLayout>
             <DietChartGenerator />
-          </PractitionerAppLayout>
+          </DoctorAppLayout>
         )}
       />
       <Route
         path="/doctor/monitoring"
         component={() => (
-          <PractitionerAppLayout>
+          <DoctorAppLayout>
             <Monitoring />
-          </PractitionerAppLayout>
+          </DoctorAppLayout>
+        )}
+      />
+      <Route
+        path="/doctor/appointments"
+        component={() => (
+          <DoctorAppLayout>
+            <DoctorAppointmentsFlow />
+          </DoctorAppLayout>
         )}
       />
       <Route
         path="/doctor/:patientId"
         component={({ params }) => (
-          <PractitionerPatientProfilePage patientId={params.patientId} />
+          <DoctorPatientProfilePage patientId={params.patientId} />
         )}
       />
 
@@ -209,6 +225,7 @@ function Router() {
         path="/admin/wellness-network"
         component={AdminWellnessNetworkPage}
       />
+      <Route path="/admin/settings" component={AdminSettingsPage} />
 
       {/* Fallback */}
       <Route component={NotFound} />

@@ -198,14 +198,14 @@ export default function HealthcareMonitoring() {
           patient.recommendations
         }%. Risk Level: ${patient.riskLevel?.toUpperCase()}`;
       }
-      // Practitioner recommendation (could be dynamic based on risk)
+      // Doctor recommendation (could be dynamic based on risk)
       let docRec = "";
       if (patient.riskLevel === "high") {
-        docRec = `Recommended Practitioner: Dr. Aarav Mehta (Endocrinologist)\nContact: +91-9876543210\nSpecialty: Critical care for metabolic disorders.`;
+        docRec = `Recommended Doctor: Dr. Aarav Mehta (Endocrinologist)\nContact: +91-9876543210\nSpecialty: Critical care for metabolic disorders.`;
       } else if (patient.riskLevel === "medium") {
-        docRec = `Recommended Practitioner: Dr. Kavya Singh (General Physician)\nContact: +91-9123456780\nSpecialty: Preventive medicine and lifestyle management.`;
+        docRec = `Recommended Doctor: Dr. Kavya Singh (General Physician)\nContact: +91-9123456780\nSpecialty: Preventive medicine and lifestyle management.`;
       } else {
-        docRec = `Recommended Practitioner: Dr. Rohan Patel (Family Physician)\nContact: +91-9988776655\nSpecialty: Routine monitoring and wellness.`;
+        docRec = `Recommended Doctor: Dr. Rohan Patel (Family Physician)\nContact: +91-9988776655\nSpecialty: Routine monitoring and wellness.`;
       }
       setAiResponse((prev) => ({ ...prev, [patient.id]: resp }));
       setDoctorRecommendation((prev) => ({ ...prev, [patient.id]: docRec }));
@@ -356,7 +356,7 @@ export default function HealthcareMonitoring() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+      <div className="bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex items-center space-x-4">
@@ -697,11 +697,11 @@ export default function HealthcareMonitoring() {
                     <p className="text-sm text-[#1F5C3F]">
                       {aiResponse[patient.id]}
                     </p>
-                    {/* Practitioner Recommendation UI */}
+                    {/* Doctor Recommendation UI */}
                     <div className="mt-2 p-2 bg-gradient-to-r from-green-50 to-emerald-50/30 border border-green-200 rounded-lg">
                       <div className="text-xs font-semibold text-green-800 mb-1 flex items-center">
                         <User className="h-4 w-4 mr-1" />
-                        Practitioner Recommendation
+                        Doctor Recommendation
                       </div>
                       <div className="text-sm text-green-700 whitespace-pre-line">
                         {doctorRecommendation[patient.id]}
@@ -740,7 +740,7 @@ export default function HealthcareMonitoring() {
                       <div className="mb-4">
                         <div className="text-xs font-semibold text-green-800 mb-1 flex items-center">
                           <User className="h-4 w-4 mr-1" />
-                          Practitioner Recommendation
+                          Doctor Recommendation
                         </div>
                         <div className="text-sm text-green-700 whitespace-pre-line">
                           {doctorRecommendation[modalPatientId]}

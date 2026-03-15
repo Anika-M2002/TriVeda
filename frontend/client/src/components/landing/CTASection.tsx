@@ -34,7 +34,7 @@ export default function CTASection() {
 
             <ScrollReveal delay={0.15}>
               <p className="text-lg text-white/70 max-w-xl mx-auto mb-10 leading-relaxed font-sans">
-                Join thousands of patients and practitioners who are transforming healthcare
+                Join thousands of patients and Doctors who are transforming healthcare
                 with the power of Ayurveda and Biotech.
               </p>
             </ScrollReveal>

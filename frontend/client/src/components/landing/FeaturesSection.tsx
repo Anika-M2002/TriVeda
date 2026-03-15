@@ -27,7 +27,7 @@ const features = [
   {
     icon: Calendar,
     title: 'Appointment Management',
-    description: 'Seamless scheduling between patients and Ayurvedic practitioners.',
+    description: 'Seamless scheduling between patients and Ayurvedic Doctors.',
     size: 'small',
     image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80',
   },
@@ -55,7 +55,7 @@ const features = [
   {
     icon: Users,
     title: 'Community Wellness',
-    description: 'Connect with practitioners and fellow wellness seekers on your journey.',
+    description: 'Connect with Doctors and fellow wellness seekers on your journey.',
     size: 'small',
     image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80',
   },

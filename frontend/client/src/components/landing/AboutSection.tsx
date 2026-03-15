@@ -33,7 +33,7 @@ export default function AboutSection() {
                 Triveda is a comprehensive digital platform that harnesses the 5,000-year-old
                 principles of Ayurveda, validated and enhanced by modern biotechnology research.
                 We provide personalized health management for patients, powerful clinical tools
-                for practitioners, and robust administrative oversight for healthcare organizations.
+                for Doctors, and robust administrative oversight for healthcare organizations.
               </p>
             </ScrollReveal>
 

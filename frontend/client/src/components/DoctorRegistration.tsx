@@ -30,14 +30,14 @@ const qualificationsList = [
   "BAMS (Bachelor of Ayurvedic Medicine & Surgery)",
   "MD (Ayurveda)",
   "PhD (Ayurveda)",
-  "Ayurvedic Practitioner",
+  "Ayurvedic Doctor",
   "Ayurvedic Therapist",
   "Diploma in Panchakarma",
   "Diploma in Ayurvedic Pharmacy",
   "Other",
 ];
 
-export default function PractitionerRegistration({
+export default function DoctorRegistration({
   onNavigate,
 }: {
   onNavigate?: (view: string) => void;

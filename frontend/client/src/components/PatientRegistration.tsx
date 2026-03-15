@@ -505,7 +505,7 @@ export default function PatientRegistration({
                 </h2>
                 <p className="text-base text-muted-foreground mb-4 text-center max-w-md">
                   Thank you for completing your registration. Soon a
-                  practitioner will be assigned to you for the onboarding
+                  Doctor will be assigned to you for the onboarding
                   process.
                   <br />
                   <span className="text-primary font-medium">

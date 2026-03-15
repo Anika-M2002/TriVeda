@@ -5,15 +5,16 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { motion } from "framer-motion";
 import BrandLogo from "@/components/common/BrandLogo";
 
-interface PractitionerAppLayoutProps {
+interface DoctorAppLayoutProps {
   children: React.ReactNode;
   showSidebar?: boolean;
 }
 
-const practitionerMenuItems = [
+const doctorMenuItems = [
   {
     label: "Dashboard",
     icon: <DashboardIcon fontSize="small" />,
@@ -34,24 +35,29 @@ const practitionerMenuItems = [
     icon: <MonitorHeartIcon fontSize="small" />,
     href: "/doctor/monitoring",
   },
+  {
+    label: "Appointments",
+    icon: <EventAvailableIcon fontSize="small" />,
+    href: "/doctor/appointments",
+  },
 ];
 
-export const PractitionerAppLayout: React.FC<PractitionerAppLayoutProps> = ({
+export const DoctorAppLayout: React.FC<DoctorAppLayoutProps> = ({
   children,
   showSidebar = true,
 }) => {
   const [location] = useLocation();
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row">
+    <div className="h-screen overflow-hidden bg-background flex flex-col md:flex-row">
       {showSidebar && (
-        <aside className="bg-sidebar w-full md:w-64 lg:w-72 border-r border-sidebar-border shrink-0 shadow-xl">
+        <aside className="bg-sidebar w-full md:w-64 lg:w-72 border-r border-sidebar-border shrink-0 shadow-xl flex flex-col">
           <div className="p-4 h-16 border-b border-sidebar-border flex items-center justify-between">
             <BrandLogo textClassName="text-2xl" iconClassName="h-9 w-9" />
             <ThemeToggle />
           </div>
           <nav className="p-4">
             <ul className="space-y-2">
-              {practitionerMenuItems.map((item) => (
+              {doctorMenuItems.map((item) => (
                 <li key={item.label}>
                   <motion.div
                     whileHover={{ scale: 1.02 }}
@@ -89,8 +95,8 @@ export const PractitionerAppLayout: React.FC<PractitionerAppLayoutProps> = ({
           </nav>
         </aside>
       )}
-      <main className="flex-1 flex flex-col">
-        <header className="h-16 border-b border-border flex items-center justify-between px-4 md:px-6 bg-card">
+      <main className="flex-1 flex flex-col min-h-0">
+          <header className="h-16 border-b border-border flex items-center justify-between px-4 md:px-6 bg-card shrink-0">
           <div className="md:hidden">
             {showSidebar && (
               <button className="p-2 rounded-md hover:bg-sidebar-accent/50">
@@ -139,4 +145,4 @@ export const PractitionerAppLayout: React.FC<PractitionerAppLayoutProps> = ({
   );
 };
 
-export default PractitionerAppLayout;
+export default DoctorAppLayout;

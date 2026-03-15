@@ -1,9 +1,9 @@
-import PractitionerDashboard from "../PractitionerDashboard";
+import DoctorDashboard from "../DoctorDashboard";
 
-export default function PractitionerDashboardExample() {
+export default function DoctorDashboardExample() {
   const mockNavigate = (view: string) => {
     console.log("Mock navigation:", view);
   };
 
-  return <PractitionerDashboard onNavigate={mockNavigate} />;
+  return <DoctorDashboard onNavigate={mockNavigate} />;
 }
