@@ -1,0 +1,27 @@
+Complete Blood Count Report
+
+Hemoglobin
+Red Blood Cell Count
+White Blood Cell Count
+Platelet Count
+Hematocrit
+Mean Corpuscular Volume
+Mean Corpuscular Hemoglobin
+Mean Corpuscular Hemoglobin Concentration
+Red Cell Distribution Width
+
+Neutrophils
+Lymphocytes
+Monocytes
+Eosinophils
+Basophils
+
+Absolute Neutrophil Count
+Absolute Lymphocyte Count
+Absolute Monocyte Count
+Absolute Eosinophil Count
+Absolute Basophil Count
+
+Mean Platelet Volume
+Platelet Distribution Width
+Plateletcrit

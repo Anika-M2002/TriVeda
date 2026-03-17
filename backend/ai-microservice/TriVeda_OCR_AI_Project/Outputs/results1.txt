@@ -1,0 +1,59 @@
+1. Presc 1:
+
+python run_ocr.py
+
+Medical OCR System
+------------------
+
+Running OCR...
+
+----- OCR OUTPUT -----
+
+HIS AYURVEDA CONFIGURATION
+
+Dr. Bhayna ViJ (Ayurveda)
+« Patient with Ayurveda package — 274756 (Chahat Garg)
+e Lisha — 274869 [Normal OPD patient)
+
+DEMO ACCOUNT TO BE USED (Mapped only with only Ayurveda User doctor)
+
+User name — Bhavna
+Password — Ayur@12
+Order set -
+
+* General fitness checkup
+* Common investigations
+
+Diagnosis related order —
+* Hypertensive Disease
+HOP1 template —
+* Review of system
+Physical examination
+© General physical examination
+DAYCARE
+
+® Station — Panchkarma Kaksh
+
+¢ Procedure to be selected - Nasya
+
+e Additional procedure - Steam inhalation from nursing procedure
+
+* Consumables — gloves, bath towel etc. along with any available Ayurveda Medicine
+¢ Bed name - Panch-Karma Bed
+
+Ayurveda Medicines available in PANCHKARMA KAKSH
+
+° DRAKSHAS AVA
+° BRAHMI GHRIT
+° BRAHMI VATI
+
+° YOGRA) GUGGUL TABLET
+
+
+Ground truth extracted automatically from PDF
+
+----- OCR METRICS -----
+
+Word Error Rate (WER): 118
+Character Error Rate (CER): 827
+Field-Level Accuracy: 0.42857142857142855
