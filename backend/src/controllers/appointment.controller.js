@@ -125,3 +125,91 @@ export const getAvailableSlots=asyncHandler(async(req,res)=>{
         }, "Available slots fetched successfully.")
     );
 });
+
+export const bookAppointment = asyncHandler(async (req, res) => {
+    const {
+        patientId,
+        departmentId,
+        selectedTimeSlots,
+        date,
+        finalSymptoms
+    } = req.body;
+
+    if(!patientId || !departmentId || !selectedTimeSlots || selectedTimeSlots.length === 0 || !date){
+        throw new ApiError(400, "Missing required booking details.");
+    }
+
+    const patient=await prisma.user.findUnique({
+        where: {id: patientId},
+        include: {patientProfile: true}
+    });
+
+    if(!patient){
+        throw new ApiError(404, "Patient not found in the system.");
+    }
+
+    const doctors=await prisma.doctorProfile.findMany({
+        where: {departmentId: departmentId, isAvailable: true}
+    });
+
+    if(doctors.length===0){
+        throw new ApiError(404, "No doctors are currently available for this department.");
+    }
+
+    let topDoctorId=doctors[0].userId;
+    let aiSummaryText="Assigned based on general availability.";
+
+    try {
+        const aiMicroserviceUrl = process.env.AI_MICROSERVICE_URL || 'http://localhost:8000';
+
+        const aiResponse = await axios.post(`${aiMicroserviceUrl}/api/matchmaker`, {
+            patient_profile: {
+                symptoms: finalSymptoms,
+                prakriti: patient.patientProfile?.prakriti || "Unknown",
+                age: patient.patientProfile?.age || "Unknown",
+            },
+            available_doctors: doctors.map(doc => ({
+                doctorId: doc.userId,
+                experience_years: doc.experienceYrs,
+                speciality: doc.specialty
+            }))
+        });
+        
+        topDoctorId=aiResponse.data.top_doctor_id;
+        aiSummaryText=aiResponse.data.match_reason;
+    } catch (error) {
+        console.warn("AI Matchmaker unavailable, using fallback doctor.");
+        console.log("AI Matchmaker Error:", error.message);
+    }
+
+    const assignedSlot=selectedTimeSlots[0];
+    const timeParts=assignedSlot.match(/(\d+):(\d+)\s(AM|PM)/);
+    let hours = parseInt(timeParts[1]);
+    const minutes = parseInt(timeParts[2]);
+    if (timeParts[3] === 'PM' && hours < 12) hours += 12;
+    if (timeParts[3] === 'AM' && hours === 12) hours = 0;
+    
+    const scheduledAt = new Date(`${date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00.000Z`);
+
+    // 6. Lock it into the Database!
+    const appointment = await prisma.appointment.create({
+        data: {
+            patientId,
+            doctorId: topDoctorId,
+            scheduledAt,
+            status: "SCHEDULED",
+            patientSymptoms: Array.isArray(finalSymptoms) ? finalSymptoms.join(", ") : finalSymptoms,
+            aiSummary: aiSummaryText,
+            paymentStatus: "PENDING" // This perfectly sets up your mock payment screen
+        }
+    });
+
+    // 7. Send the success payload back to React to trigger the "Success / Mock Payment" screen
+    return res.status(201).json(
+        new ApiResponse(201, { 
+            appointmentId: appointment.id, 
+            doctorId: topDoctorId, 
+            scheduledAt 
+        }, "Matchmaking complete! Appointment locked. Proceed to payment.")
+    );
+});
