@@ -100,6 +100,15 @@ model Appointment {
   patientSymptoms String?  @db.Text 
   aiSummary       String?  @db.Text 
 
+  doctorNotes     String?  @db.Text // Private notes the doctor writes during the call
+  
+  dietChart       Json?    // Stores the meal timings, foods, and dosha rules
+  routinePlan     Json?    // Stores the Asanas/Yoga and lifestyle instructions
+  medications     Json?    // Stores the Ayurvedic medicines, dosage, and timing
+  
+  // Track if the appointment is done
+  isCompleted     Boolean  @default(false)
+
   paymentStatus PaymentStatus @default(PENDING)
   transactionId String? @unique
 

@@ -213,3 +213,114 @@ export const bookAppointment = asyncHandler(async (req, res) => {
         }, "Matchmaking complete! Appointment locked. Proceed to payment.")
     );
 });
+
+export const saveDoctorPlan = asyncHandler(async (req, res) => {
+    const { appointmentId } = req.params;
+    const { 
+        doctorNotes, 
+        dietChart,      // Expecting a JSON object from React
+        routinePlan,    // Expecting a JSON object from React
+        medications,    // Expecting a JSON object from React
+        isCompleted     // Boolean: Did the doctor finish the call?
+    } = req.body;
+
+    // 1. Verify the appointment exists
+    const appointment = await prisma.appointment.findUnique({
+        where: { id: appointmentId }
+    });
+
+    if (!appointment) {
+        throw new ApiError(404, "Appointment not found.");
+    }
+
+    // 2. Update the appointment with the new JSON data
+    const updatedAppointment = await prisma.appointment.update({
+        where: { id: appointmentId },
+        data: {
+            doctorNotes: doctorNotes !== undefined ? doctorNotes : appointment.doctorNotes,
+            dietChart: dietChart !== undefined ? dietChart : appointment.dietChart,
+            routinePlan: routinePlan !== undefined ? routinePlan : appointment.routinePlan,
+            medications: medications !== undefined ? medications : appointment.medications,
+            isCompleted: isCompleted !== undefined ? isCompleted : appointment.isCompleted,
+            status: isCompleted ? "COMPLETED" : appointment.status // Auto-update status
+        }
+    });
+
+    // 3. Send Success back to React
+    return res.status(200).json(
+        new ApiResponse(200, {
+            appointmentId: updatedAppointment.id,
+            isCompleted: updatedAppointment.isCompleted
+        }, "Treatment plan securely saved.")
+    );
+});
+
+export const getDoctorAppointments = asyncHandler(async (req, res) => {
+    const { doctorId } = req.params;
+
+    if (!doctorId) {
+        throw new ApiError(400, "Doctor ID is required.");
+    }
+
+    // Fetch appointments with all the nested patient data the frontend needs
+    const appointments = await prisma.appointment.findMany({
+        where: { 
+            doctorId: doctorId,
+            // Optional: You can filter out CANCELLED appointments here if you want
+            status: { not: "CANCELLED" } 
+        },
+        orderBy: {
+            scheduledAt: 'asc' // Oldest/Closest appointments first
+        },
+        include: {
+            // This is the Prisma magic. We pull the Patient's details in the same query.
+            patient: {
+                select: {
+                    name: true,
+                    phoneNumber: true,
+                    patientProfile: {
+                        select: {
+                            age: true,
+                            gender: true,
+                            prakriti: true,
+                            vikriti: true,
+                            bloodGroup: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    if (!appointments || appointments.length === 0) {
+        return res.status(200).json(
+            new ApiResponse(200, [], "No upcoming appointments found.")
+        );
+    }
+
+    // Format the data so it perfectly matches what the React frontend expects
+    const formattedAppointments = appointments.map(app => ({
+        appointmentId: app.id,
+        scheduledAt: app.scheduledAt,
+        status: app.status,
+        isCompleted: app.isCompleted,
+        paymentStatus: app.paymentStatus,
+        patientSymptoms: app.patientSymptoms,
+        aiSummary: app.aiSummary,
+        
+        // Flatten the patient data for easier frontend mapping
+        patient: {
+            id: app.patientId,
+            name: app.patient.name,
+            phone: app.patient.phoneNumber,
+            age: app.patient.patientProfile?.age || "N/A",
+            gender: app.patient.patientProfile?.gender || "N/A",
+            prakriti: app.patient.patientProfile?.prakriti || "Assessment Pending",
+            vikriti: app.patient.patientProfile?.vikriti || "N/A"
+        }
+    }));
+
+    return res.status(200).json(
+        new ApiResponse(200, formattedAppointments, "Doctor appointments fetched successfully.")
+    );
+});
