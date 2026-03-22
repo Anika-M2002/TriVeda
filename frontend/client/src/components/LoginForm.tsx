@@ -20,11 +20,14 @@ import {
 } from "lucide-react";
 import BrandLogo from "@/components/common/BrandLogo";
 
+import { useStaffLogin } from '@/hooks/useAuth';
+
 interface LoginFormProps {
   userType: "patient" | "doctor" | "admin";
 }
 
 export default function LoginForm({ userType = "patient" }: LoginFormProps) {
+  const loginMutation = useStaffLogin();
   const [formData, setFormData] = useState({
     abhaId: "",
     email: "",
@@ -40,17 +43,20 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
   };
 
   const handleLogin = async () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (userType === "patient") {
+    if (userType === "patient") {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
         setLocation("/patient/dashboard");
-      } else if (userType === "doctor") {
-        setLocation("/doctor/dashboard");
-      } else if (userType === "admin") {
-        setLocation("/admin/dashboard");
-      }
-    }, 1500);
+      }, 1500);
+      return;
+    }
+
+    loginMutation.mutate({
+      email: formData.email,
+      password: formData.password,
+      role: userType.toUpperCase(),
+    });
   };
 
   const getRoleDetails = () => {
@@ -348,7 +354,7 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
                 <Button
                   onClick={handleLogin}
                   disabled={
-                    isLoading ||
+                    isLoading || loginMutation.isPending ||
                     (userType === "patient"
                       ? !formData.abhaId
                       : !formData.email || !formData.password)
@@ -356,7 +362,7 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
                   className="w-full h-12 bg-[#1F5C3F] hover:bg-[#174A32] dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 font-sans"
                   data-testid="button-login"
                 >
-                  {isLoading ? (
+                  {isLoading || loginMutation.isPending ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                       Signing in...

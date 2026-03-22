@@ -1,103 +1,135 @@
 import { prisma } from '../db/config.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import ApiError from '../utils/ApiError.js';
+import ApiResponse from '../utils/ApiResponse.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
-// ==========================================
-// 1. PATIENT REGISTRATION
-// ==========================================
-export const registerPatient = async (req, res) => {
-    try {
-        const { email, password, name, age, gender, bloodGroup } = req.body;
+// Helper function to generate the token and set the cookie
+const generateTokenAndSetCookie = (user, role, res) => {
+    // 1. Create the JWT Payload (The data hidden inside the token)
+    const payload = {
+        id: user.id,
+        role: role,
+        email: user.email
+    };
 
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ error: "Email is already registered." });
-        }
+    // 2. Sign the token (Make sure you add JWT_SECRET to your .env!)
+    const token = jwt.sign(
+        payload, 
+        process.env.JWT_SECRET || "fallback_super_secret_triveda_key_do_not_use_in_prod", 
+        { expiresIn: '7d' }
+    );
 
-        const newUser = await prisma.user.create({
-            data: {
-                email, password, name, role: 'PATIENT',
-                patientProfile: {
-                    create: {
-                        age: age ? parseInt(age) : null,
-                        gender, bloodGroup
-                    }
-                }
-            },
-            include: { patientProfile: true }
-        });
+    // 3. Set the HTTP-Only Cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Only true if HTTPS
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    };
 
-        res.status(201).json({
-            success: true, message: "Patient registered successfully!",
-            user: {
-                id: newUser.id, name: newUser.name, email: newUser.email,
-                role: newUser.role, profile: newUser.patientProfile
-            }
-        });
-    } catch (error) {
-        console.error("Registration Error:", error);
-        res.status(500).json({ error: "Failed to register patient." });
-    }
+    res.cookie('triveda_auth', token, cookieOptions);
+    return token;
 };
 
 // ==========================================
-// 2. USER LOGIN
+// HOSPITAL STAFF LOGIN (B2B)
 // ==========================================
-export const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+export const staffLogin = asyncHandler(async (req, res) => {
+    const { email, password, role } = req.body;
 
-        const user = await prisma.user.findUnique({
-            where: { email },
-            include: { patientProfile: true, doctorProfile: true }
-        });
-
-        if (!user || user.password !== password) {
-            return res.status(401).json({ error: "Invalid email or password." });
-        }
-
-        res.status(200).json({
-            success: true, message: "Login successful!",
-            user: {
-                id: user.id, name: user.name, email: user.email, role: user.role,
-                profile: user.role === 'PATIENT' ? user.patientProfile : user.doctorProfile
-            }
-        });
-    } catch (error) {
-        console.error("Login Error:", error);
-        res.status(500).json({ error: "Failed to login." });
+    if (!email || !password || !role) {
+        throw new ApiError(400, "Email, password, and role are required.");
     }
-};
 
-// ==========================================
-// 3. CREATE DOCTOR
-// ==========================================
-export const createDoctor = async (req, res) => {
-    try {
-        const { email, password, name, specialty, experienceYrs } = req.body;
+    // 1. Find the staff member
+    const staff = await prisma.hospitalStaff.findUnique({
+        where: { email },
+        include: { doctorProfile: true, therapistProfile: true }
+    });
 
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ error: "Email is already registered." });
-        }
-
-        const newDoctor = await prisma.user.create({
-            data: {
-                email, password, name, role: 'DOCTOR',
-                doctorProfile: {
-                    create: { specialty, experienceYrs: parseInt(experienceYrs) }
-                }
-            },
-            include: { doctorProfile: true }
-        });
-
-        res.status(201).json({
-            success: true, message: "Doctor profile created successfully!",
-            doctor: {
-                id: newDoctor.id, name: newDoctor.name,
-                role: newDoctor.role, profile: newDoctor.doctorProfile
-            }
-        });
-    } catch (error) {
-        console.error("Doctor Creation Error:", error);
-        res.status(500).json({ error: "Failed to create doctor." });
+    if (!staff) {
+        throw new ApiError(404, "Staff member not found.");
     }
-};
+
+    // 2. Verify their role matches the portal they are using
+    if (staff.role !== role) {
+        throw new ApiError(403, `Access denied. This portal is for ${role}s only.`);
+    }
+
+    // 3. Check the password
+    // NOTE: In a real app, passwords MUST be hashed. For the MVP, if they aren't hashed in DB, use direct compare.
+    const isPasswordValid = await bcrypt.compare(password, staff.password).catch(() => password === staff.password);
+    
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid credentials.");
+    }
+
+    // 4. Generate Token & Cookie
+    generateTokenAndSetCookie(staff, staff.role, res);
+
+    // 5. Send safe user data back to React
+    const safeUserData = {
+        id: staff.id,
+        name: staff.name,
+        email: staff.email,
+        role: staff.role,
+        hospitalId: staff.hospitalId,
+        // If they are a doctor, send their specific profile ID too!
+        profileId: staff.doctorProfile?.id || staff.therapistProfile?.id || null 
+    };
+
+    return res.status(200).json(
+        new ApiResponse(200, { user: safeUserData }, "Login successful.")
+    );
+});
+
+// ==========================================
+// PATIENT LOGIN (B2C)
+// ==========================================
+export const patientLogin = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required.");
+    }
+
+    const patient = await prisma.patient.findUnique({ where: { email } });
+
+    if (!patient || !patient.isAppRegistered) {
+        throw new ApiError(404, "Patient account not found. Please register.");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, patient.password).catch(() => password === patient.password);
+    
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid credentials.");
+    }
+
+    generateTokenAndSetCookie(patient, "PATIENT", res);
+
+    const safeUserData = {
+        id: patient.id,
+        name: patient.name,
+        email: patient.email,
+        prakriti: patient.prakriti
+    };
+
+    return res.status(200).json(
+        new ApiResponse(200, { user: safeUserData }, "Login successful.")
+    );
+});
+
+// ==========================================
+// LOGOUT (Clears the cookie)
+// ==========================================
+export const logout = asyncHandler(async (req, res) => {
+    res.clearCookie('triveda_auth', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+    });
+
+    return res.status(200).json(new ApiResponse(200, {}, "Logged out successfully."));
+});

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -82,7 +82,25 @@ import {
   EyeOff,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RePieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart as RePieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  Legend,
+} from "recharts";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authApi } from "@/api/auth.api";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 
 // Mock data with enhanced details
 const mockClinicStats = {
@@ -110,7 +128,8 @@ const mockDoctors = [
     phone: "+91 98765 43210",
     email: "anjali.verma@trivedacare.com",
     location: "Clinic A",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     achievements: ["Top Performer 2024", "Patient Choice Award"],
     consultations: 1250,
     revenue: 450000,
@@ -127,7 +146,8 @@ const mockDoctors = [
     phone: "+91 98765 43211",
     email: "rajesh.kumar@trivedacare.com",
     location: "Clinic B",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     achievements: ["Panchakarma Expert", "15 Years Excellence"],
     consultations: 2100,
     revenue: 680000,
@@ -144,7 +164,8 @@ const mockDoctors = [
     phone: "+91 98765 43212",
     email: "priya.singh@trivedacare.com",
     location: "Clinic C",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     achievements: ["Women's Health Specialist", "Rising Star"],
     consultations: 890,
     revenue: 320000,
@@ -161,7 +182,8 @@ const mockDoctors = [
     phone: "+91 98765 43213",
     email: "vikram.patel@trivedacare.com",
     location: "Clinic A",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     achievements: ["Digestive Health Expert", "Research Contributor"],
     consultations: 1560,
     revenue: 520000,
@@ -180,7 +202,8 @@ const mockPatients = [
     age: 34,
     phone: "+91 98765 54321",
     nextAppointment: "2025-01-22",
-    image: "https://images.unsplash.com/photo-1494790108777-296fd5c5c7b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1494790108777-296fd5c5c7b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     treatmentProgress: 65,
     lastVitals: { bp: "120/80", hr: 72, temp: 98.6 },
   },
@@ -195,7 +218,8 @@ const mockPatients = [
     age: 28,
     phone: "+91 98765 54322",
     nextAppointment: "2025-01-25",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     treatmentProgress: 80,
     lastVitals: { bp: "118/78", hr: 68, temp: 98.4 },
   },
@@ -210,7 +234,8 @@ const mockPatients = [
     age: 42,
     phone: "+91 98765 54323",
     nextAppointment: "2025-01-18",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     treatmentProgress: 35,
     lastVitals: { bp: "130/85", hr: 82, temp: 99.1 },
   },
@@ -225,18 +250,44 @@ const mockPatients = [
     age: 56,
     phone: "+91 98765 54324",
     nextAppointment: "2025-01-20",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80",
     treatmentProgress: 50,
     lastVitals: { bp: "125/82", hr: 75, temp: 98.7 },
   },
 ];
 
 const mockAppointments = [
-  { time: "09:00 AM", patient: "Priya Sharma", doctor: "Dr. Anjali Verma", type: "Consultation" },
-  { time: "10:30 AM", patient: "Rohit Kumar", doctor: "Dr. Rajesh Kumar", type: "Follow-up" },
-  { time: "11:45 AM", patient: "Anjali Reddy", doctor: "Dr. Priya Singh", type: "Emergency" },
-  { time: "02:00 PM", patient: "Vikram Patel", doctor: "Dr. Anjali Verma", type: "Check-up" },
-  { time: "03:30 PM", patient: "Neha Gupta", doctor: "Dr. Rajesh Kumar", type: "Consultation" },
+  {
+    time: "09:00 AM",
+    patient: "Priya Sharma",
+    doctor: "Dr. Anjali Verma",
+    type: "Consultation",
+  },
+  {
+    time: "10:30 AM",
+    patient: "Rohit Kumar",
+    doctor: "Dr. Rajesh Kumar",
+    type: "Follow-up",
+  },
+  {
+    time: "11:45 AM",
+    patient: "Anjali Reddy",
+    doctor: "Dr. Priya Singh",
+    type: "Emergency",
+  },
+  {
+    time: "02:00 PM",
+    patient: "Vikram Patel",
+    doctor: "Dr. Anjali Verma",
+    type: "Check-up",
+  },
+  {
+    time: "03:30 PM",
+    patient: "Neha Gupta",
+    doctor: "Dr. Rajesh Kumar",
+    type: "Consultation",
+  },
 ];
 
 const mockRevenueData = [
@@ -270,36 +321,57 @@ const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -20 },
-  transition: { duration: 0.3 }
+  transition: { duration: 0.3 },
 };
 
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const glowPulse = {
   animate: {
-    boxShadow: ["0 0 0 0 rgba(59, 130, 246, 0.4)", "0 0 0 10px rgba(59, 130, 246, 0)", "0 0 0 0 rgba(59, 130, 246, 0)"],
-    transition: { duration: 2, repeat: Infinity }
-  }
+    boxShadow: [
+      "0 0 0 0 rgba(59, 130, 246, 0.4)",
+      "0 0 0 10px rgba(59, 130, 246, 0)",
+      "0 0 0 0 rgba(59, 130, 246, 0)",
+    ],
+    transition: { duration: 2, repeat: Infinity },
+  },
 };
 
-function AdminDashboard() {
+export default function AdminDashboard() {
+  const queryClient = useQueryClient();
+  const user = JSON.parse(localStorage.getItem("triveda_user") || "{}");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTab, setSelectedTab] = useState("overview");
   const [addUserOpen, setAddUserOpen] = useState(false);
   const [addUserType, setAddUserType] = useState<"Doctor" | "patient">(
-    "Doctor"
+    "Doctor",
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([
-    { id: 1, message: "New patient registered", time: "5 min ago", read: false },
-    { id: 2, message: "Appointment reminder: Priya Sharma", time: "30 min ago", read: false },
-    { id: 3, message: "Lab results available", time: "2 hours ago", read: true },
+    {
+      id: 1,
+      message: "New patient registered",
+      time: "5 min ago",
+      read: false,
+    },
+    {
+      id: 2,
+      message: "Appointment reminder: Priya Sharma",
+      time: "30 min ago",
+      read: false,
+    },
+    {
+      id: 3,
+      message: "Lab results available",
+      time: "2 hours ago",
+      read: true,
+    },
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -307,20 +379,41 @@ function AdminDashboard() {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    department: "",
     specialization: "",
     phone: "",
   });
+  const [generatedPassword, setGeneratedPassword] = useState<string | null>(null);
+  const [departments, setDepartments] = useState<Array<{ id: string; name: string; description?: string }>>([]);
+  const [departmentsLoading, setDepartmentsLoading] = useState(true);
+
+  // Fetch departments on mount
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await authApi.getDepartments();
+        setDepartments(Array.isArray(response) ? response : []);
+      } catch (error) {
+        console.error("Failed to fetch departments:", error);
+        setDepartments([]);
+      } finally {
+        setDepartmentsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
 
   const filteredDoctors = mockDoctors.filter(
     (Doctor) =>
       Doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      Doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+      Doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const filteredPatients = mockPatients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.doctor.toLowerCase().includes(searchTerm.toLowerCase())
+      patient.doctor.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleAddUser = (type: string) => {
@@ -334,13 +427,53 @@ function AdminDashboard() {
 
   const handleUserSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Added ${addUserType}: ${form.name}`);
-    setForm({ name: "", email: "", specialization: "", phone: "" });
-    setAddUserOpen(false);
+    if (addUserType === "Doctor") {
+      if (!form.department) {
+        alert("Please select a department");
+        return;
+      }
+
+      const resolvedHospitalId =
+        user?.hospitalId || user?.hospitalID || user?.hospital?.id || "";
+
+      if (!resolvedHospitalId) {
+        alert("Session is missing hospital information. Please log in again.");
+        return;
+      }
+
+      createDoctorMutation.mutate({
+        name: form.name,
+        email: form.email,
+        specialization: form.specialization,
+        departmentId: form.department,
+        hospitalId: resolvedHospitalId,
+      });
+    } else {
+      alert("Patient registration coming soon!");
+    }
   };
 
   const handleUserAction = (action: string, userId: number) => {
     console.log(action, userId);
+  };
+
+  const createDoctorMutation = useMutation({
+    mutationFn: authApi.createDoctor,
+    onSuccess: (data: any) => {
+      // Stop showing the form and show the password instead
+      setGeneratedPassword(data.temporaryPassword);
+      queryClient.invalidateQueries({ queryKey: ["hospitalDoctors"] });
+    },
+    onError: (error: any) => {
+      alert(`Error: ${error.message}`);
+    }
+  });
+
+  const handleCreateDoctor = (formData) => {
+    createDoctorMutation.mutate({
+      ...formData,
+      hospitalId: user.hospitalId, // Attach the admin's hospital!
+    });
   };
 
   const getPriorityColor = (priority: string) => {
@@ -359,11 +492,23 @@ function AdminDashboard() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg">Active</Badge>;
+        return (
+          <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg">
+            Active
+          </Badge>
+        );
       case "inactive":
-        return <Badge className="bg-gradient-to-r from-gray-500 to-gray-600 text-white border-0 shadow-lg">Inactive</Badge>;
+        return (
+          <Badge className="bg-gradient-to-r from-gray-500 to-gray-600 text-white border-0 shadow-lg">
+            Inactive
+          </Badge>
+        );
       case "needs-attention":
-        return <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 shadow-lg animate-pulse">Needs Attention</Badge>;
+        return (
+          <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 shadow-lg animate-pulse">
+            Needs Attention
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -387,8 +532,14 @@ function AdminDashboard() {
             <Icon className="h-6 w-6" />
           </div>
           {trend && (
-            <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg ${trend > 0 ? 'bg-green-500/30' : 'bg-red-500/30'} backdrop-blur-sm`}>
-              {trend > 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+            <div
+              className={`flex items-center space-x-1 px-2 py-1 rounded-lg ${trend > 0 ? "bg-green-500/30" : "bg-red-500/30"} backdrop-blur-sm`}
+            >
+              {trend > 0 ? (
+                <ArrowUpRight className="h-4 w-4" />
+              ) : (
+                <ArrowDownRight className="h-4 w-4" />
+              )}
               <span className="text-sm font-medium">{Math.abs(trend)}%</span>
             </div>
           )}
@@ -402,7 +553,7 @@ function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Enhanced Header with Glassmorphism */}
-      <motion.div 
+      <motion.div
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
@@ -419,23 +570,23 @@ function AdminDashboard() {
               >
                 <Menu className="h-6 w-6 text-gray-600 dark:text-gray-300" />
               </motion.button>
-              
-              <motion.div 
+
+              <motion.div
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#1F5C3F] via-[#10B981] to-[#0D9488] rounded-2xl shadow-2xl"
               >
                 <Heart className="h-7 w-7 text-white" />
               </motion.div>
-              
+
               <div className="min-w-0">
-                <motion.h1 
+                <motion.h1
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   className="truncate text-2xl font-bold bg-gradient-to-r from-[#1F5C3F] via-[#10B981] to-[#0D9488] bg-clip-text text-transparent sm:text-3xl"
                 >
                   TrivedaCare
                 </motion.h1>
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
@@ -449,7 +600,7 @@ function AdminDashboard() {
 
             <div className="flex w-full flex-wrap items-center justify-end gap-3 lg:w-auto">
               {/* Search Bar */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="relative hidden md:block md:w-56 lg:w-64"
@@ -464,7 +615,7 @@ function AdminDashboard() {
               </motion.div>
 
               {/* Notifications */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="relative z-50"
@@ -476,8 +627,8 @@ function AdminDashboard() {
                   className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors relative"
                 >
                   <Bell className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  {notifications.filter(n => !n.read).length > 0 && (
-                    <motion.span 
+                  {notifications.filter((n) => !n.read).length > 0 && (
+                    <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
@@ -494,7 +645,9 @@ function AdminDashboard() {
                       className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[120]"
                     >
                       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                          Notifications
+                        </h3>
                       </div>
                       <div className="max-h-96 overflow-y-auto">
                         {notifications.map((notif, index) => (
@@ -503,10 +656,14 @@ function AdminDashboard() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors ${!notif.read ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''}`}
+                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors ${!notif.read ? "bg-emerald-50 dark:bg-emerald-900/20" : ""}`}
                           >
-                            <p className="text-sm text-gray-800 dark:text-gray-200">{notif.message}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notif.time}</p>
+                            <p className="text-sm text-gray-800 dark:text-gray-200">
+                              {notif.message}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                              {notif.time}
+                            </p>
                           </motion.div>
                         ))}
                       </div>
@@ -553,7 +710,10 @@ function AdminDashboard() {
             exit={{ opacity: 0, x: -300 }}
             className="fixed inset-0 z-50 lg:hidden"
           >
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setSidebarOpen(false)}
+            />
             <motion.div className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 shadow-2xl">
               {/* Sidebar content */}
             </motion.div>
@@ -563,7 +723,6 @@ function AdminDashboard() {
 
       {/* Main Content */}
       <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
-
         {/* Tabs Section */}
         <Tabs
           value={selectedTab}
@@ -571,15 +730,17 @@ function AdminDashboard() {
           className="space-y-6"
         >
           <TabsList className="h-auto w-full flex-wrap justify-start gap-2 rounded-2xl border border-gray-200 bg-white/80 p-1 shadow-lg backdrop-blur-xl dark:border-gray-700 dark:bg-gray-800/80">
-            {["overview", "Doctors", "patients", "analytics"].map((tab, index) => (
-              <TabsTrigger
-                key={tab}
-                value={tab}
-                className="flex-1 min-w-[140px] rounded-xl px-4 py-2.5 font-medium capitalize transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#1F5C3F] data-[state=active]:to-[#10B981] data-[state=active]:text-white data-[state=active]:shadow-md sm:flex-none sm:min-w-0 sm:px-6"
-              >
-                {tab}
-              </TabsTrigger>
-            ))}
+            {["overview", "Doctors", "patients", "analytics"].map(
+              (tab, index) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab}
+                  className="flex-1 min-w-[140px] rounded-xl px-4 py-2.5 font-medium capitalize transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#1F5C3F] data-[state=active]:to-[#10B981] data-[state=active]:text-white data-[state=active]:shadow-md sm:flex-none sm:min-w-0 sm:px-6"
+                >
+                  {tab}
+                </TabsTrigger>
+              ),
+            )}
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -598,7 +759,9 @@ function AdminDashboard() {
                         <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
                           <CalendarDays className="h-5 w-5 text-green-600 dark:text-green-400" />
                         </div>
-                        <CardTitle className="truncate text-gray-900 dark:text-white">Today's Schedule</CardTitle>
+                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                          Today's Schedule
+                        </CardTitle>
                       </div>
                       <Badge className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] text-white border-0">
                         {mockAppointments.length} Appointments
@@ -616,19 +779,27 @@ function AdminDashboard() {
                           className="flex cursor-pointer flex-col gap-3 rounded-xl bg-gray-50 p-4 transition-colors hover:bg-gray-100 dark:bg-gray-700/50 dark:hover:bg-gray-700 sm:flex-row sm:items-center sm:justify-between"
                         >
                           <div className="flex min-w-0 items-center space-x-4">
-                            <div className="w-20 shrink-0 text-sm font-semibold text-gray-900 dark:text-white">{appointment.time}</div>
+                            <div className="w-20 shrink-0 text-sm font-semibold text-gray-900 dark:text-white">
+                              {appointment.time}
+                            </div>
                             <div>
-                              <h4 className="font-medium text-gray-900 dark:text-white">{appointment.patient}</h4>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">{appointment.doctor}</p>
+                              <h4 className="font-medium text-gray-900 dark:text-white">
+                                {appointment.patient}
+                              </h4>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {appointment.doctor}
+                              </p>
                             </div>
                           </div>
-                          <Badge className={
-                            appointment.type === "Emergency" 
-                              ? "bg-gradient-to-r from-red-500 to-red-600 text-white border-0"
-                              : appointment.type === "Follow-up"
-                              ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0"
-                              : "bg-gradient-to-r from-[#1F5C3F] to-[#10B981] text-white border-0"
-                          }>
+                          <Badge
+                            className={
+                              appointment.type === "Emergency"
+                                ? "bg-gradient-to-r from-red-500 to-red-600 text-white border-0"
+                                : appointment.type === "Follow-up"
+                                  ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0"
+                                  : "bg-gradient-to-r from-[#1F5C3F] to-[#10B981] text-white border-0"
+                            }
+                          >
                             {appointment.type}
                           </Badge>
                         </motion.div>
@@ -650,19 +821,33 @@ function AdminDashboard() {
                       <div className="p-2 bg-[#10B981]/10 dark:bg-[#10B981]/10 rounded-lg">
                         <Activity className="h-5 w-5 text-[#0D9488] dark:text-[#10B981]" />
                       </div>
-                      <CardTitle className="text-gray-900 dark:text-white">Weekly Activity</CardTitle>
+                      <CardTitle className="text-gray-900 dark:text-white">
+                        Weekly Activity
+                      </CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={mockActivityData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.1} />
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="#374151"
+                            opacity={0.1}
+                          />
                           <XAxis dataKey="day" stroke="#6b7280" />
                           <YAxis stroke="#6b7280" />
                           <Tooltip />
-                          <Bar dataKey="consultations" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="newPatients" fill="#10b981" radius={[4, 4, 0, 0]} />
+                          <Bar
+                            dataKey="consultations"
+                            fill="#3b82f6"
+                            radius={[4, 4, 0, 0]}
+                          />
+                          <Bar
+                            dataKey="newPatients"
+                            fill="#10b981"
+                            radius={[4, 4, 0, 0]}
+                          />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -673,7 +858,11 @@ function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="Doctors" className="space-y-6">
-            <motion.div variants={staggerContainer} initial="initial" animate="animate">
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
                 <CardHeader className="border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">
@@ -682,7 +871,9 @@ function AdminDashboard() {
                         <UserCog className="h-5 w-5 text-[#1F5C3F] dark:text-[#10B981]" />
                       </div>
                       <div className="min-w-0">
-                        <CardTitle className="truncate text-gray-900 dark:text-white">Doctor Management</CardTitle>
+                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                          Doctor Management
+                        </CardTitle>
                         <CardDescription className="text-gray-500 dark:text-gray-400">
                           Manage Doctor profiles and access permissions
                         </CardDescription>
@@ -727,7 +918,10 @@ function AdminDashboard() {
                               <Avatar className="h-16 w-16 border-4 border-white dark:border-gray-700 shadow-xl">
                                 <AvatarImage src={Doctor.image} />
                                 <AvatarFallback className="bg-gradient-to-br from-[#1F5C3F] to-[#10B981] text-white text-lg">
-                                  {Doctor.name.split(" ").map(n => n[0]).join("")}
+                                  {Doctor.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="min-w-0">
@@ -736,7 +930,9 @@ function AdminDashboard() {
                                 </h3>
                                 <p className="text-gray-600 dark:text-gray-400 font-medium flex items-start mt-1">
                                   <Stethoscope className="h-4 w-4 mr-1 mt-0.5 shrink-0" />
-                                  <span className="break-words leading-snug">{Doctor.specialization}</span>
+                                  <span className="break-words leading-snug">
+                                    {Doctor.specialization}
+                                  </span>
                                 </p>
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
                                   <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0">
@@ -757,16 +953,28 @@ function AdminDashboard() {
 
                           <div className="grid grid-cols-3 gap-4 mt-6">
                             <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
-                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-[#10B981]">{Doctor.patients}</p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">Patients</p>
+                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-[#10B981]">
+                                {Doctor.patients}
+                              </p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                                Patients
+                              </p>
                             </div>
                             <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">{Doctor.experience}</p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">Experience</p>
+                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                                {Doctor.experience}
+                              </p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                                Experience
+                              </p>
                             </div>
                             <div className="text-center p-3 bg-[#10B981]/10 dark:bg-[#10B981]/10 rounded-xl">
-                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-emerald-400">₹{Doctor.revenue/1000}K</p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">Revenue</p>
+                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-emerald-400">
+                                ₹{Doctor.revenue / 1000}K
+                              </p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                                Revenue
+                              </p>
                             </div>
                           </div>
 
@@ -774,11 +982,15 @@ function AdminDashboard() {
                             <div className="flex flex-wrap items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
                               <span className="flex min-w-0 items-start flex-1">
                                 <Mail className="h-4 w-4 mr-1 mt-0.5 shrink-0" />
-                                <span className="break-all leading-snug">{Doctor.email}</span>
+                                <span className="break-all leading-snug">
+                                  {Doctor.email}
+                                </span>
                               </span>
                               <span className="flex items-center shrink-0">
                                 <MapPin className="h-4 w-4 mr-1" />
-                                <span className="break-words">{Doctor.location}</span>
+                                <span className="break-words">
+                                  {Doctor.location}
+                                </span>
                               </span>
                             </div>
                             <div className="flex justify-end">
@@ -795,7 +1007,11 @@ function AdminDashboard() {
                           {Doctor.achievements && (
                             <div className="flex flex-wrap gap-2 mt-4 min-h-[32px] content-start">
                               {Doctor.achievements.map((achievement, i) => (
-                                <Badge key={i} variant="outline" className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800">
+                                <Badge
+                                  key={i}
+                                  variant="outline"
+                                  className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800"
+                                >
                                   <Award className="h-3 w-3 mr-1" />
                                   {achievement}
                                 </Badge>
@@ -812,7 +1028,11 @@ function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="patients" className="space-y-6">
-            <motion.div variants={staggerContainer} initial="initial" animate="animate">
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
                 <CardHeader className="border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">
@@ -821,7 +1041,9 @@ function AdminDashboard() {
                         <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
                       <div className="min-w-0">
-                        <CardTitle className="truncate text-gray-900 dark:text-white">Patient Management</CardTitle>
+                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                          Patient Management
+                        </CardTitle>
                         <CardDescription className="text-gray-500 dark:text-gray-400">
                           View and manage patient records
                         </CardDescription>
@@ -864,10 +1086,13 @@ function AdminDashboard() {
                             <Avatar className="h-14 w-14 border-2 border-white dark:border-gray-700 shadow-lg">
                               <AvatarImage src={patient.image} />
                               <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-green-500 text-white">
-                                {patient.name.split(" ").map(n => n[0]).join("")}
+                                {patient.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
                               </AvatarFallback>
                             </Avatar>
-                            
+
                             <div className="flex-1">
                               <div className="flex items-center justify-between">
                                 <div>
@@ -875,11 +1100,18 @@ function AdminDashboard() {
                                     {patient.name}
                                   </h3>
                                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    Assigned to <span className="font-medium text-[#1F5C3F] dark:text-[#10B981]">{patient.doctor}</span>
+                                    Assigned to{" "}
+                                    <span className="font-medium text-[#1F5C3F] dark:text-[#10B981]">
+                                      {patient.doctor}
+                                    </span>
                                   </p>
                                 </div>
-                                <Badge className={getPriorityColor(patient.priority)}>
-                                  {patient.priority.charAt(0).toUpperCase() + patient.priority.slice(1)} Priority
+                                <Badge
+                                  className={getPriorityColor(patient.priority)}
+                                >
+                                  {patient.priority.charAt(0).toUpperCase() +
+                                    patient.priority.slice(1)}{" "}
+                                  Priority
                                 </Badge>
                               </div>
 
@@ -894,24 +1126,43 @@ function AdminDashboard() {
                                 </div>
                                 <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                                   <Clock className="h-4 w-4" />
-                                  <span>Last: {new Date(patient.lastVisit).toLocaleDateString()}</span>
+                                  <span>
+                                    Last:{" "}
+                                    {new Date(
+                                      patient.lastVisit,
+                                    ).toLocaleDateString()}
+                                  </span>
                                 </div>
                                 <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                                   <Calendar className="h-4 w-4" />
-                                  <span>Next: {new Date(patient.nextAppointment).toLocaleDateString()}</span>
+                                  <span>
+                                    Next:{" "}
+                                    {new Date(
+                                      patient.nextAppointment,
+                                    ).toLocaleDateString()}
+                                  </span>
                                 </div>
                               </div>
 
                               <div className="flex items-center space-x-4 mt-4">
-                                <Badge variant="outline" className="bg-[#10B981]/10 dark:bg-[#10B981]/10 text-[#1F5C3F] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800">
+                                <Badge
+                                  variant="outline"
+                                  className="bg-[#10B981]/10 dark:bg-[#10B981]/10 text-[#1F5C3F] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+                                >
                                   <Thermometer className="h-3 w-3 mr-1" />
                                   BP: {patient.lastVitals.bp}
                                 </Badge>
-                                <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-900/20 text-[#1F5C3F] dark:text-[#10B981] border-emerald-200 dark:border-emerald-800">
+                                <Badge
+                                  variant="outline"
+                                  className="bg-emerald-50 dark:bg-emerald-900/20 text-[#1F5C3F] dark:text-[#10B981] border-emerald-200 dark:border-emerald-800"
+                                >
                                   <Heart className="h-3 w-3 mr-1" />
                                   HR: {patient.lastVitals.hr}
                                 </Badge>
-                                <Badge variant="outline" className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">
+                                <Badge
+                                  variant="outline"
+                                  className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800"
+                                >
                                   <Flame className="h-3 w-3 mr-1" />
                                   Temp: {patient.lastVitals.temp}°F
                                 </Badge>
@@ -919,14 +1170,23 @@ function AdminDashboard() {
 
                               <div className="mt-4">
                                 <div className="flex items-center justify-between mb-1">
-                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Treatment Progress</span>
-                                  <span className="text-sm font-medium text-[#1F5C3F] dark:text-[#10B981]">{patient.treatmentProgress}%</span>
+                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Treatment Progress
+                                  </span>
+                                  <span className="text-sm font-medium text-[#1F5C3F] dark:text-[#10B981]">
+                                    {patient.treatmentProgress}%
+                                  </span>
                                 </div>
                                 <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                   <motion.div
                                     initial={{ width: 0 }}
-                                    animate={{ width: `${patient.treatmentProgress}%` }}
-                                    transition={{ duration: 1, delay: index * 0.1 }}
+                                    animate={{
+                                      width: `${patient.treatmentProgress}%`,
+                                    }}
+                                    transition={{
+                                      duration: 1,
+                                      delay: index * 0.1,
+                                    }}
                                     className="h-full bg-gradient-to-r from-[#1F5C3F] to-[#10B981] rounded-full"
                                   />
                                 </div>
@@ -960,11 +1220,46 @@ function AdminDashboard() {
               animate="animate"
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-5"
             >
-              <StatCard icon={Stethoscope} title="Total Doctors" value={mockClinicStats.totalDoctors} trend={8} color="from-[#1F5C3F] to-[#1F5C3F]/90" delay={0} />
-              <StatCard icon={Users} title="Total Patients" value={mockClinicStats.totalPatients} trend={12} color="from-emerald-600 to-emerald-700" delay={0.1} />
-              <StatCard icon={Activity} title="Active Charts" value={mockClinicStats.activeCharts} trend={5} color="from-[#10B981] to-[#0D9488]" delay={0.2} />
-              <StatCard icon={Shield} title="Compliance Rate" value={`${mockClinicStats.complianceRate}%`} trend={2} color="from-[#0D9488] to-[#1F5C3F]" delay={0.3} />
-              <StatCard icon={TrendingUp} title="Monthly Growth" value={`${mockClinicStats.monthlyGrowth}%`} trend={15} color="from-[#1F5C3F]/80 to-[#10B981]/80" delay={0.4} />
+              <StatCard
+                icon={Stethoscope}
+                title="Total Doctors"
+                value={mockClinicStats.totalDoctors}
+                trend={8}
+                color="from-[#1F5C3F] to-[#1F5C3F]/90"
+                delay={0}
+              />
+              <StatCard
+                icon={Users}
+                title="Total Patients"
+                value={mockClinicStats.totalPatients}
+                trend={12}
+                color="from-emerald-600 to-emerald-700"
+                delay={0.1}
+              />
+              <StatCard
+                icon={Activity}
+                title="Active Charts"
+                value={mockClinicStats.activeCharts}
+                trend={5}
+                color="from-[#10B981] to-[#0D9488]"
+                delay={0.2}
+              />
+              <StatCard
+                icon={Shield}
+                title="Compliance Rate"
+                value={`${mockClinicStats.complianceRate}%`}
+                trend={2}
+                color="from-[#0D9488] to-[#1F5C3F]"
+                delay={0.3}
+              />
+              <StatCard
+                icon={TrendingUp}
+                title="Monthly Growth"
+                value={`${mockClinicStats.monthlyGrowth}%`}
+                trend={15}
+                color="from-[#1F5C3F]/80 to-[#10B981]/80"
+                delay={0.4}
+              />
             </motion.div>
 
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -981,9 +1276,15 @@ function AdminDashboard() {
                         <div className="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
                           <LineChart className="h-5 w-5 text-[#1F5C3F] dark:text-[#10B981]" />
                         </div>
-                        <CardTitle className="truncate text-gray-900 dark:text-white">Revenue Overview</CardTitle>
+                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                          Revenue Overview
+                        </CardTitle>
                       </div>
-                      <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-600 dark:text-gray-400"
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Export
                       </Button>
@@ -994,23 +1295,47 @@ function AdminDashboard() {
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={mockRevenueData}>
                           <defs>
-                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                            <linearGradient
+                              id="colorRevenue"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor="#3b82f6"
+                                stopOpacity={0.8}
+                              />
+                              <stop
+                                offset="95%"
+                                stopColor="#3b82f6"
+                                stopOpacity={0}
+                              />
                             </linearGradient>
                           </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.1} />
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="#374151"
+                            opacity={0.1}
+                          />
                           <XAxis dataKey="month" stroke="#6b7280" />
                           <YAxis stroke="#6b7280" />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                              borderRadius: '12px',
-                              border: 'none',
-                              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-                            }} 
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "rgba(255, 255, 255, 0.9)",
+                              borderRadius: "12px",
+                              border: "none",
+                              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                            }}
                           />
-                          <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRevenue)" />
+                          <Area
+                            type="monotone"
+                            dataKey="revenue"
+                            stroke="#3b82f6"
+                            fillOpacity={1}
+                            fill="url(#colorRevenue)"
+                          />
                         </AreaChart>
                       </ResponsiveContainer>
                     </div>
@@ -1029,7 +1354,9 @@ function AdminDashboard() {
                       <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
                         <PieChart className="h-5 w-5 text-[#1F5C3F] dark:text-emerald-400" />
                       </div>
-                      <CardTitle className="text-gray-900 dark:text-white">Condition Distribution</CardTitle>
+                      <CardTitle className="text-gray-900 dark:text-white">
+                        Condition Distribution
+                      </CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
@@ -1055,10 +1382,20 @@ function AdminDashboard() {
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {mockConditionDistribution.map((item, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-sm text-gray-600 dark:text-gray-400">{item.name}</span>
-                          <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto">{item.value}%</span>
+                        <div
+                          key={index}
+                          className="flex items-center space-x-2"
+                        >
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: item.color }}
+                          />
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {item.name}
+                          </span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white ml-auto">
+                            {item.value}%
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -1070,7 +1407,7 @@ function AdminDashboard() {
         </Tabs>
 
         {/* Enhanced Footer */}
-        <motion.footer 
+        <motion.footer
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
@@ -1084,9 +1421,14 @@ function AdminDashboard() {
                     animate={glowPulse.animate}
                     className="w-3 h-3 bg-green-500 rounded-full"
                   />
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">System Status: <span className="text-green-600 dark:text-green-400">Operational</span></span>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    System Status:{" "}
+                    <span className="text-green-600 dark:text-green-400">
+                      Operational
+                    </span>
+                  </span>
                 </div>
-                
+
                 <div className="flex items-center space-x-6">
                   <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
                     <Heart className="h-4 w-4 mr-1 text-red-500" />
@@ -1130,123 +1472,136 @@ function AdminDashboard() {
       {/* Add User Modal */}
       <Dialog open={addUserOpen} onOpenChange={setAddUserOpen}>
         <DialogContent className="max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-0 shadow-2xl rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-              <Plus className="h-6 w-6 mr-2 text-[#1F5C3F]" />
-              Add New User
-            </DialogTitle>
-            <DialogDescription className="text-gray-600 dark:text-gray-400">
-              Choose user type and fill the form to add a new user.
-            </DialogDescription>
-          </DialogHeader>
           
-          <div className="mb-6">
-            <RadioGroup
-              value={addUserType}
-              onValueChange={(v) => setAddUserType(v as "Doctor" | "patient")}
-              className="flex gap-6 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg"
-            >
-              <div className="flex-1">
-                <RadioGroupItem value="Doctor" id="add-Doctor" className="peer sr-only" />
-                <label
-                  htmlFor="add-Doctor"
-                  className="flex items-center justify-center p-2 text-sm font-medium rounded-md cursor-pointer peer-data-[state=checked]:bg-white peer-data-[state=checked]:dark:bg-gray-700 peer-data-[state=checked]:text-[#1F5C3F] peer-data-[state=checked]:shadow-sm transition-all"
-                >
-                  <Stethoscope className="h-4 w-4 mr-2" />
-                  Doctor
-                </label>
+          {/* THE NEW SUCCESS STATE UI */}
+          {generatedPassword ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
+                  <CheckCircle className="h-6 w-6 mr-2" />
+                  Doctor Added Successfully!
+                </DialogTitle>
+                <DialogDescription className="text-gray-600 dark:text-gray-400">
+                  Please copy this temporary password and send it to Dr. {form.name}. They will need it for their first login.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-xl text-center border-2 border-dashed border-emerald-500 mt-4">
+                <p className="text-sm text-emerald-700 dark:text-emerald-300 mb-2 font-medium">Temporary Password</p>
+                <p className="text-3xl font-mono font-bold tracking-widest text-emerald-800 dark:text-emerald-100 select-all">
+                  {generatedPassword}
+                </p>
               </div>
-              <div className="flex-1">
-                <RadioGroupItem value="patient" id="add-patient" className="peer sr-only" />
-                <label
-                  htmlFor="add-patient"
-                  className="flex items-center justify-center p-2 text-sm font-medium rounded-md cursor-pointer peer-data-[state=checked]:bg-white peer-data-[state=checked]:dark:bg-gray-700 peer-data-[state=checked]:text-[#1F5C3F] peer-data-[state=checked]:shadow-sm transition-all"
+              
+              <DialogFooter className="mt-6">
+                <Button 
+                  onClick={() => {
+                    setGeneratedPassword(null);
+                    setAddUserOpen(false);
+                    setForm({ name: "", email: "", specialization: "", department: "", phone: "" });
+                  }}
+                  className="w-full bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  <Users className="h-4 w-4 mr-2" />
-                  Patient
-                </label>
-              </div>
-            </RadioGroup>
-          </div>
+                  Done
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            
+          /* YOUR EXISTING FORM UI */
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                <Plus className="h-6 w-6 mr-2 text-[#1F5C3F]" />
+                Add New User
+              </DialogTitle>
+              <DialogDescription className="text-gray-600 dark:text-gray-400">
+                Choose user type and fill the form to add a new user.
+              </DialogDescription>
+            </DialogHeader>
 
-          <form onSubmit={handleUserSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Full Name
-              </label>
-              <Input
-                name="name"
-                value={form.name}
-                onChange={handleFormChange}
-                placeholder="Enter full name"
-                required
-                className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20"
-              />
+            <div className="mb-6">
+              <RadioGroup
+                value={addUserType}
+                onValueChange={(v) => setAddUserType(v as "Doctor" | "patient")}
+                className="flex gap-6 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg mt-4"
+              >
+                {/* ... keep your existing RadioGroup items here ... */}
+                <div className="flex-1">
+                  <RadioGroupItem value="Doctor" id="add-Doctor" className="peer sr-only" />
+                  <label htmlFor="add-Doctor" className="flex items-center justify-center p-2 text-sm font-medium rounded-md cursor-pointer peer-data-[state=checked]:bg-white peer-data-[state=checked]:dark:bg-gray-700 peer-data-[state=checked]:text-[#1F5C3F] peer-data-[state=checked]:shadow-sm transition-all">
+                    <Stethoscope className="h-4 w-4 mr-2" />
+                    Doctor
+                  </label>
+                </div>
+                <div className="flex-1">
+                  <RadioGroupItem value="patient" id="add-patient" className="peer sr-only" />
+                  <label htmlFor="add-patient" className="flex items-center justify-center p-2 text-sm font-medium rounded-md cursor-pointer peer-data-[state=checked]:bg-white peer-data-[state=checked]:dark:bg-gray-700 peer-data-[state=checked]:text-[#1F5C3F] peer-data-[state=checked]:shadow-sm transition-all">
+                    <Users className="h-4 w-4 mr-2" />
+                    Patient
+                  </label>
+                </div>
+              </RadioGroup>
             </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email Address
-              </label>
-              <Input
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleFormChange}
-                placeholder="Enter email address"
-                required
-                className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Phone Number
-              </label>
-              <Input
-                name="phone"
-                value={form.phone}
-                onChange={handleFormChange}
-                placeholder="Enter phone number"
-                required
-                className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20"
-              />
-            </div>
-            
-            {addUserType === "Doctor" && (
+
+            <form onSubmit={handleUserSubmit} className="space-y-4">
+              {/* ... keep all your existing Input fields here ... */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Specialization
-                </label>
-                <Input
-                  name="specialization"
-                  value={form.specialization}
-                  onChange={handleFormChange}
-                  placeholder="Enter specialization"
-                  required
-                  className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20"
-                />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                <Input name="name" value={form.name} onChange={handleFormChange} placeholder="Enter full name" required className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20" />
               </div>
-            )}
 
-            <DialogFooter className="mt-6">
-              <DialogClose asChild>
-                <Button variant="outline" type="button" className="rounded-xl">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                <Input name="email" type="email" value={form.email} onChange={handleFormChange} placeholder="Enter email address" required className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20" />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                <Input name="phone" value={form.phone} onChange={handleFormChange} placeholder="Enter phone number" className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20" />
+              </div>
+
+              {addUserType === "Doctor" && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Specialization</label>
+                  <Input name="specialization" value={form.specialization} onChange={handleFormChange} placeholder="Enter specialization (e.g. Heart Specialist)" required className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20" />
+                </div>
+              )}
+              {addUserType === "Doctor" && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Department</label>
+                  <Select required onValueChange={val => setForm({...form, department: val})}>
+                      <SelectTrigger className="rounded-xl border-gray-300 dark:border-gray-600 focus:border-[#10B981] focus:ring-[#10B981]/20">
+                          <SelectValue placeholder="Select Department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {departmentsLoading ? (
+                              <SelectItem value="loading" disabled>Loading departments...</SelectItem>
+                          ) : departments.length > 0 ? (
+                              departments.map(dept => (
+                                  <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
+                              ))
+                          ) : (
+                              <SelectItem value="none" disabled>No departments available</SelectItem>
+                          )}
+                      </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              <DialogFooter className="mt-6">
+                <Button type="button" variant="outline" onClick={() => setAddUserOpen(false)} className="rounded-xl">
                   Cancel
                 </Button>
-              </DialogClose>
-              <Button 
-                type="submit" 
-                className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                Add {addUserType.charAt(0).toUpperCase() + addUserType.slice(1)}
-              </Button>
-            </DialogFooter>
-          </form>
+                <Button type="submit" disabled={createDoctorMutation.isPending} className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                  {createDoctorMutation.isPending ? "Adding..." : `Add ${addUserType.charAt(0).toUpperCase() + addUserType.slice(1)}`}
+                </Button>
+              </DialogFooter>
+            </form>
+          </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
   );
 }
-
-export default AdminDashboard;
