@@ -47,7 +47,6 @@ import {
   Mail,
   ChevronRight,
   Sparkles,
-  Menu,
   X,
   Download,
   Filter,
@@ -352,7 +351,6 @@ export default function AdminDashboard() {
   const [addUserType, setAddUserType] = useState<"Doctor" | "patient">(
     "Doctor",
   );
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -552,25 +550,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Enhanced Header with Glassmorphism */}
+      {/* Enhanced Header */}
       <motion.div
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="relative z-40 border-b border-white/20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg"
+        className="relative z-40 border-b border-gray-200 bg-white shadow-sm"
       >
         <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex min-w-0 items-center space-x-4">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                <Menu className="h-6 w-6 text-gray-600 dark:text-gray-300" />
-              </motion.button>
-
               <motion.div
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#1F5C3F] via-[#10B981] to-[#0D9488] rounded-2xl shadow-2xl"
@@ -590,7 +579,7 @@ export default function AdminDashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="hidden text-sm font-medium text-gray-500 dark:text-gray-400 sm:flex sm:items-center"
+                  className="hidden text-sm font-medium text-gray-500 sm:flex sm:items-center"
                 >
                   <Sparkles className="h-4 w-4 mr-1 text-yellow-500" />
                   Healthcare Management System
@@ -598,17 +587,17 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex w-full flex-wrap items-center justify-end gap-3 lg:w-auto">
+            <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:gap-3 lg:w-auto">
               {/* Search Bar */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="relative hidden md:block md:w-56 lg:w-64"
+                className="relative w-full sm:w-56 lg:w-64"
               >
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Quick search..."
-                  className="w-full rounded-full border-gray-200 bg-white/50 pl-10 backdrop-blur-sm focus:border-[#10B981] focus:ring-[#10B981]/20 dark:border-gray-700 dark:bg-gray-800/50"
+                  className="w-full rounded-full border-gray-200 bg-white pl-10 focus:border-[#10B981] focus:ring-[#10B981]/20"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -624,9 +613,9 @@ export default function AdminDashboard() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors relative"
+                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors relative"
                 >
-                  <Bell className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                  <Bell className="h-5 w-5 text-gray-600" />
                   {notifications.filter((n) => !n.read).length > 0 && (
                     <motion.span
                       initial={{ scale: 0 }}
@@ -638,36 +627,44 @@ export default function AdminDashboard() {
 
                 <AnimatePresence>
                   {showNotifications && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[120]"
-                    >
-                      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                    <>
+                      <button
+                        type="button"
+                        className="fixed inset-0 z-[100] bg-black/10"
+                        onClick={() => setShowNotifications(false)}
+                        aria-label="Close notifications overlay"
+                      />
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        className="fixed left-3 right-3 top-24 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-[120]"
+                      >
+                      <div className="p-4 border-b border-gray-200">
+                        <h3 className="font-semibold text-gray-900">
                           Notifications
                         </h3>
                       </div>
-                      <div className="max-h-96 overflow-y-auto">
+                      <div className="max-h-[65vh] sm:max-h-96 overflow-y-auto">
                         {notifications.map((notif, index) => (
                           <motion.div
                             key={notif.id}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors ${!notif.read ? "bg-emerald-50 dark:bg-emerald-900/20" : ""}`}
+                            className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${!notif.read ? "bg-emerald-50" : ""}`}
                           >
-                            <p className="text-sm text-gray-800 dark:text-gray-200">
+                            <p className="text-sm text-gray-800">
                               {notif.message}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <p className="text-xs text-gray-500 mt-1">
                               {notif.time}
                             </p>
                           </motion.div>
                         ))}
                       </div>
                     </motion.div>
+                    </>
                   )}
                 </AnimatePresence>
               </motion.div>
@@ -676,66 +673,39 @@ export default function AdminDashboard() {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="hidden md:flex items-center gap-3"
+                className="flex items-center gap-3"
               >
                 <Button
+                  size="sm"
                   className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
                   data-testid="button-add-user"
                   onClick={() => setAddUserOpen(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add User
+                  <span className="hidden sm:inline">Add User</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </motion.div>
-
-              {/* Mobile Menu Button */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors"
-              >
-                <MoreVertical className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-              </motion.button>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Sidebar for Mobile */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: -300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -300 }}
-            className="fixed inset-0 z-50 lg:hidden"
-          >
-            <div
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={() => setSidebarOpen(false)}
-            />
-            <motion.div className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 shadow-2xl">
-              {/* Sidebar content */}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Main Content */}
-      <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-6 sm:px-6 lg:px-8">
         {/* Tabs Section */}
         <Tabs
           value={selectedTab}
           onValueChange={setSelectedTab}
           className="space-y-6"
         >
-          <TabsList className="h-auto w-full flex-wrap justify-start gap-2 rounded-2xl border border-gray-200 bg-white/80 p-1 shadow-lg backdrop-blur-xl dark:border-gray-700 dark:bg-gray-800/80">
+          <TabsList className="h-auto w-full grid grid-cols-2 sm:flex sm:flex-wrap justify-start gap-2 rounded-2xl border border-gray-200 bg-white p-1 shadow-sm">
             {["overview", "Doctors", "patients", "analytics"].map(
               (tab, index) => (
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="flex-1 min-w-[140px] rounded-xl px-4 py-2.5 font-medium capitalize transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#1F5C3F] data-[state=active]:to-[#10B981] data-[state=active]:text-white data-[state=active]:shadow-md sm:flex-none sm:min-w-0 sm:px-6"
+                  className="min-w-0 rounded-xl px-3 sm:px-6 py-2.5 font-medium capitalize transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#1F5C3F] data-[state=active]:to-[#10B981] data-[state=active]:text-white data-[state=active]:shadow-md sm:flex-none sm:min-w-0"
                 >
                   {tab}
                 </TabsTrigger>
@@ -752,14 +722,14 @@ export default function AdminDashboard() {
                 transition={{ delay: 0.2 }}
                 className="min-w-0 xl:col-span-2"
               >
-                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
-                  <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                <Card className="bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden">
+                  <CardHeader className="border-b border-gray-200">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex min-w-0 items-center space-x-2">
                         <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                          <CalendarDays className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          <CalendarDays className="h-5 w-5 text-green-600" />
                         </div>
-                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                        <CardTitle className="truncate text-gray-900">
                           Today's Schedule
                         </CardTitle>
                       </div>
@@ -776,17 +746,17 @@ export default function AdminDashboard() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className="flex cursor-pointer flex-col gap-3 rounded-xl bg-gray-50 p-4 transition-colors hover:bg-gray-100 dark:bg-gray-700/50 dark:hover:bg-gray-700 sm:flex-row sm:items-center sm:justify-between"
+                          className="flex cursor-pointer flex-col gap-3 rounded-xl bg-gray-50 p-4 transition-colors hover:bg-gray-100 sm:flex-row sm:items-center sm:justify-between"
                         >
                           <div className="flex min-w-0 items-center space-x-4">
-                            <div className="w-20 shrink-0 text-sm font-semibold text-gray-900 dark:text-white">
+                            <div className="w-20 shrink-0 text-sm font-semibold text-gray-900">
                               {appointment.time}
                             </div>
                             <div>
-                              <h4 className="font-medium text-gray-900 dark:text-white">
+                              <h4 className="font-medium text-gray-900">
                                 {appointment.patient}
                               </h4>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                              <p className="text-sm text-gray-500">
                                 {appointment.doctor}
                               </p>
                             </div>
@@ -815,13 +785,13 @@ export default function AdminDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden h-full">
-                  <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                <Card className="bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden h-full">
+                  <CardHeader className="border-b border-gray-200">
                     <div className="flex items-center space-x-2">
-                      <div className="p-2 bg-[#10B981]/10 dark:bg-[#10B981]/10 rounded-lg">
-                        <Activity className="h-5 w-5 text-[#0D9488] dark:text-[#10B981]" />
+                      <div className="p-2 bg-[#10B981]/10 rounded-lg">
+                        <Activity className="h-5 w-5 text-[#0D9488]" />
                       </div>
-                      <CardTitle className="text-gray-900 dark:text-white">
+                      <CardTitle className="text-gray-900">
                         Weekly Activity
                       </CardTitle>
                     </div>
@@ -865,13 +835,13 @@ export default function AdminDashboard() {
             >
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
                 <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <div className="flex min-w-0 items-center space-x-2">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex min-w-0 items-start sm:items-center space-x-2">
                       <div className="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
                         <UserCog className="h-5 w-5 text-[#1F5C3F] dark:text-[#10B981]" />
                       </div>
                       <div className="min-w-0">
-                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                        <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white break-words leading-tight">
                           Doctor Management
                         </CardTitle>
                         <CardDescription className="text-gray-500 dark:text-gray-400">
@@ -879,8 +849,8 @@ export default function AdminDashboard() {
                         </CardDescription>
                       </div>
                     </div>
-                    <div className="flex w-full flex-wrap items-center gap-3 lg:w-auto lg:justify-end">
-                      <div className="relative w-full sm:w-64">
+                    <div className="flex w-full flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:w-auto lg:justify-end">
+                      <div className="relative w-full sm:w-64 min-w-0">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input
                           placeholder="Search Doctors..."
@@ -892,7 +862,7 @@ export default function AdminDashboard() {
                       </div>
                       <Button
                         onClick={() => handleAddUser("Doctor")}
-                        className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
+                        className="w-full sm:w-auto bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Add Doctor
@@ -901,21 +871,21 @@ export default function AdminDashboard() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
                     {filteredDoctors.map((Doctor, index) => (
                       <motion.div
                         key={Doctor.id}
                         variants={fadeInUp}
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ y: -5, scale: 1.02 }}
-                        className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer min-h-[520px]"
+                        className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
                         onClick={() => setSelectedDoctor(Doctor)}
                       >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-bl-full opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                        <div className="p-6 flex h-full flex-col">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex min-w-0 items-center space-x-4">
-                              <Avatar className="h-16 w-16 border-4 border-white dark:border-gray-700 shadow-xl">
+                        <div className="p-4 sm:p-5 flex h-full flex-col">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex min-w-0 items-center space-x-3">
+                              <Avatar className="h-14 w-14 sm:h-16 sm:w-16 border-4 border-white dark:border-gray-700 shadow-xl">
                                 <AvatarImage src={Doctor.image} />
                                 <AvatarFallback className="bg-gradient-to-br from-[#1F5C3F] to-[#10B981] text-white text-lg">
                                   {Doctor.name
@@ -925,17 +895,17 @@ export default function AdminDashboard() {
                                 </AvatarFallback>
                               </Avatar>
                               <div className="min-w-0">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-[#1F5C3F] dark:group-hover:text-[#10B981] transition-colors leading-tight break-words">
+                                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#1F5C3F] dark:group-hover:text-[#10B981] transition-colors leading-tight break-words">
                                   {Doctor.name}
                                 </h3>
-                                <p className="text-gray-600 dark:text-gray-400 font-medium flex items-start mt-1">
+                                <p className="text-sm text-gray-600 dark:text-gray-400 font-medium flex items-start mt-1">
                                   <Stethoscope className="h-4 w-4 mr-1 mt-0.5 shrink-0" />
                                   <span className="break-words leading-snug">
                                     {Doctor.specialization}
                                   </span>
                                 </p>
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
-                                  <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0">
+                                  <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white border-0 text-xs px-2 py-0.5">
                                     ⭐ {Doctor.rating}
                                   </Badge>
                                   {getStatusBadge(Doctor.status)}
@@ -945,31 +915,31 @@ export default function AdminDashboard() {
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
-                              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors self-start"
                             >
-                              <MoreVertical className="h-5 w-5 text-gray-500" />
+                              <MoreVertical className="h-4 w-4 text-gray-500" />
                             </motion.button>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-4 mt-6">
-                            <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
-                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-[#10B981]">
+                          <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-5">
+                            <div className="text-center p-2.5 sm:p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+                              <p className="text-lg sm:text-2xl font-bold text-[#1F5C3F] dark:text-[#10B981]">
                                 {Doctor.patients}
                               </p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
                                 Patients
                               </p>
                             </div>
-                            <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                            <div className="text-center p-2.5 sm:p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                              <p className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">
                                 {Doctor.experience}
                               </p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
                                 Experience
                               </p>
                             </div>
-                            <div className="text-center p-3 bg-[#10B981]/10 dark:bg-[#10B981]/10 rounded-xl">
-                              <p className="text-2xl font-bold text-[#1F5C3F] dark:text-emerald-400">
+                            <div className="text-center p-2.5 sm:p-3 bg-[#10B981]/10 dark:bg-[#10B981]/10 rounded-xl">
+                              <p className="text-lg sm:text-2xl font-bold text-[#1F5C3F] dark:text-emerald-400">
                                 ₹{Doctor.revenue / 1000}K
                               </p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -979,10 +949,10 @@ export default function AdminDashboard() {
                           </div>
 
                           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                            <div className="flex flex-wrap items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
-                              <span className="flex min-w-0 items-start flex-1">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-400">
+                              <span className="flex min-w-0 items-start flex-1 w-full">
                                 <Mail className="h-4 w-4 mr-1 mt-0.5 shrink-0" />
-                                <span className="break-all leading-snug">
+                                <span className="break-all leading-snug text-xs sm:text-sm">
                                   {Doctor.email}
                                 </span>
                               </span>
@@ -1010,7 +980,7 @@ export default function AdminDashboard() {
                                 <Badge
                                   key={i}
                                   variant="outline"
-                                  className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800"
+                                  className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800 text-xs"
                                 >
                                   <Award className="h-3 w-3 mr-1" />
                                   {achievement}
@@ -1035,13 +1005,13 @@ export default function AdminDashboard() {
             >
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-2xl overflow-hidden">
                 <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-start sm:items-center space-x-2 min-w-0">
                       <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
                         <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
                       <div className="min-w-0">
-                        <CardTitle className="truncate text-gray-900 dark:text-white">
+                        <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white break-words leading-tight">
                           Patient Management
                         </CardTitle>
                         <CardDescription className="text-gray-500 dark:text-gray-400">
@@ -1049,8 +1019,8 @@ export default function AdminDashboard() {
                         </CardDescription>
                       </div>
                     </div>
-                    <div className="flex w-full flex-wrap items-center gap-3 lg:w-auto lg:justify-end">
-                      <div className="relative w-full sm:w-64">
+                    <div className="flex w-full flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:w-auto lg:justify-end">
+                      <div className="relative w-full sm:w-64 min-w-0">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input
                           placeholder="Search patients..."
@@ -1062,7 +1032,7 @@ export default function AdminDashboard() {
                       </div>
                       <Button
                         onClick={() => handleAddUser("patient")}
-                        className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
+                        className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl rounded-xl transition-all duration-300"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Register Patient
@@ -1070,20 +1040,20 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                <CardContent className="p-4 sm:p-6 overflow-x-hidden">
+                  <div className="space-y-4 overflow-x-hidden">
                     {filteredPatients.map((patient, index) => (
                       <motion.div
                         key={patient.id}
                         variants={fadeInUp}
                         transition={{ delay: index * 0.1 }}
                         whileHover={{ y: -2, scale: 1.01 }}
-                        className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer p-6"
+                        className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer p-4 sm:p-5"
                         onClick={() => setSelectedPatient(patient)}
                       >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start space-x-4 flex-1">
-                            <Avatar className="h-14 w-14 border-2 border-white dark:border-gray-700 shadow-lg">
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
+                            <Avatar className="h-12 w-12 sm:h-14 sm:w-14 border-2 border-white dark:border-gray-700 shadow-lg">
                               <AvatarImage src={patient.image} />
                               <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-green-500 text-white">
                                 {patient.name
@@ -1093,13 +1063,13 @@ export default function AdminDashboard() {
                               </AvatarFallback>
                             </Avatar>
 
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#1F5C3F] dark:group-hover:text-[#10B981] transition-colors">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                                <div className="min-w-0">
+                                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#1F5C3F] dark:group-hover:text-[#10B981] transition-colors leading-tight">
                                     {patient.name}
                                   </h3>
-                                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-snug">
                                     Assigned to{" "}
                                     <span className="font-medium text-[#1F5C3F] dark:text-[#10B981]">
                                       {patient.doctor}
@@ -1107,7 +1077,7 @@ export default function AdminDashboard() {
                                   </p>
                                 </div>
                                 <Badge
-                                  className={getPriorityColor(patient.priority)}
+                                  className={`${getPriorityColor(patient.priority)} w-fit text-xs px-2 py-0.5`}
                                 >
                                   {patient.priority.charAt(0).toUpperCase() +
                                     patient.priority.slice(1)}{" "}
@@ -1115,27 +1085,27 @@ export default function AdminDashboard() {
                                 </Badge>
                               </div>
 
-                              <div className="grid grid-cols-4 gap-4 mt-4">
-                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mt-3.5">
+                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 min-w-0">
                                   <Calendar className="h-4 w-4" />
                                   <span>Age {patient.age}</span>
                                 </div>
-                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 min-w-0">
                                   <Phone className="h-4 w-4" />
-                                  <span>{patient.phone}</span>
+                                  <span className="truncate">{patient.phone}</span>
                                 </div>
-                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 min-w-0">
                                   <Clock className="h-4 w-4" />
-                                  <span>
+                                  <span className="truncate">
                                     Last:{" "}
                                     {new Date(
                                       patient.lastVisit,
                                     ).toLocaleDateString()}
                                   </span>
                                 </div>
-                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 min-w-0">
                                   <Calendar className="h-4 w-4" />
-                                  <span>
+                                  <span className="truncate">
                                     Next:{" "}
                                     {new Date(
                                       patient.nextAppointment,
@@ -1144,31 +1114,31 @@ export default function AdminDashboard() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center space-x-4 mt-4">
+                              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-3.5">
                                 <Badge
                                   variant="outline"
-                                  className="bg-[#10B981]/10 dark:bg-[#10B981]/10 text-[#1F5C3F] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+                                  className="max-w-full bg-[#10B981]/10 dark:bg-[#10B981]/10 text-[#1F5C3F] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-xs"
                                 >
                                   <Thermometer className="h-3 w-3 mr-1" />
                                   BP: {patient.lastVitals.bp}
                                 </Badge>
                                 <Badge
                                   variant="outline"
-                                  className="bg-emerald-50 dark:bg-emerald-900/20 text-[#1F5C3F] dark:text-[#10B981] border-emerald-200 dark:border-emerald-800"
+                                  className="max-w-full bg-emerald-50 dark:bg-emerald-900/20 text-[#1F5C3F] dark:text-[#10B981] border-emerald-200 dark:border-emerald-800 text-xs"
                                 >
                                   <Heart className="h-3 w-3 mr-1" />
                                   HR: {patient.lastVitals.hr}
                                 </Badge>
                                 <Badge
                                   variant="outline"
-                                  className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800"
+                                  className="max-w-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800 text-xs"
                                 >
                                   <Flame className="h-3 w-3 mr-1" />
                                   Temp: {patient.lastVitals.temp}°F
                                 </Badge>
                               </div>
 
-                              <div className="mt-4">
+                              <div className="mt-3.5">
                                 <div className="flex items-center justify-between mb-1">
                                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Treatment Progress
@@ -1194,7 +1164,7 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div className="flex items-start space-x-2 ml-4">
+                          <div className="flex items-center justify-end gap-2 pt-1">
                             {getStatusBadge(patient.status)}
                             <motion.button
                               whileHover={{ scale: 1.1 }}
@@ -1415,13 +1385,13 @@ export default function AdminDashboard() {
         >
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
             <div className="container mx-auto px-6 py-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-center space-x-3 min-w-0">
                   <motion.div
                     animate={glowPulse.animate}
                     className="w-3 h-3 bg-green-500 rounded-full"
                   />
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400 break-words">
                     System Status:{" "}
                     <span className="text-green-600 dark:text-green-400">
                       Operational
@@ -1429,18 +1399,18 @@ export default function AdminDashboard() {
                   </span>
                 </div>
 
-                <div className="flex items-center space-x-6">
-                  <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-6 w-full lg:w-auto">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center min-w-0">
                     <Heart className="h-4 w-4 mr-1 text-red-500" />
                     TrivedaCare v2.1.0
                   </span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center min-w-0 break-words">
                     <Calendar className="h-4 w-4 mr-1" />
                     Last updated: {new Date().toLocaleDateString()}
                   </span>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center gap-2 sm:gap-4 self-end lg:self-auto">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}

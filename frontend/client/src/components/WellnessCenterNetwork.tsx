@@ -193,21 +193,21 @@ const HealthcareWellnessNetwork: React.FC = () => {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header Section */}
       <div className="bg-gradient-to-r from-[#1F5C3F] via-[#10B981] to-[#0D9488] shadow-2xl">
-        <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center justify-center mb-6">
-            <div className="bg-white/10 p-4 rounded-full mr-4 backdrop-blur-sm">
-              <Stethoscope className="w-12 h-12 text-white" />
+            <div className="bg-white/10 p-3 sm:p-4 rounded-full mr-3 sm:mr-4 backdrop-blur-sm">
+              <Stethoscope className="w-9 h-9 sm:w-12 sm:h-12 text-white" />
             </div>
-            <div>
-              <h1 className="text-5xl font-bold text-white mb-2 tracking-tight">
+            <div className="min-w-0">
+              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2 tracking-tight leading-tight">
                 Healthcare Network
               </h1>
-              <p className="text-emerald-100 text-xl font-medium">
+              <p className="text-emerald-100 text-xl sm:text-2xl font-medium leading-snug">
                 Connecting Wellness Centers & Healthcare Professionals
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-8">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20">
               <Users className="w-8 h-8 text-white mx-auto mb-3" />
               <div className="text-3xl font-bold text-white">50+</div>
@@ -228,36 +228,36 @@ const HealthcareWellnessNetwork: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
           {centers.map((center) => (
             <div
               key={center.id}
               className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:border-emerald-200 group"
             >
               {/* Card Header */}
-              <div className="bg-gradient-to-r from-emerald-500 to-green-500 p-6 text-white relative overflow-hidden">
+              <div className="bg-gradient-to-r from-emerald-500 to-green-500 p-5 sm:p-6 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
 
-                <div className="flex items-center gap-4 relative z-10">
+                <div className="flex items-start sm:items-center gap-3 sm:gap-4 relative z-10">
                   <div className="relative">
                     <img
                       src={center.logo}
                       alt={center.name}
-                      className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-lg object-cover"
                     />
                     <div className="absolute -bottom-1 -right-1 bg-green-400 rounded-full p-1">
                       <Check className="w-4 h-4 text-white" />
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-1">{center.name}</h3>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1 leading-tight break-words">{center.name}</h3>
                     <div className="flex items-center gap-2 mb-2">
                       <MapPin className="w-4 h-4" />
-                      <span className="text-emerald-100">{center.location}</span>
+                      <span className="text-emerald-100 text-sm sm:text-base break-words">{center.location}</span>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                       <div className="flex items-center gap-1">
                         <div className="flex text-yellow-300">
                           {"★".repeat(Math.floor(center.rating))}
@@ -278,7 +278,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
               </div>
 
               {/* Card Body */}
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Specialties */}
                 <div className="mb-6">
                   <h4 className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
@@ -313,7 +313,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
                           alt={professional.name}
                           className="w-12 h-12 rounded-full border-2 border-emerald-200 object-cover"
                         />
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="font-semibold text-gray-800">
                             {professional.name}
                           </div>
@@ -343,18 +343,18 @@ const HealthcareWellnessNetwork: React.FC = () => {
                     <Link2 className="w-4 h-4" />
                     Network Connections
                   </h4>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col gap-2 sm:gap-3">
                     {center.connections.map((connection) => (
                       <div
                         key={connection.id}
-                        className="flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50/30 px-3 py-2 rounded-full border border-green-200"
+                        className="flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50/30 px-3 py-2 rounded-full border border-green-200 w-fit max-w-full"
                       >
                         <img
                           src={connection.logo}
                           alt={connection.name}
                           className="w-8 h-8 rounded-full border-2 border-green-300 object-cover"
                         />
-                        <span className="text-sm font-medium text-green-700">
+                        <span className="text-sm font-medium text-green-700 truncate max-w-[220px]">
                           {connection.name}
                         </span>
                       </div>
@@ -374,20 +374,20 @@ const HealthcareWellnessNetwork: React.FC = () => {
                         key={paper.id}
                         className="p-4 bg-gradient-to-r from-gray-50 to-emerald-50/30 rounded-lg border border-gray-200 hover:border-emerald-300 transition-all duration-300"
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1">
+                        <div className="flex flex-col gap-3 mb-2">
+                          <div className="flex-1 min-w-0">
                             <h5 className="font-semibold text-gray-800 mb-1">
                               {paper.title}
                             </h5>
                             <p className="text-sm text-gray-600 mb-2">
                               {paper.summary}
                             </p>
-                            <div className="flex items-center gap-4 text-xs text-gray-500">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-gray-500">
                               <span>By {paper.author}</span>
                               <span>Year: {paper.year}</span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 ml-4">
+                          <div className="flex items-center gap-2">
                             <span
                               className={`px-3 py-1 rounded-full text-xs font-medium ${
                                 paper.status === "Published"
@@ -442,16 +442,16 @@ const HealthcareWellnessNetwork: React.FC = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <button
-                    className="flex-1 bg-gradient-to-r from-[#1F5C3F] to-[#10B981]/90 text-white py-3 px-4 rounded-lg font-semibold hover:from-[#1F5C3F]/90 hover:to-[#10B981] transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981]/90 text-white py-3 px-4 rounded-lg font-semibold hover:from-[#1F5C3F]/90 hover:to-[#10B981] transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                     onClick={() => setModal({ type: "connect", center })}
                   >
                     <Link2 className="w-5 h-5" />
                     Connect
                   </button>
                   <button
-                    className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    className="bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                     onClick={() => setModal({ type: "message", center })}
                   >
                     <Send className="w-5 h-5" />
@@ -462,6 +462,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
                     onClick={() => handleViewProfile(center)}
                   >
                     <Eye className="w-5 h-5" />
+                    <span className="sm:hidden">View</span>
                   </button>
                 </div>
               </div>
@@ -477,7 +478,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
         open={!!modal && modal.type === "connect"}
         onOpenChange={(open) => !open && setModal(null)}
       >
-        <DialogContent className="bg-white border-0 shadow-2xl">
+        <DialogContent className="bg-white border-0 shadow-2xl max-w-[95vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-gray-800 flex items-center gap-3">
               <Link2 className="w-6 h-6 text-[#1F5C3F]" />
@@ -500,14 +501,14 @@ const HealthcareWellnessNetwork: React.FC = () => {
               onChange={(e) => setConnectNote(e.target.value)}
             />
           </div>
-          <DialogFooter className="mt-6 gap-3">
+          <DialogFooter className="mt-6 gap-3 flex-col sm:flex-row">
             <DialogClose asChild>
-              <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
+              <button className="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
                 Cancel
               </button>
             </DialogClose>
             <button
-              className="px-6 py-3 bg-gradient-to-r from-[#1F5C3F] to-[#10B981]/90 text-white rounded-lg font-semibold hover:from-[#1F5C3F]/90 hover:to-[#10B981] transition-all duration-300 shadow-lg"
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#1F5C3F] to-[#10B981]/90 text-white rounded-lg font-semibold hover:from-[#1F5C3F]/90 hover:to-[#10B981] transition-all duration-300 shadow-lg"
               onClick={() => modal && handleConnect(modal.center)}
             >
               Send Connection Request
@@ -521,7 +522,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
         open={!!modal && modal.type === "message"}
         onOpenChange={(open) => !open && setModal(null)}
       >
-        <DialogContent className="bg-white border-0 shadow-2xl">
+        <DialogContent className="bg-white border-0 shadow-2xl max-w-[95vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-gray-800 flex items-center gap-3">
               <Send className="w-6 h-6 text-green-600" />
@@ -544,14 +545,14 @@ const HealthcareWellnessNetwork: React.FC = () => {
               onChange={(e) => setMessageText(e.target.value)}
             />
           </div>
-          <DialogFooter className="mt-6 gap-3">
+          <DialogFooter className="mt-6 gap-3 flex-col sm:flex-row">
             <DialogClose asChild>
-              <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
+              <button className="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
                 Cancel
               </button>
             </DialogClose>
             <button
-              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!messageText.trim()}
               onClick={() => modal && handleMessage(modal.center)}
             >
@@ -566,7 +567,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
         open={!!modal && modal.type === "profile"}
         onOpenChange={(open) => !open && setModal(null)}
       >
-        <DialogContent className="bg-white border-0 shadow-2xl max-w-2xl">
+        <DialogContent className="bg-white border-0 shadow-2xl max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-gray-800 flex items-center gap-3">
               <Eye className="w-6 h-6 text-[#1F5C3F]" />
@@ -576,21 +577,21 @@ const HealthcareWellnessNetwork: React.FC = () => {
           {modal?.type === "profile" && (
             <div className="mt-6 space-y-6">
               {/* Header */}
-              <div className="flex items-center gap-6 p-6 bg-gradient-to-r from-emerald-50/30 to-emerald-50/30 rounded-xl">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 p-4 sm:p-6 bg-gradient-to-r from-emerald-50/30 to-emerald-50/30 rounded-xl">
                 <img
                   src={modal.center.logo}
                   alt={modal.center.name}
-                  className="w-24 h-24 rounded-full border-4 border-emerald-200 shadow-lg object-cover"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-emerald-200 shadow-lg object-cover"
                 />
-                <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-gray-800 mb-2">
+                <div className="flex-1 min-w-0 text-center sm:text-left">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 break-words">
                     {modal.center.name}
                   </h3>
-                  <div className="flex items-center gap-2 text-gray-600 mb-2">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-600 mb-2">
                     <MapPin className="w-5 h-5" />
                     <span className="font-medium">{modal.center.location}</span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4">
                     <div className="flex items-center gap-1">
                       <div className="flex text-yellow-400">
                         {"★".repeat(Math.floor(modal.center.rating))}
@@ -607,7 +608,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
               </div>
 
               {/* Details Grid */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
                 <div className="space-y-4">
                   <div>
                     <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
@@ -642,7 +643,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
                             alt={d.name}
                             className="w-10 h-10 rounded-full border-2 border-green-200"
                           />
-                          <div>
+                          <div className="min-w-0">
                             <div className="font-medium text-gray-800">
                               {d.name}
                             </div>
@@ -707,7 +708,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
           )}
           <DialogFooter className="mt-6">
             <DialogClose asChild>
-              <button className="px-6 py-3 bg-gradient-to-r from-[#1F5C3F] to-[#0D9488] text-white rounded-lg font-semibold hover:from-[#1F5C3F]/90 hover:to-[#0D9488]/90 transition-all duration-300 shadow-lg">
+              <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#1F5C3F] to-[#0D9488] text-white rounded-lg font-semibold hover:from-[#1F5C3F]/90 hover:to-[#0D9488]/90 transition-all duration-300 shadow-lg">
                 Close Profile
               </button>
             </DialogClose>
@@ -720,7 +721,7 @@ const HealthcareWellnessNetwork: React.FC = () => {
         open={!!modal && modal.type === "publish"}
         onOpenChange={(open) => !open && setModal(null)}
       >
-        <DialogContent className="bg-white border-0 shadow-2xl">
+        <DialogContent className="bg-white border-0 shadow-2xl max-w-[95vw] sm:max-w-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-gray-800 flex items-center gap-3">
               <FileText className="w-6 h-6 text-orange-600" />
@@ -732,12 +733,12 @@ const HealthcareWellnessNetwork: React.FC = () => {
             </DialogDescription>
           </DialogHeader>
           {modal?.type === "publish" && (
-            <div className="mt-6 p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-200">
+            <div className="mt-6 p-4 sm:p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-200">
               <h4 className="font-bold text-gray-800 mb-2">
                 {modal.paper.title}
               </h4>
               <p className="text-gray-600 mb-3">{modal.paper.summary}</p>
-              <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-500">
                 <span className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   Author: {modal.paper.author}
@@ -753,14 +754,14 @@ const HealthcareWellnessNetwork: React.FC = () => {
               </div>
             </div>
           )}
-          <DialogFooter className="mt-6 gap-3">
+          <DialogFooter className="mt-6 gap-3 flex-col sm:flex-row">
             <DialogClose asChild>
-              <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
+              <button className="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
                 Cancel
               </button>
             </DialogClose>
             <button
-              className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               disabled={publishLoading}
               onClick={() =>
                 modal &&

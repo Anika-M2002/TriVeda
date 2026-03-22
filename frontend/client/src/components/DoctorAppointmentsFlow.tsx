@@ -76,10 +76,10 @@ export default function DoctorAppointmentsFlow() {
     <div className="min-h-screen bg-background text-foreground">
       <div className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-900">Appointments Workflow</h2>
+          <div className="p-4 sm:p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Appointments Workflow</h2>
             <button
-              className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 w-full sm:w-auto"
               onClick={() => setAppointments(getStoredAppointments())}
             >
               <RefreshCw className="w-4 h-4" />
@@ -87,7 +87,7 @@ export default function DoctorAppointmentsFlow() {
             </button>
           </div>
 
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="lg:col-span-2 space-y-4">
               {sortedAppointments.length === 0 ? (
                 <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-sm text-[#1F5C3F]">
@@ -128,7 +128,7 @@ export default function DoctorAppointmentsFlow() {
                         </div>
                       </div>
 
-                      <div className="mt-3 text-sm text-gray-700 grid md:grid-cols-2 gap-2">
+                      <div className="mt-3 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2">
                         <p><Calendar className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {appointment.selectedDate}</p>
                         <p><Clock className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {appointment.selectedTime}</p>
                         <p><User className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {appointment.patientAge}y, {appointment.patientGender}</p>
@@ -220,7 +220,7 @@ export default function DoctorAppointmentsFlow() {
 
               <div className="bg-white border border-gray-200 rounded-xl p-4">
                 <h3 className="font-semibold text-gray-900 mb-3">Routine Plans (Yoga / Asan)</h3>
-                <div className="grid grid-cols-2 gap-2 mb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                   <button
                     type="button"
                     onClick={() => setRoutineMode("manual")}

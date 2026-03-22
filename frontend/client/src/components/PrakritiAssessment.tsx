@@ -650,7 +650,7 @@ export default function PrakritiAssessment({
     const displayTime = finalTime !== null ? finalTime : timeSpent;
 
     return (
-      <div className="min-h-screen relative flex items-start justify-center p-4 bg-gradient-to-br from-slate-50 to-emerald-50/30 overflow-hidden">
+      <div className="min-h-screen relative flex items-start justify-center p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-emerald-50/30 overflow-hidden">
         <MedicalBackground />
 
         {/* Celebration Animation */}
@@ -662,43 +662,43 @@ export default function PrakritiAssessment({
           </div>
         )}
 
-        <div className="w-full max-w-7xl space-y-6 relative z-10 my-8">
+        <div className="w-full max-w-7xl space-y-5 sm:space-y-6 relative z-10 my-4 sm:my-8">
           {/* Header Card */}
           <Card className="shadow-2xl border-0 backdrop-blur-xl bg-gradient-to-r from-emerald-500 via-[#10B981] to-[#10B981] text-white">
-            <CardHeader className="text-center relative overflow-hidden">
+            <CardHeader className="text-center relative overflow-hidden px-4 sm:px-6 py-5 sm:py-6">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
-                  <Award className="h-12 w-12 text-white animate-pulse" />
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
+                <div className="bg-white/20 p-3 sm:p-4 rounded-full backdrop-blur-sm">
+                  <Award className="h-10 w-10 sm:h-12 sm:w-12 text-white animate-pulse" />
                 </div>
-                <div className="text-left">
-                  <CardTitle className="text-4xl font-bold tracking-tight">
+                <div className="text-center sm:text-left">
+                  <CardTitle className="text-2xl sm:text-4xl font-bold tracking-tight">
                     Assessment Complete
                   </CardTitle>
-                  <CardDescription className="text-white/90 text-lg mt-2">
+                  <CardDescription className="text-white/90 text-sm sm:text-lg mt-2">
                     Your Personalized Ayurvedic Constitution Analysis
                   </CardDescription>
                 </div>
               </div>
 
               {/* Stats Row */}
-              <div className="flex justify-center gap-8 mt-6">
+              <div className="grid grid-cols-3 gap-3 sm:gap-8 mt-4 sm:mt-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{questions.length}</div>
-                  <div className="text-sm text-white/80">
+                  <div className="text-lg sm:text-2xl font-bold">{questions.length}</div>
+                  <div className="text-xs sm:text-sm text-white/80">
                     Questions Analyzed
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">
+                  <div className="text-lg sm:text-2xl font-bold">
                     {Math.floor(displayTime / 60)}:
                     {(displayTime % 60).toString().padStart(2, "0")}
                   </div>
-                  <div className="text-sm text-white/80">Time Taken</div>
+                  <div className="text-xs sm:text-sm text-white/80">Time Taken</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{primaryPercentage}%</div>
-                  <div className="text-sm text-white/80">Primary Match</div>
+                  <div className="text-lg sm:text-2xl font-bold">{primaryPercentage}%</div>
+                  <div className="text-xs sm:text-sm text-white/80">Primary Match</div>
                 </div>
               </div>
             </CardHeader>
@@ -727,7 +727,7 @@ export default function PrakritiAssessment({
                         : "shadow-md"
                     }`}
                   >
-                    <CardContent className="p-6">
+                    <CardContent className="p-4 sm:p-6">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                           {doshaIcons[dosha as keyof typeof doshaIcons]}
@@ -745,7 +745,7 @@ export default function PrakritiAssessment({
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-slate-800">
+                          <div className="text-xl sm:text-2xl font-bold text-slate-800">
                             {percentage}%
                           </div>
                           {isPrimary && (
@@ -782,24 +782,24 @@ export default function PrakritiAssessment({
                         .primary
                     } text-white rounded-t-lg`}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4">
                       <div className="bg-white/20 p-3 rounded-full">
                         {doshaIcons[primaryDosha as keyof typeof doshaIcons]}
                       </div>
-                      <div>
-                        <CardTitle className="text-2xl font-bold">
+                      <div className="min-w-0">
+                        <CardTitle className="text-xl sm:text-2xl font-bold">
                           {doshaInfo.name}
                         </CardTitle>
-                        <CardDescription className="text-white/90 text-base">
+                        <CardDescription className="text-white/90 text-sm sm:text-base">
                           {doshaInfo.subtitle}
                         </CardDescription>
                       </div>
                     </div>
                   </CardHeader>
 
-                  <CardContent className="p-8 space-y-8">
+                  <CardContent className="p-4 sm:p-8 space-y-6 sm:space-y-8">
                     {/* Description */}
-                    <div className="bg-slate-50 p-6 rounded-xl">
+                    <div className="bg-slate-50 p-4 sm:p-6 rounded-xl">
                       <h4 className="font-bold text-lg mb-3 flex items-center gap-2">
                         <Target className="h-5 w-5 text-emerald-600" />
                         Your Constitutional Profile
@@ -810,7 +810,7 @@ export default function PrakritiAssessment({
                     </div>
 
                     {/* Characteristics & Recommendations Grid */}
-                    <div className="grid md:grid-cols-2 gap-8">
+                    <div className="grid md:grid-cols-2 gap-5 sm:gap-8">
                       {/* Characteristics */}
                       <div className="space-y-4">
                         <h4 className="font-bold text-lg flex items-center gap-2 text-slate-800">
@@ -855,8 +855,8 @@ export default function PrakritiAssessment({
                     </div>
 
                     {/* Additional Recommendations */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-xl">
+                    <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+                      <div className="bg-gradient-to-br from-orange-50 to-yellow-50 p-4 sm:p-6 rounded-xl">
                         <h5 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
                           <Sparkles className="h-5 w-5 text-orange-500" />
                           Recommended Supplements
@@ -874,7 +874,7 @@ export default function PrakritiAssessment({
                         </div>
                       </div>
 
-                      <div className="bg-gradient-to-br from-emerald-50/30 to-pink-50 p-6 rounded-xl">
+                      <div className="bg-gradient-to-br from-emerald-50/30 to-pink-50 p-4 sm:p-6 rounded-xl">
                         <h5 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
                           <Heart className="h-5 w-5 text-[#10B981]" />
                           Lifestyle Focus
@@ -892,9 +892,9 @@ export default function PrakritiAssessment({
 
           {/* Action Buttons */}
           <Card className="shadow-lg border-0 bg-white/95 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3 w-full md:w-auto">
                   <div className="bg-gradient-to-r from-emerald-500 to-[#10B981] p-3 rounded-full">
                     <Smile className="h-6 w-6 text-white" />
                   </div>
@@ -908,11 +908,11 @@ export default function PrakritiAssessment({
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                    className="w-full sm:w-auto border-emerald-300 text-emerald-700 hover:bg-emerald-50"
                     onClick={() => {
                       setCurrentQuestion(0);
                       setAnswers({});
@@ -927,7 +927,7 @@ export default function PrakritiAssessment({
 
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-emerald-500 via-[#10B981] to-[#10B981] text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 via-[#10B981] to-[#10B981] text-white shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <TrendingUp className="h-4 w-4 mr-2" />
                     View Health Plan
@@ -945,31 +945,31 @@ export default function PrakritiAssessment({
   const currentQ = questions[currentQuestion];
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-emerald-50/30 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-emerald-50/30 overflow-hidden">
       <MedicalBackground />
 
       <div className="w-full max-w-4xl relative z-10">
         {/* Progress Header */}
         <Card className="shadow-xl border-0 backdrop-blur-xl bg-white/95 mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-r from-emerald-500 to-[#10B981] p-3 rounded-full">
-                  <Brain className="h-6 w-6 text-white animate-pulse" />
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                <div className="bg-gradient-to-r from-emerald-500 to-[#10B981] p-2.5 sm:p-3 rounded-full flex-shrink-0">
+                  <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-white animate-pulse" />
                 </div>
-                <div>
-                  <div className="text-xl font-bold text-slate-800">
+                <div className="min-w-0">
+                  <div className="text-base sm:text-xl font-bold text-slate-800 leading-tight">
                     Ayurvedic Constitution Assessment
                   </div>
-                  <div className="text-sm text-slate-600">
+                  <div className="text-xs sm:text-sm text-slate-600">
                     Advanced Prakriti Analysis System
                   </div>
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="text-sm text-slate-600">Progress</div>
-                <div className="text-lg font-bold text-emerald-600">
+              <div className="text-left sm:text-right">
+                <div className="text-xs sm:text-sm text-slate-600">Progress</div>
+                <div className="text-base sm:text-lg font-bold text-emerald-600">
                   {currentQuestion + 1} of {questions.length}
                 </div>
               </div>
@@ -1006,10 +1006,10 @@ export default function PrakritiAssessment({
                 >
                   {currentQ.category}
                 </Badge>
-                <CardTitle className="text-2xl leading-relaxed text-slate-800">
+                <CardTitle className="text-xl sm:text-2xl leading-relaxed text-slate-800">
                   {currentQ.question}
                 </CardTitle>
-                <CardDescription className="text-base mt-2 text-slate-600">
+                <CardDescription className="text-sm sm:text-base mt-2 text-slate-600">
                   Select the option that best describes your natural state and
                   tendencies
                 </CardDescription>
@@ -1017,7 +1017,7 @@ export default function PrakritiAssessment({
             </div>
           </CardHeader>
 
-          <CardContent className="p-8">
+          <CardContent className="p-4 sm:p-8">
             <RadioGroup
               value={answers[currentQ.id] || ""}
               onValueChange={handleAnswer}
@@ -1030,7 +1030,7 @@ export default function PrakritiAssessment({
                 return (
                   <div
                     key={option.value}
-                    className={`group relative flex items-start gap-4 p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer hover:scale-[1.02] ${
+                    className={`group relative flex items-start gap-3 sm:gap-4 p-4 sm:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer hover:scale-[1.02] ${
                       isSelected
                         ? `${colors.accent} bg-gradient-to-r ${colors.secondary} shadow-lg scale-[1.02]`
                         : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
@@ -1052,7 +1052,7 @@ export default function PrakritiAssessment({
                       </Label>
                     </div>
 
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="hidden sm:flex flex-col items-end gap-2">
                       <Badge
                         variant="secondary"
                         className={`${colors.bg} ${colors.text} flex items-center gap-2`}
@@ -1082,19 +1082,19 @@ export default function PrakritiAssessment({
             </RadioGroup>
           </CardContent>
 
-          <div className="p-6 bg-slate-50 border-t">
-            <div className="flex justify-between items-center">
+          <div className="p-4 sm:p-6 bg-slate-50 border-t">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
               <Button
                 variant="outline"
                 onClick={handleBack}
                 disabled={currentQuestion === 0}
-                className="border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-50"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Previous
               </Button>
 
-              <div className="flex items-center gap-2 text-sm text-slate-600">
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-600 order-first sm:order-none">
                 <Timer className="h-4 w-4" />
                 {Math.floor(timeSpent / 60)}:
                 {(timeSpent % 60).toString().padStart(2, "0")}
@@ -1103,7 +1103,7 @@ export default function PrakritiAssessment({
               <Button
                 onClick={handleNext}
                 disabled={!answers[currentQ.id]}
-                className="bg-gradient-to-r from-emerald-500 via-[#10B981] to-[#10B981] text-white shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed px-6"
+                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 via-[#10B981] to-[#10B981] text-white shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed px-6"
               >
                 {currentQuestion === questions.length - 1 ? (
                   <>
@@ -1124,7 +1124,7 @@ export default function PrakritiAssessment({
         {/* Footer Info */}
         <Card className="mt-6 shadow-md border-0 bg-white/80 backdrop-blur-sm">
           <CardContent className="p-4">
-            <div className="flex items-center justify-center gap-8 text-xs text-slate-600">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-8 text-xs text-slate-600">
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-green-500" />
                 HIPAA Compliant & Secure

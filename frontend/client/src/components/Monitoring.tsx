@@ -357,24 +357,24 @@ export default function HealthcareMonitoring() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <div className="bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-xl flex items-center justify-center shadow-lg">
                 <Activity className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-2xl font-bold text-slate-900 leading-tight">
                   Clinical Patient Monitoring
                 </h1>
-                <p className="text-sm text-slate-600">
+                <p className="text-xs sm:text-sm text-slate-600">
                   AI-Powered Healthcare Analytics Dashboard
                 </p>
               </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full lg:w-auto">
               <div className="bg-gradient-to-r from-emerald-500 to-[#10B981] p-3 rounded-lg text-white text-center">
                 <div className="text-lg font-bold">{riskStats.total}</div>
                 <div className="text-xs opacity-90">Total Patients</div>
@@ -396,24 +396,24 @@ export default function HealthcareMonitoring() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Controls */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex flex-col md:flex-row md:items-center gap-3 flex-1">
-              <div className="relative">
+              <div className="relative w-full md:w-auto">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all duration-200 min-w-[300px]"
+                  className="w-full md:w-auto pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all duration-200 md:min-w-[300px]"
                   placeholder="Search patients by name..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <div className="relative">
+              <div className="relative w-full md:w-auto">
                 <Filter className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <select
-                  className="pl-10 pr-8 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all duration-200"
+                  className="w-full md:w-auto pl-10 pr-8 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all duration-200"
                   value={filterRisk}
                   onChange={(e) => setFilterRisk(e.target.value)}
                 >
@@ -425,7 +425,7 @@ export default function HealthcareMonitoring() {
               </div>
             </div>
             <button
-              className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white px-6 py-2.5 rounded-lg flex items-center space-x-2 shadow-lg transform hover:scale-105 transition-all duration-200"
+              className="w-full lg:w-auto bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white px-6 py-2.5 rounded-lg flex items-center justify-center space-x-2 shadow-lg transform hover:scale-105 transition-all duration-200"
               onClick={handleOpenAdd}
             >
               <Plus className="w-5 h-5" />
@@ -441,14 +441,14 @@ export default function HealthcareMonitoring() {
                 AI Clinical Assistant
               </span>
             </div>
-            <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex flex-col gap-3">
               <input
                 className="flex-1 border border-emerald-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] bg-white"
                 placeholder="Ask AI about patient progress, risk assessment, treatment optimization..."
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
               />
-              <span className="text-sm text-[#1F5C3F] self-center">
+              <span className="text-xs sm:text-sm text-[#1F5C3F]">
                 💡 Try: "improve", "risk assessment", "appointment scheduling"
               </span>
             </div>
@@ -466,8 +466,8 @@ export default function HealthcareMonitoring() {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Patient Header */}
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center space-x-4">
+              <div className="flex items-start justify-between mb-6 gap-3">
+                <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
                   <div
                     className={`w-14 h-14 bg-gradient-to-br ${getRiskColor(
                       patient.riskLevel!
@@ -475,11 +475,11 @@ export default function HealthcareMonitoring() {
                   >
                     {patient.name[0]}
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">
+                  <div className="min-w-0">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
                       {patient.name}
                     </h3>
-                    <div className="flex items-center space-x-2 text-sm text-slate-600">
+                    <div className="flex items-center space-x-2 text-xs sm:text-sm text-slate-600">
                       <Clock className="h-4 w-4" />
                       <span>Updated {patient.lastUpdate}</span>
                     </div>
@@ -487,7 +487,7 @@ export default function HealthcareMonitoring() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="flex space-x-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
                   <button
                     className="p-2 text-[#1F5C3F] hover:bg-emerald-50 rounded-lg transition-colors duration-200"
                     title="View Details"
@@ -522,7 +522,7 @@ export default function HealthcareMonitoring() {
               </div>
 
               {/* Vital Signs */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                 <div className="bg-gradient-to-br from-red-50 to-pink-50 p-3 rounded-lg border border-red-200">
                   <div className="flex items-center justify-between">
                     <Heart className="h-5 w-5 text-red-600" />
@@ -660,9 +660,9 @@ export default function HealthcareMonitoring() {
 
               {/* AI Query Section */}
               <div className="mb-4">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                   <button
-                    className="bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center space-x-2 shadow-md transform hover:scale-105 transition-all duration-200"
+                    className="w-full sm:w-auto bg-gradient-to-r from-[#1F5C3F] to-[#10B981] hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center space-x-2 shadow-md transform hover:scale-105 transition-all duration-200"
                     onClick={() => handleAskAI(patient)}
                     disabled={aiLoading[patient.id]}
                   >
@@ -678,7 +678,7 @@ export default function HealthcareMonitoring() {
                   {/* Show Recommendations button if AI has responded for this patient */}
                   {aiResponse[patient.id] && (
                     <button
-                      className="ml-2 bg-gradient-to-r from-emerald-500 to-emerald-500 hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center space-x-2 shadow-md transform hover:scale-105 transition-all duration-200"
+                      className="w-full sm:w-auto sm:ml-2 bg-gradient-to-r from-emerald-500 to-emerald-500 hover:from-[#1F5C3F]/90 hover:to-[#10B981]/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center space-x-2 shadow-md transform hover:scale-105 transition-all duration-200"
                       onClick={() => {
                         setModalPatientId(patient.id);
                         setShowRecommendationsModal(true);
@@ -714,13 +714,13 @@ export default function HealthcareMonitoring() {
               {showRecommendationsModal && modalPatientId && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm animate-fade-in">
                   <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-slide-up">
-                    <div className="p-8">
-                      <div className="flex items-center space-x-3 mb-6">
+                    <div className="p-5 sm:p-8 max-h-[85vh] overflow-y-auto">
+                      <div className="flex items-start space-x-3 mb-6">
                         <div className="w-10 h-10 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-lg flex items-center justify-center">
                           <BarChart3 className="w-5 h-5 text-white" />
                         </div>
-                        <div>
-                          <h2 className="text-xl font-bold text-slate-900">
+                        <div className="min-w-0">
+                          <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                             AI Full Recommendations
                           </h2>
                           <p className="text-sm text-slate-600">
@@ -848,7 +848,7 @@ export default function HealthcareMonitoring() {
       {showAddEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto animate-slide-up">
-            <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-6 rounded-t-2xl">
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-4 sm:px-8 py-5 sm:py-6 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div
@@ -865,7 +865,7 @@ export default function HealthcareMonitoring() {
                     )}
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-slate-900">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
                       {editMode ? "Edit Patient Record" : "Add New Patient"}
                     </h2>
                     <p className="text-sm text-slate-600">
@@ -886,10 +886,10 @@ export default function HealthcareMonitoring() {
 
             <form
               onSubmit={handleAddEditSubmit}
-              className="px-8 py-6 space-y-8"
+              className="px-4 sm:px-8 py-5 sm:py-6 space-y-6 sm:space-y-8"
             >
               {/* Patient Information */}
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 <div className="border-l-4 border-[#10B981] pl-4">
                   <h3 className="text-lg font-semibold text-slate-900 mb-4">
                     Patient Information
@@ -949,7 +949,7 @@ export default function HealthcareMonitoring() {
               </div>
 
               {/* Vital Signs */}
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 <div className="border-l-4 border-red-500 pl-4">
                   <h3 className="text-lg font-semibold text-slate-900 mb-4">
                     Vital Signs
@@ -1018,7 +1018,7 @@ export default function HealthcareMonitoring() {
               </div>
 
               {/* Clinical Metrics */}
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 <div className="border-l-4 border-emerald-500 pl-4">
                   <h3 className="text-lg font-semibold text-slate-900 mb-4">
                     Clinical Compliance Metrics
@@ -1086,7 +1086,7 @@ export default function HealthcareMonitoring() {
               </div>
 
               {/* Clinical Assessment */}
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 <div className="border-l-4 border-[#10B981] pl-4">
                   <h3 className="text-lg font-semibold text-slate-900 mb-4">
                     Clinical Assessment
@@ -1152,7 +1152,7 @@ export default function HealthcareMonitoring() {
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 animate-slide-up">
-            <div className="p-8 text-center">
+            <div className="p-5 sm:p-8 text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-6">
                 <AlertTriangle className="w-10 h-10 text-red-600 animate-pulse" />
               </div>
@@ -1171,7 +1171,7 @@ export default function HealthcareMonitoring() {
                 medical data.
               </p>
 
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   className="flex-1 border-2 border-slate-300 hover:border-slate-400 text-slate-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200"
@@ -1196,7 +1196,7 @@ export default function HealthcareMonitoring() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-slide-up">
             {!messageSuccess ? (
               <div>
-                <div className="border-b border-slate-200 px-8 py-6">
+                <div className="border-b border-slate-200 px-4 sm:px-8 py-5 sm:py-6">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-lg flex items-center justify-center">
                       <MessageCircle className="w-5 h-5 text-white" />
@@ -1214,7 +1214,7 @@ export default function HealthcareMonitoring() {
 
                 <form
                   onSubmit={handleSubmitMessage}
-                  className="px-8 py-6 space-y-6"
+                  className="px-4 sm:px-8 py-5 sm:py-6 space-y-5 sm:space-y-6"
                 >
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-3">
@@ -1230,7 +1230,7 @@ export default function HealthcareMonitoring() {
                     />
                   </div>
 
-                  <div className="flex space-x-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <button
                       type="button"
                       onClick={() => setShowMessageModal(false)}
@@ -1248,7 +1248,7 @@ export default function HealthcareMonitoring() {
                 </form>
               </div>
             ) : (
-              <div className="p-8 text-center">
+              <div className="p-5 sm:p-8 text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-green-200 rounded-full flex items-center justify-center mx-auto mb-6">
                   <CheckCircle className="w-10 h-10 text-emerald-600 animate-bounce" />
                 </div>

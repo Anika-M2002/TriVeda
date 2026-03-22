@@ -696,33 +696,31 @@ export default function DietChartGenerator() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <div className="bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-[#1F5C3F] rounded-lg">
-                  <Stethoscope className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">
-                    Ayurvedic Diet Chart Generator
-                  </h1>
-                  <p className="text-sm text-slate-600">
-                    Professional Healthcare Management System
-                  </p>
-                </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex flex-col gap-4 sm:gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
+              <div className="p-2 bg-[#1F5C3F] rounded-lg flex-shrink-0 mt-0.5 sm:mt-0">
+                <Stethoscope className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-tight break-words">
+                  Ayurvedic Diet Chart Generator
+                </h1>
+                <p className="text-sm sm:text-base text-slate-600 mt-1 leading-snug">
+                  Professional Healthcare Management System
+                </p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <div className="text-sm font-medium text-slate-900">
+            <div className="flex items-center justify-between sm:justify-start sm:gap-3 lg:justify-end lg:gap-4 w-full lg:w-auto">
+              <div className="text-left sm:text-right min-w-0">
+                <div className="text-sm font-medium text-slate-900 leading-tight">
                   Dr. Ayurveda Specialist
                 </div>
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-slate-500 leading-tight">
                   Certified Doctor
                 </div>
               </div>
-              <div className="w-10 h-10 bg-[#1F5C3F] rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#1F5C3F] rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-semibold text-sm">AS</span>
               </div>
             </div>
@@ -731,17 +729,17 @@ export default function DietChartGenerator() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card className="bg-white border-slate-200 shadow-sm">
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">
                     Total Patients
                   </p>
-                  <p className="text-3xl font-bold text-slate-900">
+                  <p className="text-2xl sm:text-3xl font-bold text-slate-900">
                     {mockPatients.length}
                   </p>
                 </div>
@@ -751,13 +749,13 @@ export default function DietChartGenerator() {
           </Card>
 
           <Card className="bg-white border-slate-200 shadow-sm">
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">
                     Active Charts
                   </p>
-                  <p className="text-3xl font-bold text-emerald-600">
+                  <p className="text-2xl sm:text-3xl font-bold text-emerald-600">
                     {dietCharts.filter((d) => d.status === "active").length}
                   </p>
                 </div>
@@ -767,13 +765,13 @@ export default function DietChartGenerator() {
           </Card>
 
           <Card className="bg-white border-slate-200 shadow-sm">
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">
                     Pending Charts
                   </p>
-                  <p className="text-3xl font-bold text-orange-600">
+                  <p className="text-2xl sm:text-3xl font-bold text-orange-600">
                     {patientsWithoutChart.length}
                   </p>
                 </div>
@@ -783,13 +781,13 @@ export default function DietChartGenerator() {
           </Card>
 
           <Card className="bg-white border-slate-200 shadow-sm">
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">
                     Success Rate
                   </p>
-                  <p className="text-3xl font-bold text-green-600">98%</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-600">98%</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>

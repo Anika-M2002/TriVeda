@@ -319,29 +319,29 @@ export default function ProfessionalPrakritiVerification() {
   };
 
   return (
-  <div className="min-h-screen bg-slate-50 p-6">
+  <div className="min-h-screen bg-slate-50 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-emerald-100 rounded-xl">
-                <Stethoscope className="h-8 w-8 text-[#1F5C3F]" />
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="p-2.5 sm:p-3 bg-emerald-100 rounded-xl flex-shrink-0">
+                <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-[#1F5C3F]" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
                   Prakriti Assessment Center
                 </h1>
-                <p className="text-slate-600 mt-1">
+                <p className="text-sm sm:text-base text-slate-600 mt-1">
                   Medical constitutional analysis and verification system
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row w-full lg:w-auto items-stretch sm:items-center gap-2 sm:gap-3">
               <Button
                 variant="outline"
                 size="sm"
-                className="text-slate-600 border-slate-300"
+                className="w-full sm:w-auto text-slate-600 border-slate-300"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Export
@@ -349,7 +349,7 @@ export default function ProfessionalPrakritiVerification() {
               {/* Print button removed due to missing icon */}
               <Button
                 size="sm"
-                className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white"
+                className="w-full sm:w-auto bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white"
               >
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
@@ -358,15 +358,15 @@ export default function ProfessionalPrakritiVerification() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-4 gap-4 mt-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-6">
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-2 bg-slate-100 rounded-lg">
                   <User className="h-5 w-5 text-slate-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600">Total Patients</p>
-                  <p className="text-2xl font-bold text-slate-900">
+                  <p className="text-xs sm:text-sm text-slate-600">Total Patients</p>
+                  <p className="text-xl sm:text-2xl font-bold text-slate-900">
                     {stats.total}
                   </p>
                 </div>
@@ -378,8 +378,8 @@ export default function ProfessionalPrakritiVerification() {
                   <Clock className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-amber-700">Pending Review</p>
-                  <p className="text-2xl font-bold text-amber-800">
+                  <p className="text-xs sm:text-sm text-amber-700">Pending Review</p>
+                  <p className="text-xl sm:text-2xl font-bold text-amber-800">
                     {stats.pending}
                   </p>
                 </div>
@@ -391,8 +391,8 @@ export default function ProfessionalPrakritiVerification() {
                   <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-emerald-700">Verified</p>
-                  <p className="text-2xl font-bold text-emerald-800">
+                  <p className="text-xs sm:text-sm text-emerald-700">Verified</p>
+                  <p className="text-xl sm:text-2xl font-bold text-emerald-800">
                     {stats.verified}
                   </p>
                 </div>
@@ -404,8 +404,8 @@ export default function ProfessionalPrakritiVerification() {
                   <AlertCircle className="h-5 w-5 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-red-700">High Priority</p>
-                  <p className="text-2xl font-bold text-red-800">
+                  <p className="text-xs sm:text-sm text-red-700">High Priority</p>
+                  <p className="text-xl sm:text-2xl font-bold text-red-800">
                     {stats.highPriority}
                   </p>
                 </div>
@@ -427,11 +427,11 @@ export default function ProfessionalPrakritiVerification() {
                 className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] bg-white"
               />
             </div>
-            <div className="flex gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] bg-white min-w-[120px]"
+                className="w-full lg:w-auto px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] bg-white sm:min-w-[140px]"
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
@@ -440,7 +440,7 @@ export default function ProfessionalPrakritiVerification() {
               <select
                 value={filterPriority}
                 onChange={(e) => setFilterPriority(e.target.value)}
-                className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] bg-white min-w-[120px]"
+                className="w-full lg:w-auto px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] bg-white sm:min-w-[140px]"
               >
                 <option value="all">All Priority</option>
                 <option value="high">High</option>
@@ -452,7 +452,7 @@ export default function ProfessionalPrakritiVerification() {
         </div>
 
         {/* Patient Cards */}
-        <div className="grid xl:grid-cols-2 gap-6">
+        <div className="grid xl:grid-cols-2 gap-4 sm:gap-6">
           {filteredPatients.map((patient) => {
             const dominantDosha = getDominantDosha(patient.assessment);
             const doshaInfo =
@@ -463,17 +463,17 @@ export default function ProfessionalPrakritiVerification() {
                 key={patient.id}
                 className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow"
               >
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-4">
+                <CardHeader className="pb-4 px-4 sm:px-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="flex items-start gap-3 sm:gap-4 min-w-0">
                       <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
                         <User className="h-6 w-6 text-[#1F5C3F]" />
                       </div>
-                      <div className="space-y-1">
-                        <CardTitle className="text-lg font-semibold text-slate-900">
+                      <div className="space-y-1 min-w-0">
+                        <CardTitle className="text-lg font-semibold text-slate-900 truncate">
                           {patient.name}
                         </CardTitle>
-                        <div className="flex items-center gap-4 text-sm text-slate-600">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-slate-600">
                           <span>
                             {patient.age} years, {patient.gender}
                           </span>
@@ -487,7 +487,7 @@ export default function ProfessionalPrakritiVerification() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 items-end">
+                    <div className="flex flex-row sm:flex-col gap-2 sm:items-end">
                       <Badge
                         className={`text-xs px-2 py-1 border ${
                           priorityConfig[
@@ -524,14 +524,14 @@ export default function ProfessionalPrakritiVerification() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
                   {/* Dosha Analysis */}
                   <div className="space-y-3">
                     <h4 className="font-semibold text-slate-900 flex items-center gap-2">
                       <BarChart3 className="h-4 w-4 text-[#1F5C3F]" />
                       Constitutional Analysis
                     </h4>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                       {Object.entries(doshaConfig).map(([key, config]) => {
                         const value = patient.assessment[
                           key as keyof typeof patient.assessment
@@ -570,7 +570,7 @@ export default function ProfessionalPrakritiVerification() {
                         );
                       })}
                     </div>
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center justify-between text-xs gap-2">
                       <span className="text-slate-600">Confidence Score:</span>
                       <Badge variant="outline" className="text-slate-700">
                         <TrendingUp className="h-3 w-3 mr-1" />
@@ -585,7 +585,7 @@ export default function ProfessionalPrakritiVerification() {
                       <FileText className="h-4 w-4 text-[#1F5C3F]" />
                       Assessment Response
                     </h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                       {questions.map((q) => (
                         <div
                           key={q.id}
@@ -595,7 +595,7 @@ export default function ProfessionalPrakritiVerification() {
                           <span className="font-medium text-slate-600">
                             {q.label}:
                           </span>
-                          <span className="text-slate-800 capitalize ml-auto">
+                          <span className="text-slate-800 capitalize ml-auto text-right break-words">
                             {
                               patient.assessment.answers[
                                 q.id as keyof typeof patient.assessment.answers
@@ -625,14 +625,11 @@ export default function ProfessionalPrakritiVerification() {
                             onValueChange={(val) =>
                               handleInputChange("finalDosha", val)
                             }
-                            className="flex gap-6"
+                            className="grid grid-cols-1 sm:grid-cols-3 gap-3"
                           >
                             {Object.entries(doshaConfig).map(
                               ([key, config]) => (
-                                <div
-                                  key={key}
-                                  className="flex items-center space-x-2"
-                                >
+                                <div key={key} className="flex items-center space-x-2">
                                   <RadioGroupItem
                                     value={key}
                                     id={`${patient.id}-${key}`}
@@ -673,10 +670,10 @@ export default function ProfessionalPrakritiVerification() {
                         </div>
                       </div>
 
-                      <div className="flex gap-3 pt-2">
+                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
                         <Button
                           size="sm"
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                          className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white"
                           onClick={() => handleSave(patient.id)}
                           disabled={!editState.finalDosha}
                         >
@@ -687,7 +684,7 @@ export default function ProfessionalPrakritiVerification() {
                           size="sm"
                           variant="outline"
                           onClick={handleCancel}
-                          className="border-slate-300 text-slate-700"
+                          className="w-full sm:w-auto border-slate-300 text-slate-700"
                         >
                           <X className="h-4 w-4 mr-2" />
                           Cancel
@@ -696,7 +693,7 @@ export default function ProfessionalPrakritiVerification() {
                           size="sm"
                           variant="outline"
                           onClick={() => handleDelete(patient.id)}
-                          className="border-red-300 text-red-700 hover:bg-red-50 ml-auto"
+                          className="w-full sm:w-auto border-red-300 text-red-700 hover:bg-red-50 sm:ml-auto"
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Delete
@@ -713,7 +710,7 @@ export default function ProfessionalPrakritiVerification() {
                         </h4>
 
                         <div className="space-y-3">
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <span className="text-sm font-medium text-slate-600">
                               Final Constitution:
                             </span>
@@ -767,12 +764,12 @@ export default function ProfessionalPrakritiVerification() {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                         {patient.assessment.status !== "verified" && (
                           <Button
                             size="sm"
                             onClick={() => handleEdit(patient.id)}
-                            className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white"
+                            className="w-full sm:w-auto bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white"
                           >
                             <Edit className="h-4 w-4 mr-2" />
                             Review & Verify
@@ -782,7 +779,7 @@ export default function ProfessionalPrakritiVerification() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-slate-300 text-slate-700"
+                          className="w-full sm:w-auto border-slate-300 text-slate-700"
                           onClick={() => setViewDetailsId(patient.id)}
                         >
                           <Eye className="h-4 w-4 mr-2" />
@@ -792,7 +789,7 @@ export default function ProfessionalPrakritiVerification() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-slate-300 text-slate-700"
+                          className="w-full sm:w-auto border-slate-300 text-slate-700"
                         >
                           <Share className="h-4 w-4 mr-2" />
                           Share
@@ -803,7 +800,7 @@ export default function ProfessionalPrakritiVerification() {
                             size="sm"
                             variant="outline"
                             onClick={() => handleDelete(patient.id)}
-                            className="border-red-300 text-red-700 hover:bg-red-50 ml-auto"
+                            className="w-full sm:w-auto border-red-300 text-red-700 hover:bg-red-50 sm:ml-auto"
                           >
                             <Trash2 className="h-4 w-4 mr-2" />
                             Delete
@@ -820,8 +817,8 @@ export default function ProfessionalPrakritiVerification() {
 
         {/* Footer */}
         <div className="mt-8 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between text-sm text-slate-600">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between text-sm text-slate-600">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-emerald-600" />
                 HIPAA Compliant System
@@ -835,7 +832,7 @@ export default function ProfessionalPrakritiVerification() {
                 Last updated: {new Date().toLocaleTimeString()}
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 lg:justify-end">
               <span>Powered by Ayurvedic Medical Intelligence</span>
               <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
             </div>
@@ -844,7 +841,7 @@ export default function ProfessionalPrakritiVerification() {
 
         {/* Empty State */}
         {filteredPatients.length === 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-12 text-center">
             <div className="p-4 bg-slate-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Search className="h-8 w-8 text-slate-500" />
             </div>
@@ -872,8 +869,8 @@ export default function ProfessionalPrakritiVerification() {
         )}
       {/* View Details Modal */}
       {viewDetailsId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl relative animate-fade-in overflow-y-auto max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black bg-opacity-30 p-3 sm:p-4">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 w-full max-w-2xl relative animate-fade-in overflow-y-auto max-h-[92vh]">
             <button
               className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
               onClick={() => setViewDetailsId(null)}
@@ -888,10 +885,10 @@ export default function ProfessionalPrakritiVerification() {
               const doshaInfo = doshaConfig[dominantDosha as keyof typeof doshaConfig];
               return (
                 <>
-                  <h2 className="text-2xl font-bold text-[#1F5C3F] mb-2 flex items-center gap-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#1F5C3F] mb-2 flex items-center gap-2">
                     <User className="h-6 w-6 text-[#1F5C3F]" /> Patient Details
                   </h2>
-                  <div className="mb-2 text-sm text-slate-600">
+                  <div className="mb-2 text-sm text-slate-600 break-words">
                     <span className="font-semibold">Name:</span> {patient.name}<br />
                     <span className="font-semibold">Age:</span> {patient.age} | <span className="font-semibold">Gender:</span> {patient.gender}<br />
                     <span className="font-semibold">Phone:</span> {patient.phone}<br />
@@ -904,7 +901,7 @@ export default function ProfessionalPrakritiVerification() {
                     <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                       <BarChart3 className="h-5 w-5 text-[#1F5C3F]" /> Dosha Analysis
                     </h3>
-                    <div className="grid grid-cols-3 gap-3 mb-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-2">
                       {Object.entries(doshaConfig).map(([key, config]) => {
                         const value = patient.assessment[key as keyof typeof patient.assessment] as number;
                         const percentage = (value / 8) * 100;
@@ -925,7 +922,7 @@ export default function ProfessionalPrakritiVerification() {
                         );
                       })}
                     </div>
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center justify-between text-xs gap-2">
                       <span className="text-slate-600">Confidence Score:</span>
                       <Badge variant="outline" className="text-slate-700">
                         <TrendingUp className="h-3 w-3 mr-1" />
@@ -937,12 +934,12 @@ export default function ProfessionalPrakritiVerification() {
                     <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                       <FileText className="h-5 w-5 text-[#1F5C3F]" /> Assessment Answers
                     </h3>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                       {questions.map((q) => (
                         <div key={q.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded border">
                           <div className="text-slate-500">{q.icon}</div>
                           <span className="font-medium text-slate-600">{q.label}:</span>
-                          <span className="text-slate-800 capitalize ml-auto">{patient.assessment.answers[q.id as keyof typeof patient.assessment.answers]}</span>
+                          <span className="text-slate-800 capitalize ml-auto text-right break-words">{patient.assessment.answers[q.id as keyof typeof patient.assessment.answers]}</span>
                         </div>
                       ))}
                     </div>
@@ -951,7 +948,7 @@ export default function ProfessionalPrakritiVerification() {
                     <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                       <UserCheck className="h-5 w-5 text-[#1F5C3F]" /> Medical Assessment
                     </h3>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                       <span className="text-sm font-medium text-slate-600">Final Constitution:</span>
                       {patient.assessment.finalDosha ? (
                         <Badge className={doshaConfig[patient.assessment.finalDosha as keyof typeof doshaConfig].badgeColor}>

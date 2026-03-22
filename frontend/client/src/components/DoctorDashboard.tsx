@@ -534,17 +534,17 @@ export default function DoctorDashboard({
     }
 
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="flex items-start sm:items-center space-x-4 min-w-0">
             <div className="w-20 h-20 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-full flex items-center justify-center text-white text-2xl font-semibold">
               {selectedPatient.name[0]}
             </div>
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900">
+            <div className="min-w-0">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">
                 {selectedPatient.name}
               </h2>
-              <div className="flex space-x-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-2">
                 <span className="px-3 py-1 bg-emerald-100 text-[#1F5C3F] rounded-full text-sm font-medium">
                   {selectedPatient.prakriti}
                 </span>
@@ -562,12 +562,12 @@ export default function DoctorDashboard({
             </div>
           </div>
 
-          <div className="flex space-x-3">
-            <button className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+            <button className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 w-full sm:w-auto">
               <Video className="w-4 h-4" />
               <span>Video Call</span>
             </button>
-            <button className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2">
+            <button className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 w-full sm:w-auto">
               <MessageCircle className="w-4 h-4" />
               <span>Message</span>
             </button>
@@ -619,7 +619,7 @@ export default function DoctorDashboard({
                 <Monitor className="w-5 h-5 mr-2 text-red-600" />
                 Vital Signs
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white rounded-lg">
                   <div className="text-xl font-bold text-gray-900">
                     {selectedPatient.vitalSigns.bp}
@@ -774,7 +774,7 @@ export default function DoctorDashboard({
   if (selectedPatient) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <div className="px-4 sm:px-6 lg:px-8 py-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           {renderPatientProfile()}
         </div>
       </div>
@@ -786,22 +786,22 @@ export default function DoctorDashboard({
       {/* Header */}
       <header className="bg-white border border-gray-200 rounded-xl">
         <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 py-4">
+            <div className="flex items-start sm:items-center space-x-4 min-w-0">
               <div className="w-12 h-12 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-lg flex items-center justify-center">
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">
                   Hello Lifeline
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600 break-words">
                   Dr. Anjali Verma - Senior Ayurvedic Doctor
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center self-end sm:self-auto space-x-4">
               <div className="relative">
                 <Bell
                   className="w-6 h-6 text-gray-600 cursor-pointer hover:text-gray-900"
@@ -815,50 +815,58 @@ export default function DoctorDashboard({
                 )}
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-fade-in">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                      <span className="font-semibold text-gray-800 text-lg flex items-center gap-2">
-                        <Bell className="w-5 h-5 text-[#1F5C3F]" />{" "}
-                        Notifications
-                      </span>
-                      <button
-                        className="text-gray-400 hover:text-gray-600"
-                        onClick={() => setShowNotifications(false)}
-                        aria-label="Close notifications"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="max-h-80 overflow-y-auto divide-y divide-gray-100">
-                      {mockRecentActivities.length === 0 ? (
-                        <div className="p-6 text-center text-gray-500">
-                          No notifications
-                        </div>
-                      ) : (
-                        mockRecentActivities.map((activity) => {
-                          const IconComponent = activity.icon;
-                          return (
-                            <div
-                              key={activity.id}
-                              className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition"
-                            >
-                              <div className="flex-shrink-0 w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
-                                <IconComponent className="w-5 h-5 text-[#1F5C3F]" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {activity.action}
+                  <>
+                    <button
+                      type="button"
+                      className="fixed inset-0 z-40 bg-black/10"
+                      onClick={() => setShowNotifications(false)}
+                      aria-label="Close notifications overlay"
+                    />
+                    <div className="fixed left-3 right-3 top-24 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-96 max-w-[24rem] bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-fade-in">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                        <span className="font-semibold text-gray-800 text-base sm:text-lg flex items-center gap-2">
+                          <Bell className="w-5 h-5 text-[#1F5C3F]" />
+                          Notifications
+                        </span>
+                        <button
+                          className="text-gray-400 hover:text-gray-600"
+                          onClick={() => setShowNotifications(false)}
+                          aria-label="Close notifications"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div className="max-h-[65vh] sm:max-h-80 overflow-y-auto divide-y divide-gray-100">
+                        {mockRecentActivities.length === 0 ? (
+                          <div className="p-6 text-center text-gray-500">
+                            No notifications
+                          </div>
+                        ) : (
+                          mockRecentActivities.map((activity) => {
+                            const IconComponent = activity.icon;
+                            return (
+                              <div
+                                key={activity.id}
+                                className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition"
+                              >
+                                <div className="flex-shrink-0 w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
+                                  <IconComponent className="w-5 h-5 text-[#1F5C3F]" />
                                 </div>
-                                <div className="text-xs text-gray-500 mt-1">
-                                  {activity.time}
+                                <div className="flex-1 min-w-0">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {activity.action}
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    {activity.time}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })
-                      )}
+                            );
+                          })
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
 
@@ -872,7 +880,7 @@ export default function DoctorDashboard({
               {/* Add Patient Modal */}
               {showAddModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                  <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md relative">
+                  <div className="bg-white rounded-xl shadow-xl p-4 sm:p-8 w-full max-w-md mx-4 relative max-h-[85vh] overflow-y-auto">
                     <button
                       onClick={closeAddModal}
                       className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
@@ -1076,7 +1084,7 @@ export default function DoctorDashboard({
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           {/* Tabs */}
           <div className="border-b border-gray-200">
-            <div className="flex space-x-8 px-6 pt-4">
+            <div className="flex gap-4 sm:gap-8 px-4 sm:px-6 pt-4 overflow-x-auto whitespace-nowrap">
               {tabNames.map((name, index) => (
                 <button
                   key={index}
@@ -1095,11 +1103,11 @@ export default function DoctorDashboard({
 
           {/* Appointments Tab */}
           {tab === 0 && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Upcoming Appointments</h2>
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Upcoming Appointments</h2>
                 <button
-                  className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 w-full sm:w-auto"
                   onClick={() => setSharedAppointments(getStoredAppointments())}
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -1150,8 +1158,8 @@ export default function DoctorDashboard({
 
           {/* Patients Tab */}
           {tab === 1 && (
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
+            <div className="p-4 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 text-gray-900 flex items-center gap-2">
                 <Users className="w-6 h-6 text-[#1F5C3F]" /> Patients
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1221,7 +1229,7 @@ export default function DoctorDashboard({
                       ))}
                     </div>
                     {/* Actions */}
-                    <div className="grid grid-cols-2 gap-2 mt-4 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4 pt-2">
                       <button
                         className="flex items-center justify-center gap-1 px-3 py-2 bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white rounded-lg text-xs font-semibold shadow transition-colors"
                         onClick={() => {
@@ -1261,7 +1269,7 @@ export default function DoctorDashboard({
 
           {/* Analytics Tab */}
           {tab === 2 && (
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Compliance Trends */}
                 <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-6">
@@ -1271,7 +1279,7 @@ export default function DoctorDashboard({
                   <p className="text-gray-600 mb-6">
                     Monthly patient compliance rates
                   </p>
-                  <div className="h-80">
+                  <div className="h-64 sm:h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={complianceData}>
                         <defs>
@@ -1355,7 +1363,7 @@ export default function DoctorDashboard({
                   <h3 className="text-lg font-semibold mb-6">
                     Patient Compliance by Individual
                   </h3>
-                  <div className="h-80">
+                  <div className="h-64 sm:h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <RechartsBarChart data={mockPatients}>
                         <XAxis
