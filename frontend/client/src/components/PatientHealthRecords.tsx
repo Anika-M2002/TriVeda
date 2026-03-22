@@ -161,36 +161,36 @@ export default function PatientHealthRecords() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-background text-foreground">
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <motion.div
           className="mb-8"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
               <div className="relative">
                 <div className="absolute inset-0 bg-emerald-500 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#10B981] flex items-center justify-center">
-                  <FileText className="w-8 h-8 text-white" />
+                <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#10B981] flex items-center justify-center">
+                  <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
               </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#0D9488] bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#0D9488] bg-clip-text text-transparent leading-tight break-words">
                   Health Records
                 </h1>
-                <p className="text-gray-600 text-lg mt-1">
+                <p className="text-gray-600 text-base sm:text-lg mt-1 leading-relaxed">
                   Manage and track your medical history securely
                 </p>
               </div>
             </div>
 
             {/* Stats Summary */}
-            <div className="flex gap-3">
-              <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm">
+            <div className="flex w-full lg:w-auto flex-wrap gap-2 sm:gap-3">
+              <div className="bg-white/80 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl shadow-sm min-w-[120px] flex-1 lg:flex-none">
                 <p className="text-xs text-gray-500">Total Records</p>
                 <p className="text-xl font-bold text-emerald-600">{mockHealthRecords.length}</p>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm">
+              <div className="bg-white/80 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl shadow-sm min-w-[120px] flex-1 lg:flex-none">
                 <p className="text-xs text-gray-500">With Access</p>
                 <p className="text-xl font-bold text-[#1F5C3F]">
                   {Object.values(access).flat().length}
@@ -210,12 +210,12 @@ export default function PatientHealthRecords() {
                 className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-emerald-500 transition-all"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {["all", "recent"].map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-medium transition-all text-sm sm:text-base ${
                     activeFilter === filter
                       ? "bg-gradient-to-r from-emerald-500 to-[#10B981] text-white shadow-lg"
                       : "bg-white/80 backdrop-blur-sm text-gray-600 hover:bg-white"
@@ -263,7 +263,7 @@ export default function PatientHealthRecords() {
                 <motion.div
                   key={rec.id}
                   variants={fadeInUp}
-                  className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-6 hover:shadow-xl transition-all overflow-hidden relative group`}
+                  className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-4 sm:p-6 hover:shadow-xl transition-all overflow-hidden relative group`}
                 >
                   {/* Decorative gradient line */}
                   <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-${recordColor}-500 to-${recordColor}-600`}></div>
@@ -271,14 +271,14 @@ export default function PatientHealthRecords() {
                   <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                     {/* Left side - Record Info */}
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
+                      <div className="flex items-start justify-between mb-3 gap-3">
+                        <div className="flex items-start gap-3 min-w-0">
                           <div className={`p-3 rounded-xl bg-gradient-to-br from-${recordColor}-100 to-${recordColor}-200`}>
                             <FileText className={`w-6 h-6 text-${recordColor}-600`} />
                           </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-gray-900">{rec.title}</h3>
-                            <div className="flex items-center gap-3 mt-1">
+                          <div className="min-w-0">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 break-words">{rec.title}</h3>
+                            <div className="flex flex-wrap items-center gap-2 mt-1">
                               <div className="flex items-center text-sm text-gray-500">
                                 <Calendar className="w-4 h-4 mr-1" />
                                 {rec.date}
@@ -293,10 +293,10 @@ export default function PatientHealthRecords() {
                         </div>
                       </div>
 
-                      <p className="text-gray-600 mb-4 pl-16">{rec.summary}</p>
+                      <p className="text-gray-600 text-sm sm:text-base mb-4 pl-0 sm:pl-14">{rec.summary}</p>
 
                       {/* Viewers */}
-                      <div className="pl-16 mb-4">
+                      <div className="pl-0 sm:pl-14 mb-4">
                         <div className="flex items-center gap-2 mb-2">
                           <Users className="w-4 h-4 text-gray-400" />
                           <span className="text-sm font-medium text-gray-700">Viewed by:</span>
@@ -321,7 +321,7 @@ export default function PatientHealthRecords() {
                       </div>
 
                       {/* Access Controls */}
-                      <div className="pl-16">
+                      <div className="pl-0 sm:pl-14">
                         <div className="flex items-center gap-2 mb-2">
                           <Shield className="w-4 h-4 text-gray-400" />
                           <span className="text-sm font-medium text-gray-700">Access Control:</span>
@@ -355,7 +355,7 @@ export default function PatientHealthRecords() {
                     </div>
 
                     {/* Right side - Actions */}
-                    <div className="flex lg:flex-col gap-2 lg:min-w-[140px]">
+                    <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:min-w-[140px]">
                       <motion.button
                         whileTap={{ scale: 0.98 }}
                         className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all w-full"

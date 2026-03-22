@@ -221,21 +221,21 @@ function PatientAppointments() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 lg:py-8">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-[#10B981] rounded-full shadow-lg mb-4">
             <Stethoscope className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-[#10B981] bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-[#10B981] bg-clip-text text-transparent mb-2 leading-tight break-words">
             Appointment Booking Flow
           </h1>
-          <p className="text-gray-600 max-w-3xl mx-auto">
+          <p className="text-gray-600 text-sm sm:text-base max-w-3xl mx-auto leading-relaxed">
             Diagnosis to AI doctor assignment, with a downloadable PDF summary for every confirmed booking.
           </p>
         </div>
 
-        <div className="mb-8 overflow-x-auto">
-          <div className="flex items-center justify-center min-w-[820px] gap-2">
+        <div className="mb-8">
+          <div className="flex flex-wrap items-center justify-start sm:justify-center gap-2 sm:gap-3">
             {[1, 2, 3, 4, 5, 6].map((current) => (
               <React.Fragment key={current}>
                 <div className="flex items-center gap-2">
@@ -246,24 +246,24 @@ function PatientAppointments() {
                   >
                     {current}
                   </div>
-                  <span className={`text-sm font-medium ${step >= current ? "text-emerald-700" : "text-gray-500"}`}>
+                  <span className={`text-xs sm:text-sm font-medium ${step >= current ? "text-emerald-700" : "text-gray-500"}`}>
                     {stepTitles[current]}
                   </span>
                 </div>
-                {current < 6 && <ChevronRight className="w-4 h-4 text-gray-400" />}
+                {current < 6 && <ChevronRight className="hidden sm:block w-4 h-4 text-gray-400" />}
               </React.Fragment>
             ))}
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-emerald-500 to-[#10B981] p-6">
-                <h2 className="text-2xl font-bold text-white">Step {step}: {stepTitles[step]}</h2>
+              <div className="bg-gradient-to-r from-emerald-500 to-[#10B981] p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight break-words">Step {step}: {stepTitles[step]}</h2>
               </div>
 
-              <div className="p-6 space-y-6">
+              <div className="p-4 sm:p-6 space-y-6">
                 {step === 1 && (
                   <>
                     <div>
@@ -378,7 +378,7 @@ function PatientAppointments() {
                             No slots available for this day in selected category. Please choose another date.
                           </div>
                         ) : (
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
                             {availableSlots.map((slot) => (
                               <button
                                 key={slot}
@@ -435,7 +435,7 @@ function PatientAppointments() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Consultation mode *</label>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <button type="button" onClick={() => setConsultationMode("clinic")} className={`py-2 border rounded-lg ${consultationMode === "clinic" ? "bg-emerald-500 text-white border-emerald-500" : "border-gray-200"}`}>
                             <MapPin className="w-4 h-4 inline mr-1" /> In-Clinic
                           </button>
@@ -565,8 +565,8 @@ function PatientAppointments() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden sticky top-8">
-              <div className="bg-gradient-to-r from-[#10B981] to-emerald-600 p-6">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden lg:sticky lg:top-8">
+              <div className="bg-gradient-to-r from-[#10B981] to-emerald-600 p-4 sm:p-6">
                 <h2 className="text-xl font-bold text-white flex items-center space-x-2">
                   <Activity className="w-5 h-5" />
                   <span>My Appointments</span>

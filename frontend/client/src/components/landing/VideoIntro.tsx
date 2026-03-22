@@ -136,7 +136,7 @@ export default function VideoIntro({ onComplete }: VideoIntroProps) {
             </div>
 
             <motion.p
-              className="mt-4 text-emerald-300/70 text-sm tracking-[0.3em] uppercase font-sans"
+              className="mt-4 px-4 text-center text-emerald-300/70 text-xs sm:text-sm tracking-[0.18em] sm:tracking-[0.3em] uppercase font-sans max-w-[90vw] break-words"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}

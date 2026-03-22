@@ -219,36 +219,36 @@ export default function PatientReports() {
         )}
       </AnimatePresence>
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <motion.div
           className="mb-8"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
               <div className="relative">
                 <div className="absolute inset-0 bg-emerald-500 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center">
-                  <Award className="w-8 h-8 text-white" />
+                <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center">
+                  <Award className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
               </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent leading-tight break-words">
                   Health Reports
                 </h1>
-                <p className="text-gray-600 text-lg mt-1">
+                <p className="text-gray-600 text-base sm:text-lg mt-1 leading-relaxed">
                   Track and manage your medical reports
                 </p>
               </div>
             </div>
 
             {/* Stats Summary */}
-            <div className="flex gap-3">
-              <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm">
+            <div className="flex w-full lg:w-auto flex-wrap gap-2 sm:gap-3">
+              <div className="bg-white/80 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl shadow-sm min-w-[120px] flex-1 lg:flex-none">
                 <p className="text-xs text-gray-500">Total Reports</p>
                 <p className="text-xl font-bold text-emerald-600">{mockReports.length}</p>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm">
+              <div className="bg-white/80 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl shadow-sm min-w-[120px] flex-1 lg:flex-none">
                 <p className="text-xs text-gray-500">Action Required</p>
                 <p className="text-xl font-bold text-amber-600">
                   {mockReports.filter(r => r.actionable).length}
@@ -269,7 +269,7 @@ export default function PatientReports() {
                 className="w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-emerald-500 transition-all"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {[
                 { value: "all", label: "All Reports" },
                 { value: "actionable", label: "Action Required" },
@@ -278,7 +278,7 @@ export default function PatientReports() {
                 <button
                   key={filter.value}
                   onClick={() => setFilterType(filter.value as any)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-medium transition-all text-sm sm:text-base ${
                     filterType === filter.value
                       ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg"
                       : "bg-white/80 backdrop-blur-sm text-gray-600 hover:bg-white"
@@ -314,18 +314,18 @@ export default function PatientReports() {
                   {/* Decorative gradient line */}
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
                   
-                  <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8 overflow-hidden">
+                  <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-8 overflow-hidden">
                     <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-100 rounded-full -mr-10 -mt-10 opacity-20"></div>
                     
-                    <div className="flex flex-col md:flex-row gap-8 items-center">
+                    <div className="flex flex-col md:flex-row gap-4 sm:gap-8 items-start md:items-center">
                       {/* Doctor Info */}
-                      <div className="flex flex-col items-center">
+                      <div className="flex flex-col items-center self-center md:self-auto">
                         <div className="relative">
                           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full blur-md opacity-50"></div>
                           <img
                             src={mostRecent.doctor.image}
                             alt={mostRecent.doctor.name}
-                            className="relative w-28 h-28 rounded-full border-4 border-white shadow-xl object-cover"
+                            className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-xl object-cover"
                           />
                           <span className="absolute -bottom-2 -right-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             Recent
@@ -342,8 +342,8 @@ export default function PatientReports() {
                       </div>
 
                       {/* Report Details */}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-4 mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-3">
                           <div className="flex items-center gap-2 text-sm text-gray-500">
                             <Calendar className="w-4 h-4" />
                             {mostRecent.date}
@@ -356,17 +356,17 @@ export default function PatientReports() {
                           )}
                         </div>
 
-                        <h2 className="text-2xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 flex items-start sm:items-center gap-2 leading-tight break-words">
                           <FileText className="w-6 h-6 text-emerald-500" />
                           {mostRecent.title}
                         </h2>
 
                         <p className="text-gray-600 mb-6">{mostRecent.summary}</p>
 
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
                           <motion.button
                             whileTap={{ scale: 0.98 }}
-                            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                            className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 sm:px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
                             onClick={() => setSelectedReport(mostRecent)}
                           >
                             <Eye className="w-5 h-5" />
@@ -400,7 +400,7 @@ export default function PatientReports() {
               variants={staggerContainer}
               initial="initial"
               animate="animate"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
             >
               {otherReports.map((report, idx) => {
                 const isBooked = bookedIds.includes(report.id);

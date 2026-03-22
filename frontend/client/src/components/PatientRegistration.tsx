@@ -149,7 +149,7 @@ export default function PatientRegistration({
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="name" className="flex items-center gap-1 mb-1">
                   <UserPlus className="w-4 h-4 text-muted-foreground" /> Full
@@ -177,7 +177,7 @@ export default function PatientRegistration({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="email" className="flex items-center gap-1 mb-1">
                   <Mail className="w-4 h-4 text-muted-foreground" /> Email *
@@ -232,7 +232,7 @@ export default function PatientRegistration({
               <HeartPulse className="w-5 h-5 text-primary" /> Physical
               Characteristics
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label
                   htmlFor="weight"
@@ -320,7 +320,7 @@ export default function PatientRegistration({
                 <CheckCircle2 className="w-4 h-4 text-muted-foreground" />{" "}
                 Health Goals (Select all that apply)
               </Label>
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                 {[
                   "Weight Loss",
                   "Weight Gain",
@@ -378,7 +378,7 @@ export default function PatientRegistration({
                 <CheckCircle2 className="w-4 h-4 text-muted-foreground" />{" "}
                 Chronic Conditions (Select all that apply)
               </Label>
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                 {[
                   "Diabetes",
                   "Hypertension",

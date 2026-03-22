@@ -451,7 +451,7 @@ const ModalPopup: React.FC<ModalPopupProps> = ({
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative overflow-hidden"
+        className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 w-full max-w-md max-h-[85vh] overflow-y-auto relative"
       >
         {/* Decorative gradient line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-[#10B981] to-[#0D9488]"></div>
@@ -498,16 +498,16 @@ const DoctorCard = ({
     initial={{ y: 20, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     transition={{ duration: 0.5 }}
-    className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-[#10B981] rounded-2xl shadow-xl p-8 mb-8"
+    className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-[#10B981] rounded-2xl shadow-xl p-4 sm:p-8 mb-8"
   >
     {/* Decorative elements */}
     <div className="absolute inset-0 bg-black/10"></div>
     <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
     <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
     
-    <div className="relative flex flex-col md:flex-row md:items-center gap-6 text-white">
-      <div className="flex items-center gap-6">
-        <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm border-2 border-white/30 overflow-hidden">
+    <div className="relative flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 text-white">
+      <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+        <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-sm border-2 border-white/30 overflow-hidden shrink-0">
           <img
             src={assignedDoctor.avatar}
             alt="Doctor Avatar"
@@ -515,26 +515,26 @@ const DoctorCard = ({
           />
         </div>
         
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <User className="w-4 h-4 text-white/80" />
             <span className="text-sm text-white/80 font-medium">
               Assigned Doctor
             </span>
           </div>
-          <h3 className="text-2xl font-bold mb-1">{assignedDoctor.name}</h3>
-          <p className="text-white/90 mb-2">{assignedDoctor.specialty}</p>
-          <span className="inline-block px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium border border-white/30">
+          <h3 className="text-lg sm:text-2xl font-bold mb-1 break-words">{assignedDoctor.name}</h3>
+          <p className="text-white/90 mb-2 text-sm sm:text-base break-words">{assignedDoctor.specialty}</p>
+          <span className="inline-block px-3 sm:px-4 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium border border-white/30">
             {assignedDoctor.status}
           </span>
         </div>
       </div>
       
-      <div className="flex-1 flex flex-col md:flex-row md:justify-end gap-3">
+      <div className="flex-1 flex flex-col sm:flex-row md:justify-end gap-2 sm:gap-3 w-full">
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={onAsk}
-          className="flex items-center justify-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white font-medium hover:bg-white/30 transition-all"
+          className="w-full sm:w-auto flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white text-sm sm:text-base font-medium hover:bg-white/30 transition-all"
         >
           <MessageSquare className="w-4 h-4 mr-2" />
           Ask a Question
@@ -542,7 +542,7 @@ const DoctorCard = ({
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={onRequest}
-          className="flex items-center justify-center px-6 py-3 bg-white text-emerald-600 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+          className="w-full sm:w-auto flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-emerald-600 rounded-xl text-sm sm:text-base font-medium shadow-lg hover:shadow-xl transition-all"
         >
           <Calendar className="w-4 h-4 mr-2" />
           Request Appointment
@@ -634,17 +634,17 @@ const MealCard = ({ meal, isLast = false }: { meal: MealLog; isLast?: boolean })
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="flex-1 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/50 p-6 hover:shadow-xl transition-all"
+        className="flex-1 min-w-0 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/50 p-4 sm:p-6 hover:shadow-xl transition-all"
       >
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="font-semibold text-lg text-gray-900">{meal.meal}</h3>
+              <h3 className="font-semibold text-base sm:text-lg text-gray-900 break-words">{meal.meal}</h3>
               <span className={`px-3 py-1 rounded-full text-xs font-medium text-white bg-${color}-500`}>
                 {statusLabels[meal.status]}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-gray-600">
               <div className="flex items-center">
                 <Clock className="w-4 h-4 mr-1 text-gray-400" />
                 {meal.time}
@@ -660,7 +660,7 @@ const MealCard = ({ meal, isLast = false }: { meal: MealLog; isLast?: boolean })
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <p className="text-sm font-medium text-gray-700 mb-2 flex items-center">
               <Utensils className="w-4 h-4 mr-1 text-emerald-500" />
@@ -709,35 +709,35 @@ export default function AdvancedAyurvedicDietCharts() {
   const [recipeAlertContent, setRecipeAlertContent] = useState<string>("");
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-background text-foreground">
+    <div className="min-h-screen relative bg-background text-foreground">
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <motion.div
           className="mb-8"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 min-w-0 w-full lg:w-auto">
               <div className="relative">
                 <div className="absolute inset-0 bg-emerald-500 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#10B981] flex items-center justify-center">
-                  <Utensils className="w-7 h-7 text-white" />
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#10B981] flex items-center justify-center">
+                  <Utensils className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </div>
               </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#0D9488] bg-clip-text text-transparent">
+              <div className="min-w-0 w-full max-w-full">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#0D9488] bg-clip-text text-transparent leading-tight break-words whitespace-normal">
                   Your's Ayurvedic Journey
                 </h1>
-                <p className="text-gray-600 text-lg mt-1">
+                <p className="text-sm sm:text-lg text-gray-600 mt-1 leading-relaxed break-words max-w-full">
                   Personalized nutrition tracking for holistic wellness
                 </p>
               </div>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex flex-wrap w-full lg:w-auto gap-2 sm:gap-3 justify-start lg:justify-end">
               <motion.button
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl hover:bg-white hover:shadow-lg transition-all"
+                className="flex items-center px-3 sm:px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl hover:bg-white hover:shadow-lg transition-all text-sm sm:text-base"
               >
                 <Filter className="w-4 h-4 mr-2 text-gray-600" />
                 <span className="text-gray-700">Filter</span>
@@ -767,7 +767,7 @@ export default function AdvancedAyurvedicDietCharts() {
                     "diet_charts.xlsx"
                   );
                 }}
-                className="flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl hover:bg-white hover:shadow-lg transition-all"
+                className="flex items-center px-3 sm:px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl hover:bg-white hover:shadow-lg transition-all text-sm sm:text-base"
               >
                 <Download className="w-4 h-4 mr-2 text-gray-600" />
                 <span className="text-gray-700">Export</span>
@@ -775,7 +775,7 @@ export default function AdvancedAyurvedicDietCharts() {
               
               <motion.button
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="flex items-center px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
               >
                 <Share2 className="w-4 h-4 mr-2" />
                 <span>Share</span>
@@ -783,18 +783,18 @@ export default function AdvancedAyurvedicDietCharts() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="px-4 py-1.5 bg-gradient-to-r from-emerald-100 to-emerald-200 text-emerald-800 rounded-full text-sm font-medium border border-emerald-300">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 sm:px-4 py-1.5 bg-gradient-to-r from-emerald-100 to-emerald-200 text-emerald-800 rounded-full text-xs sm:text-sm font-medium border border-emerald-300">
               Patient Dashboard
             </span>
-            <span className="px-4 py-1.5 bg-gradient-to-r from-emerald-100 to-emerald-200 text-[#1F5C3F] rounded-full text-sm font-medium border border-emerald-300">
+            <span className="px-3 sm:px-4 py-1.5 bg-gradient-to-r from-emerald-100 to-emerald-200 text-[#1F5C3F] rounded-full text-xs sm:text-sm font-medium border border-emerald-300">
               Vata-Pitta Constitution
             </span>
           </div>
         </motion.div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <StatCard
             icon={Flame}
             title="Daily Calories"
@@ -830,27 +830,27 @@ export default function AdvancedAyurvedicDietCharts() {
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Weekly Nutrition Trends */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+            className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
               <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                 <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
                   <BarChart3 className="w-5 h-5 text-emerald-600" />
                 </div>
                 Weekly Nutrition Analysis
               </h2>
-              <div className="flex gap-2 bg-gray-100 rounded-xl p-1">
+              <div className="flex flex-wrap gap-2 bg-gray-100 rounded-xl p-1 w-full sm:w-auto">
                 {["week", "month", "quarter"].map((range) => (
                   <button
                     key={range}
                     onClick={() => setSelectedTimeRange(range)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                       selectedTimeRange === range
                         ? "bg-white text-emerald-600 shadow-sm"
                         : "text-gray-600 hover:text-gray-900"
@@ -861,10 +861,11 @@ export default function AdvancedAyurvedicDietCharts() {
                 ))}
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={mockDietData}>
-                <XAxis dataKey="day" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+            <div className="h-[240px] sm:h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={mockDietData} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
+                <XAxis dataKey="day" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} width={30} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "white",
@@ -873,7 +874,7 @@ export default function AdvancedAyurvedicDietCharts() {
                     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
                   }}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: "12px", paddingTop: 8 }} iconSize={10} />
                 <Area
                   type="monotone"
                   dataKey="calories"
@@ -900,6 +901,7 @@ export default function AdvancedAyurvedicDietCharts() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+            </div>
           </motion.div>
 
           {/* Dosha Balance */}
@@ -907,7 +909,7 @@ export default function AdvancedAyurvedicDietCharts() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
           >
             <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
               <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
@@ -955,7 +957,7 @@ export default function AdvancedAyurvedicDietCharts() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
           >
             <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
               <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
@@ -963,11 +965,12 @@ export default function AdvancedAyurvedicDietCharts() {
               </div>
               Nutritional Profile
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={nutritionRadarData}>
+            <div className="h-[260px] sm:h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={nutritionRadarData} outerRadius="70%">
                 <PolarGrid stroke="#e5e7eb" />
-                <PolarAngleAxis dataKey="nutrient" stroke="#6b7280" />
-                <PolarRadiusAxis domain={[0, 100]} stroke="#6b7280" />
+                <PolarAngleAxis dataKey="nutrient" stroke="#6b7280" tick={{ fontSize: 11 }} />
+                <PolarRadiusAxis domain={[0, 100]} stroke="#6b7280" tick={{ fontSize: 11 }} />
                 <Radar
                   name="Current"
                   dataKey="value"
@@ -978,13 +981,14 @@ export default function AdvancedAyurvedicDietCharts() {
                 />
               </RadarChart>
             </ResponsiveContainer>
+            </div>
           </motion.div>
 
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
           >
             <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
               <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
@@ -992,7 +996,8 @@ export default function AdvancedAyurvedicDietCharts() {
               </div>
               Macro Distribution
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <div className="h-[260px] sm:h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={macroPieData}
@@ -1000,10 +1005,10 @@ export default function AdvancedAyurvedicDietCharts() {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={100}
-                  innerRadius={60}
+                  outerRadius={82}
+                  innerRadius={48}
                   paddingAngle={5}
-                  label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                  label={false}
                 >
                   {macroPieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -1017,9 +1022,10 @@ export default function AdvancedAyurvedicDietCharts() {
                     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
                   }}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: "12px" }} iconSize={10} />
               </PieChart>
             </ResponsiveContainer>
+            </div>
           </motion.div>
         </div>
 
@@ -1028,7 +1034,7 @@ export default function AdvancedAyurvedicDietCharts() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 mb-8"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6 mb-8"
         >
           <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
@@ -1037,104 +1043,172 @@ export default function AdvancedAyurvedicDietCharts() {
             Today's Ayurvedic Meal Plan
           </h2>
           
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-2 font-medium text-gray-600">Meal Time</th>
-                  <th className="text-left py-3 px-2 font-medium text-gray-600">Time</th>
-                  <th className="text-left py-3 px-2 font-medium text-gray-600">Foods & Portions</th>
-                  <th className="text-left py-3 px-2 font-medium text-gray-600">Ayurvedic Benefits</th>
-                  <th className="text-left py-3 px-2 font-medium text-gray-600">Calories</th>
-                </tr>
-              </thead>
-              <tbody>
-                {todaysMeals.map((meal, idx) => (
-                  <React.Fragment key={idx}>
-                    <motion.tr
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-transparent transition-colors"
-                    >
-                      <td className="py-4 px-2">
-                        <div className="flex items-center">
-                          <div className={`w-2 h-2 rounded-full mr-3 ${
-                            meal.meal.includes("Morning")
-                              ? "bg-yellow-400"
-                              : meal.meal === "Lunch"
-                              ? "bg-orange-400"
-                              : "bg-[#10B981]"
-                          }`} />
-                          <span className="font-medium text-gray-900">{meal.meal}</span>
+          <div className="w-full space-y-4">
+            <div className="md:hidden space-y-4">
+              {todaysMeals.map((meal, idx) => (
+                <motion.div
+                  key={`mobile-meal-${idx}`}
+                  initial={{ y: 12, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="rounded-xl border border-emerald-100 bg-emerald-50/30 p-4"
+                >
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className={`w-2 h-2 rounded-full shrink-0 ${
+                        meal.meal.includes("Morning")
+                          ? "bg-yellow-400"
+                          : meal.meal === "Lunch"
+                          ? "bg-orange-400"
+                          : "bg-[#10B981]"
+                      }`} />
+                      <p className="font-semibold text-gray-900 truncate">{meal.meal}</p>
+                    </div>
+                    <p className="text-xs text-gray-600 whitespace-nowrap">{meal.time}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {meal.foods.map((food, i) => (
+                      <span key={i} className="px-2 py-1 bg-white text-gray-700 rounded-lg text-xs border border-gray-100">
+                        {food}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-xs text-gray-600 italic mb-2 break-words">{meal.rationale}</p>
+
+                  <div className="flex items-center justify-between">
+                    <span className="inline-block px-2 py-1 bg-emerald-100 text-[#1F5C3F] rounded-full text-xs font-medium">
+                      {meal.constitution}
+                    </span>
+                    <span className="font-semibold text-gray-900 text-sm">{meal.calories}</span>
+                  </div>
+
+                  <div className="mt-3 border-t border-emerald-100 pt-3">
+                    <p className="text-xs font-semibold text-emerald-700 mb-2">Recommended Recipes:</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      {(recipeRecommendations[meal.meal] || []).map((rec, ridx) => (
+                        <div key={ridx} className="bg-white rounded-lg p-3 border border-emerald-100">
+                          <p className="font-semibold text-emerald-700 text-sm">{rec.name}</p>
+                          <p className="text-xs text-gray-600 mt-1 mb-2">{rec.benefit}</p>
+                          <button
+                            className="w-full px-3 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-lg text-xs font-medium"
+                            onClick={() => {
+                              setActiveRecipe({
+                                name: rec.name,
+                                ...recipeDetails[rec.name],
+                              });
+                              setShowRecipeModal(true);
+                            }}
+                          >
+                            View Recipe
+                          </button>
                         </div>
-                      </td>
-                      <td className="py-4 px-2 text-gray-600">{meal.time}</td>
-                      <td className="py-4 px-2">
-                        <div className="flex flex-wrap gap-1">
-                          {meal.foods.map((food, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 bg-gray-100 text-gray-800 rounded-lg text-xs"
-                            >
-                              {food}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className="py-4 px-2 max-w-xs">
-                        <p className="text-sm text-gray-600 italic mb-2">{meal.rationale}</p>
-                        <span className="inline-block px-2 py-1 bg-emerald-100 text-[#1F5C3F] rounded-full text-xs font-medium">
-                          {meal.constitution}
-                        </span>
-                      </td>
-                      <td className="py-4 px-2 font-semibold text-gray-900">{meal.calories}</td>
-                    </motion.tr>
-                    
-                    {/* Recipe Recommendations Row */}
-                    <tr className="border-b border-gray-100">
-                      <td colSpan={5} className="py-3 px-2 bg-gradient-to-r from-emerald-50/30 to-emerald-50/30">
-                        <div className="flex items-center mb-2">
-                          <Utensils className="w-4 h-4 mr-2 text-emerald-500" />
-                          <span className="font-semibold text-emerald-700 text-sm">Recommended Recipes:</span>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                          {(recipeRecommendations[meal.meal] || []).map((rec, ridx) => (
-                            <motion.div
-                              key={ridx}
-                              initial={{ scale: 0.9, opacity: 0 }}
-                              animate={{ scale: 1, opacity: 1 }}
-                              transition={{ delay: ridx * 0.1 }}
-                              className="bg-white rounded-xl shadow-md p-4 flex flex-col min-w-[220px] max-w-xs border border-emerald-100 hover:shadow-lg transition-all"
-                            >
-                              <div className="flex items-center gap-2 mb-2">
-                                <Leaf className="w-4 h-4 text-emerald-500" />
-                                <span className="font-bold text-emerald-700 text-sm">{rec.name}</span>
-                              </div>
-                              <p className="text-xs text-gray-600 mb-3">{rec.benefit}</p>
-                              <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="mt-auto px-3 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-lg text-xs font-medium shadow-md hover:shadow-lg transition-all"
-                                onClick={() => {
-                                  setActiveRecipe({
-                                    name: rec.name,
-                                    ...recipeDetails[rec.name],
-                                  });
-                                  setShowRecipeModal(true);
-                                }}
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="hidden md:block overflow-x-auto w-full">
+              <table className="w-full min-w-[680px]">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Meal Time</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Time</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Foods & Portions</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Ayurvedic Benefits</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Calories</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {todaysMeals.map((meal, idx) => (
+                    <React.Fragment key={idx}>
+                      <motion.tr
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: idx * 0.05 }}
+                        className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-transparent transition-colors"
+                      >
+                        <td className="py-4 px-4 text-sm">
+                          <div className="flex items-center">
+                            <div className={`w-2 h-2 rounded-full mr-2 ${
+                              meal.meal.includes("Morning")
+                                ? "bg-yellow-400"
+                                : meal.meal === "Lunch"
+                                ? "bg-orange-400"
+                                : "bg-[#10B981]"
+                            }`} />
+                            <span className="font-medium text-gray-900">{meal.meal}</span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4 text-gray-600 text-sm whitespace-nowrap">{meal.time}</td>
+                        <td className="py-4 px-4 text-sm">
+                          <div className="flex flex-wrap gap-1">
+                            {meal.foods.map((food, i) => (
+                              <span
+                                key={i}
+                                className="px-2 py-1 bg-gray-100 text-gray-800 rounded-lg text-xs"
                               >
-                                View Recipe
-                              </motion.button>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
+                                {food}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4 max-w-xs text-sm">
+                          <p className="text-xs text-gray-600 italic mb-2">{meal.rationale}</p>
+                          <span className="inline-block px-2 py-1 bg-emerald-100 text-[#1F5C3F] rounded-full text-xs font-medium">
+                            {meal.constitution}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 font-semibold text-gray-900 text-sm whitespace-nowrap">{meal.calories}</td>
+                      </motion.tr>
+
+                      <tr className="border-b border-gray-100">
+                        <td colSpan={5} className="py-3 px-4 bg-gradient-to-r from-emerald-50/30 to-emerald-50/30">
+                          <div className="flex items-center mb-2">
+                            <Utensils className="w-4 h-4 mr-2 text-emerald-500" />
+                            <span className="font-semibold text-emerald-700 text-sm">Recommended Recipes:</span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {(recipeRecommendations[meal.meal] || []).map((rec, ridx) => (
+                              <motion.div
+                                key={ridx}
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ delay: ridx * 0.1 }}
+                                className="bg-white rounded-xl shadow-md p-4 flex flex-col border border-emerald-100 hover:shadow-lg transition-all"
+                              >
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Leaf className="w-4 h-4 text-emerald-500" />
+                                  <span className="font-bold text-emerald-700 text-sm">{rec.name}</span>
+                                </div>
+                                <p className="text-xs text-gray-600 mb-3">{rec.benefit}</p>
+                                <motion.button
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  className="mt-auto px-3 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-lg text-xs font-medium shadow-md hover:shadow-lg transition-all"
+                                  onClick={() => {
+                                    setActiveRecipe({
+                                      name: rec.name,
+                                      ...recipeDetails[rec.name],
+                                    });
+                                    setShowRecipeModal(true);
+                                  }}
+                                >
+                                  View Recipe
+                                </motion.button>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </motion.div>
 
@@ -1155,21 +1229,21 @@ export default function AdvancedAyurvedicDietCharts() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
               <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
                 <Clock className="w-5 h-5 text-emerald-600" />
               </div>
               Recent Meal Timeline
             </h2>
-            <div className="flex gap-2 bg-gray-100 rounded-xl p-1">
+            <div className="flex flex-wrap gap-2 bg-gray-100 rounded-xl p-1 w-full sm:w-auto">
               {["all", "breakfast", "lunch", "dinner"].map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setSelectedMealFilter(filter)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                     selectedMealFilter === filter
                       ? "bg-white text-emerald-600 shadow-sm"
                       : "text-gray-600 hover:text-gray-900"

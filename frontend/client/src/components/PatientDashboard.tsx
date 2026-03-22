@@ -328,8 +328,8 @@ export default function AyurvedicPatientDashboard() {
           </div>
 
           {/* Content */}
-          <div className="p-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 sm:p-6 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-50 rounded-xl">
                 <Calendar className="w-5 h-5 text-gray-600 mb-2" />
                 <p className="text-sm text-gray-600">Date</p>
@@ -816,8 +816,8 @@ export default function AyurvedicPatientDashboard() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-2xl mx-auto"
     >
-      <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-2xl p-8 shadow-xl border border-white/50">
-        <div className="flex items-center gap-4 mb-8">
+      <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-white/50">
+        <div className="flex items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-lg">
             <MessageSquare className="h-8 w-8 text-white" />
           </div>
@@ -996,32 +996,32 @@ export default function AyurvedicPatientDashboard() {
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gradient-to-r from-emerald-500 to-[#10B981] rounded-2xl p-8 text-white relative overflow-hidden"
+        className="bg-gradient-to-r from-emerald-500 to-[#10B981] rounded-2xl p-4 sm:p-6 lg:p-8 text-white relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
         <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-        
-        <div className="relative flex items-start justify-between">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-2xl border-2 border-white/30">
+
+        <div className="relative flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-6 min-w-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-xl sm:text-2xl border-2 border-white/30 shrink-0">
               {patient.avatar}
             </div>
-            <div>
-              <h2 className="text-3xl font-bold mb-2">{patient.name}</h2>
-              <div className="flex items-center gap-4 text-white/90">
+            <div className="min-w-0">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2 leading-tight break-words">{patient.name}</h2>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-white/90 text-sm sm:text-base">
                 <span className="flex items-center gap-1">
                   <User className="w-4 h-4" /> ID: {patient.id}
                 </span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Age: {patient.age}</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Constitution: {patient.constitution}</span>
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/30">
+          <div className="text-left lg:text-right self-start lg:self-auto">
+            <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/30 inline-block">
               <p className="text-sm font-medium">{patient.condition}</p>
             </div>
             <p className="text-white/80 text-sm mt-2">Last Visit: {patient.lastVisit}</p>
@@ -1098,7 +1098,7 @@ export default function AyurvedicPatientDashboard() {
             </span>
           </div>
           {upcomingActivities.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-center">
               <CheckCircle className="w-10 h-10 text-emerald-400 mb-2" />
               <p className="font-semibold text-gray-700">All done for today!</p>
               <p className="text-sm text-gray-500">Great job following your schedule.</p>
@@ -1155,7 +1155,7 @@ export default function AyurvedicPatientDashboard() {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      <div className="bg-gradient-to-br from-emerald-50/50 via-emerald-50 to-emerald-50 rounded-2xl p-8 shadow-xl border border-white/50">
+      <div className="bg-gradient-to-br from-emerald-50/50 via-emerald-50 to-emerald-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-white/50">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-[#10B981] bg-clip-text text-transparent flex items-center gap-2">
@@ -1211,7 +1211,7 @@ export default function AyurvedicPatientDashboard() {
       </div>
 
       {/* Ayurvedic Guidelines */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-8">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-4 sm:p-6 lg:p-8">
         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Droplets className="w-5 h-5 text-[#1F5C3F]" />
           Ayurvedic Guidelines
@@ -1256,8 +1256,8 @@ export default function AyurvedicPatientDashboard() {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      <div className="bg-gradient-to-br from-emerald-50 via-[#10B981]/5 to-[#0D9488]/5 rounded-2xl p-8 shadow-xl border border-white/50">
-        <div className="flex items-center gap-4 mb-8">
+      <div className="bg-gradient-to-br from-emerald-50 via-[#10B981]/5 to-[#0D9488]/5 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-white/50">
+        <div className="flex items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="p-3 bg-gradient-to-r from-[#1F5C3F] to-[#10B981] rounded-xl shadow-lg">
             <Pill className="h-8 w-8 text-white" />
           </div>
@@ -1318,7 +1318,7 @@ export default function AyurvedicPatientDashboard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8"
+      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-8"
     >
       {/* Header with filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -1326,7 +1326,7 @@ export default function AyurvedicPatientDashboard() {
           Appointments
         </h2>
         
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 justify-start sm:justify-end">
           {/* View toggle */}
           <div className="flex bg-gray-100 rounded-xl p-1">
             <button
@@ -1353,7 +1353,7 @@ export default function AyurvedicPatientDashboard() {
 
           {/* Filter */}
           <select
-            className="border border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-[#10B981] focus:ring-[#10B981]/20"
+            className="border border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-[#10B981] focus:ring-[#10B981]/20 w-full sm:w-auto"
             value={appointmentFilter}
             onChange={(e) => setAppointmentFilter(e.target.value as any)}
           >
@@ -1483,10 +1483,10 @@ export default function AyurvedicPatientDashboard() {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-2xl p-8 shadow-xl border border-white/50">
+      <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-white/50">
         {/* Header with filters */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 sm:mb-8">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-4">
             <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-lg">
               <Target className="h-8 w-8 text-white" />
             </div>
@@ -1675,9 +1675,9 @@ export default function AyurvedicPatientDashboard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8"
+      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-8"
     >
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div className="p-3 bg-gradient-to-r from-[#1F5C3F] to-[#10B981] rounded-xl shadow-lg">
           <FileText className="h-8 w-8 text-white" />
         </div>
@@ -1689,7 +1689,7 @@ export default function AyurvedicPatientDashboard() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
         {/* Vitals Card */}
         <motion.div
           className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 shadow-lg border border-white/50"
@@ -1762,7 +1762,7 @@ export default function AyurvedicPatientDashboard() {
       </div>
 
       {/* Recommendations & Timeline */}
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         <motion.div
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -1821,21 +1821,21 @@ export default function AyurvedicPatientDashboard() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-background text-foreground">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#10B981] bg-clip-text text-transparent mb-2">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <motion.div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#10B981] bg-clip-text text-transparent mb-2 leading-tight break-words">
                 {patient.name}'s Journey
               </h1>
-              <p className="text-gray-600 text-lg">Holistic health management for mind, body, and spirit</p>
+              <p className="text-gray-600 text-base sm:text-lg">Holistic health management for mind, body, and spirit</p>
             </div>
-            
+
             {/* Notification Bell */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setNotifications(0)}
-              className="relative w-11 h-11 rounded-full bg-white border border-emerald-100 shadow-sm hover:bg-emerald-50 transition-colors flex items-center justify-center"
+              className="relative w-11 h-11 rounded-full bg-white border border-emerald-100 shadow-sm hover:bg-emerald-50 transition-colors flex items-center justify-center self-end sm:self-auto shrink-0"
               aria-label="Open notifications"
             >
               <Bell className="w-5 h-5 text-[#1F5C3F]" />

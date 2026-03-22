@@ -200,29 +200,29 @@ export default function PatientProfile() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-background text-foreground">
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <motion.div
           className="mb-8"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
               <div className="relative">
                 <div className="absolute inset-0 bg-emerald-500 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#10B981] flex items-center justify-center">
-                  <User className="w-7 h-7 text-white" />
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#10B981] flex items-center justify-center">
+                  <User className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#0D9488] bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#0D9488] bg-clip-text text-transparent leading-tight break-words">
                   Patient Profile
                 </h1>
-                <p className="text-gray-600">View and manage your health journey</p>
+                <p className="text-gray-600 text-base sm:text-lg leading-relaxed">View and manage your health journey</p>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="flex gap-2">
+            <div className="flex flex-wrap w-full lg:w-auto gap-2">
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 className="p-2 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:bg-white transition-all"
@@ -237,7 +237,7 @@ export default function PatientProfile() {
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                className="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-[#10B981] text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all flex items-center gap-2 text-sm sm:text-base"
               >
                 <Edit3 className="w-4 h-4" />
                 Edit Profile
@@ -246,10 +246,11 @@ export default function PatientProfile() {
           </div>
 
           {/* Tab Navigation - Updated with History Tab */}
-          <div className="mt-6 flex gap-2 bg-white/80 backdrop-blur-sm rounded-xl p-1 w-fit">
+          <div className="mt-6 w-full">
+            <div className="grid grid-cols-3 gap-2 bg-white/80 backdrop-blur-sm rounded-xl p-1 w-full">
             <button
               onClick={() => setActiveTab("overview")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`h-11 px-2 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center whitespace-nowrap ${
                 activeTab === "overview"
                   ? "bg-gradient-to-r from-emerald-500 to-[#10B981] text-white shadow-lg"
                   : "text-gray-600 hover:text-gray-900"
@@ -259,25 +260,28 @@ export default function PatientProfile() {
             </button>
             <button
               onClick={() => setActiveTab("activity")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`h-11 px-2 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center whitespace-nowrap ${
                 activeTab === "activity"
                   ? "bg-gradient-to-r from-emerald-500 to-[#10B981] text-white shadow-lg"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              Activity Timeline
+              <span className="sm:hidden">Timeline</span>
+              <span className="hidden sm:inline">Activity Timeline</span>
             </button>
             <button
               onClick={() => setActiveTab("history")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`h-11 px-2 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-1 whitespace-nowrap ${
                 activeTab === "history"
                   ? "bg-gradient-to-r from-emerald-500 to-[#10B981] text-white shadow-lg"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <History className="w-4 h-4 inline mr-1" />
-              Patient History
+              <History className="hidden sm:block w-4 h-4 shrink-0" />
+              <span className="sm:hidden">History</span>
+              <span className="hidden sm:inline">Patient History</span>
             </button>
+            </div>
           </div>
         </motion.div>
 
@@ -285,19 +289,19 @@ export default function PatientProfile() {
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8 mb-8 relative overflow-hidden group"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 relative overflow-hidden group"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-emerald-500/5"></div>
           <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-200/20 rounded-full blur-3xl"></div>
           
-          <div className="relative flex flex-col md:flex-row items-center gap-8">
+          <div className="relative flex flex-col md:flex-row items-center gap-4 sm:gap-8">
             {/* Avatar */}
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-[#10B981] rounded-full blur-xl opacity-50"></div>
               <img
                 src={mockProfile.avatar}
                 alt="avatar"
-                className="relative w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover"
+                className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-xl object-cover"
               />
               <motion.div
                 initial={{ scale: 0 }}
@@ -310,8 +314,8 @@ export default function PatientProfile() {
             </div>
 
             {/* Info */}
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">{mockProfile.name}</h2>
+            <div className="flex-1 text-center md:text-left min-w-0">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 break-words">{mockProfile.name}</h2>
               
               <div className="flex flex-wrap gap-2 mb-3 justify-center md:justify-start">
                 {mockProfile.languages.map((lang) => (
@@ -325,7 +329,7 @@ export default function PatientProfile() {
                 ))}
               </div>
 
-              <div className="flex flex-wrap gap-4 text-sm text-gray-600 justify-center md:justify-start">
+              <div className="flex flex-wrap gap-3 sm:gap-4 text-sm text-gray-600 justify-center md:justify-start">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-4 h-4 text-emerald-500" />
                   Age: {mockProfile.age}
@@ -342,7 +346,7 @@ export default function PatientProfile() {
             </div>
 
             {/* Quick Stats */}
-            <div className="flex gap-3">
+            <div className="flex items-center justify-center gap-3 w-full md:w-auto">
               <div className="text-center">
                 <div className="text-2xl font-bold text-amber-600">{mockProfile.prakriti}</div>
                 <div className="text-xs text-gray-500">Prakriti</div>
@@ -545,7 +549,7 @@ export default function PatientProfile() {
                   </div>
 
                   {/* Dosha Details */}
-                  <div className="mt-6 grid grid-cols-3 gap-4">
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     {mockProfile.doshaScores.map((dosha) => {
                       const color = getDoshaColor(dosha.dosha);
                       return (
@@ -628,9 +632,9 @@ export default function PatientProfile() {
                 variants={staggerContainer}
                 initial="initial"
                 animate="animate"
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-8"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-8"
               >
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
                   <div className="flex items-center gap-2">
                     <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
                       <BarChart3 className="w-5 h-5 text-[#1F5C3F]" />
@@ -640,7 +644,7 @@ export default function PatientProfile() {
                     </h2>
                   </div>
                   
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <button className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-gray-600 hover:bg-gray-200 transition-colors">
                       This Week
                     </button>
@@ -650,7 +654,7 @@ export default function PatientProfile() {
                   </div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {mockProfile.recentActivity.map((a, i) => {
                     const Icon = activityIcons[a.icon as ActivityIconKey] || Flame;
                     const statusColor = 
@@ -693,7 +697,7 @@ export default function PatientProfile() {
                 </div>
 
                 {/* Activity Stats */}
-                <div className="mt-8 grid grid-cols-3 gap-4">
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div className="text-center p-4 bg-emerald-50 rounded-xl">
                     <div className="text-2xl font-bold text-emerald-600">85%</div>
                     <div className="text-xs text-gray-600">On-Plan Rate</div>
@@ -722,30 +726,30 @@ export default function PatientProfile() {
               {/* Allergies Section */}
               <motion.div
                 variants={fadeInUp}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-gradient-to-r from-rose-100 to-rose-50 rounded-lg">
                     <AlertCircle className="w-5 h-5 text-rose-600" />
                   </div>
-                  <h2 className="text-xl font-semibold bg-gradient-to-r from-rose-600 to-rose-500 bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-rose-600 to-rose-500 bg-clip-text text-transparent break-words">
                     Allergies
                   </h2>
                 </div>
 
-                <div className="flex gap-2 mb-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
                   <input
                     type="text"
                     value={newAllergy}
                     onChange={(e) => setNewAllergy(e.target.value)}
                     placeholder="Add allergy (e.g., Peanuts, Dust)"
-                    className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white/50"
+                    className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white/50 min-w-0"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddAllergy()}
                   />
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleAddAllergy}
-                    className="px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                    className="px-3 sm:px-4 py-2 whitespace-nowrap bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 text-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add
@@ -778,30 +782,30 @@ export default function PatientProfile() {
               {/* Previous Medical Conditions */}
               <motion.div
                 variants={fadeInUp}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg">
                     <Heart className="w-5 h-5 text-amber-600" />
                   </div>
-                  <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent break-words">
                     Previous Medical Conditions
                   </h2>
                 </div>
 
-                <div className="flex gap-2 mb-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
                   <input
                     type="text"
                     value={newCondition}
                     onChange={(e) => setNewCondition(e.target.value)}
                     placeholder="Add condition (e.g., Diabetes, Hypertension)"
-                    className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white/50"
+                    className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white/50 min-w-0"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddCondition()}
                   />
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleAddCondition}
-                    className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                    className="px-3 sm:px-4 py-2 whitespace-nowrap bg-gradient-to-r from-amber-500 to-yellow-600 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 text-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add
@@ -834,13 +838,13 @@ export default function PatientProfile() {
               {/* Medical Report Upload */}
               <motion.div
                 variants={fadeInUp}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-50 rounded-lg">
                     <Upload className="w-5 h-5 text-[#1F5C3F]" />
                   </div>
-                  <h2 className="text-xl font-semibold bg-gradient-to-r from-[#1F5C3F] to-[#10B981] bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-[#1F5C3F] to-[#10B981] bg-clip-text text-transparent break-words">
                     Upload Medical Report
                   </h2>
                 </div>
@@ -852,10 +856,10 @@ export default function PatientProfile() {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     accept=".pdf,.jpg,.jpeg,.png"
                   />
-                  <div className="border-2 border-dashed border-emerald-200 rounded-xl p-8 text-center hover:border-emerald-400 transition-colors bg-emerald-50/30">
-                    <Upload className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-                    <p className="text-[#1F5C3F] font-medium">Click to upload or drag and drop</p>
-                    <p className="text-sm text-gray-500 mt-1">PDF, JPG, PNG (Max 10MB)</p>
+                  <div className="border-2 border-dashed border-emerald-200 rounded-xl p-4 sm:p-8 text-center hover:border-emerald-400 transition-colors bg-emerald-50/30">
+                    <Upload className="w-10 h-10 sm:w-12 sm:h-12 text-emerald-400 mx-auto mb-3" />
+                    <p className="text-sm sm:text-base text-[#1F5C3F] font-medium break-words">Click to upload or drag and drop</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-1">PDF, JPG, PNG (Max 10MB)</p>
                   </div>
                 </div>
               </motion.div>
@@ -863,13 +867,13 @@ export default function PatientProfile() {
               {/* AI Health Report Analyzer */}
               <motion.div
                 variants={fadeInUp}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-gradient-to-r from-emerald-100 to-emerald-100 rounded-lg">
                     <Brain className="w-5 h-5 text-[#1F5C3F]" />
                   </div>
-                  <h2 className="text-xl font-semibold bg-gradient-to-r from-[#1F5C3F] to-[#10B981] bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-[#1F5C3F] to-[#10B981] bg-clip-text text-transparent break-words">
                     AI Health Report Analyzer
                   </h2>
                 </div>
