@@ -25,10 +25,10 @@ app.use(cookieParser());
 // Health Check
 app.get('/', async (req, res) => {
     try {
-        const userCount = await prisma.user.count();
+        const connection = await prisma.$connect;
         res.status(200).json({
             message: 'Prisma connected to NeonDB successfully!',
-            registeredUsers: userCount
+            connection: connection ? 'Connected' : 'Not Connected',
         });
     } catch (err) {
         console.error(`Database Connection Error`, err);

@@ -8,13 +8,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/app.js",
-    "start": "nodemon src/app.js"
+    "start": "node src/app.js"
   },
   "devDependencies": {
     "@prisma/config": "^7.5.0",
     "nodemon": "^3.1.14",
     "prettier": "^3.8.1",
-    "prisma": "^7.4.2"
+    "prisma": "^7.4.2",
+    "tsx": "^4.21.0"
   },
   "dependencies": {
     "@neondatabase/serverless": "github:neondatabase/serverless",

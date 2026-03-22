@@ -1,8 +1,8 @@
 import { prisma } from '../db/config.js';
 import axios from 'axios';
-import { ApiError } from '../utils/ApiError.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { asyncHandler } from '../utils/asyncHandler.js';
+import ApiError from '../utils/ApiError.js';
+import ApiResponse from '../utils/ApiResponse.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
 // ==========================================
 // 1. SMART INTAKE
@@ -10,8 +10,8 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 export const diagnoseSymptoms = asyncHandler(async (req, res) => {
     const { problemDescription, providedSymptoms, providedSeverity, providedDuration } = req.body;
 
-    if (!problemDescription && (!providedSymptoms || providedSymptoms.length === 0)) {
-        throw new ApiError(400, "Please describe your problem or select symptoms.");
+    if (!problemDescription || problemDescription.length === 0) {
+        throw new ApiError(400, "Please describe your problem in detail for an accurate diagnosis.");
     }
 
     const departments = await prisma.department.findMany({
