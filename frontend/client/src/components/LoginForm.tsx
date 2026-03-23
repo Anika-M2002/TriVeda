@@ -20,21 +20,20 @@ import {
 } from "lucide-react";
 import BrandLogo from "@/components/common/BrandLogo";
 
-import { useStaffLogin } from '@/hooks/useAuth';
+import { useStaffLogin, usePatientLogin } from '@/hooks/useAuth'; 
 
 interface LoginFormProps {
   userType: "patient" | "doctor" | "admin";
 }
 
 export default function LoginForm({ userType = "patient" }: LoginFormProps) {
-  const loginMutation = useStaffLogin();
+  const staffLoginMutation = useStaffLogin();
+  const patientLoginMutation = usePatientLogin();
   const [formData, setFormData] = useState({
-    abhaId: "",
     email: "",
     password: "",
     rememberMe: false,
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [, setLocation] = useLocation();
 
@@ -44,15 +43,14 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
 
   const handleLogin = async () => {
     if (userType === "patient") {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        setLocation("/patient/dashboard");
-      }, 1500);
+      patientLoginMutation.mutate({
+        email: formData.email,
+        password: formData.password,
+      });
       return;
     }
 
-    loginMutation.mutate({
+    staffLoginMutation.mutate({
       email: formData.email,
       password: formData.password,
       role: userType.toUpperCase(),
@@ -173,180 +171,118 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
                   </span>
                 </div>
 
-                {userType === "patient" ? (
-                  <div className="space-y-2">
-                    <p className="text-muted-foreground text-sm font-sans">
-                      Click an ABHA ID to auto-fill:
-                    </p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        "1234-5678-9012",
-                        "2345-6789-0123",
-                        "3456-7890-1234",
-                        "4567-8901-2345",
-                        "5678-9012-3456",
-                      ].map((id, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          className="flex items-center gap-1.5 text-xs bg-white dark:bg-white/5 p-2 rounded-lg border border-[#1F5C3F]/[0.08] dark:border-emerald-500/10 hover:border-[#1F5C3F]/30 dark:hover:border-emerald-500/30 transition-colors cursor-pointer text-left"
-                          onClick={() => handleInputChange("abhaId", id)}
-                        >
-                          <CheckCircle className="h-3 w-3 text-[#10B981] flex-shrink-0" />
-                          <span className="text-foreground font-mono">
-                            {id}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
+                <div className="space-y-1.5 text-sm font-sans">
+                  <div className="flex items-center p-2 bg-white dark:bg-white/5 rounded-lg">
+                    <span className="font-medium text-muted-foreground w-20">
+                      Email:
+                    </span>
+                    <code className="text-[#1F5C3F] dark:text-emerald-400">
+                      {roleDetails.demoCredentials.email}
+                    </code>
                   </div>
-                ) : (
-                  <div className="space-y-1.5 text-sm font-sans">
-                    <div className="flex items-center p-2 bg-white dark:bg-white/5 rounded-lg">
-                      <span className="font-medium text-muted-foreground w-20">
-                        Email:
-                      </span>
-                      <code className="text-[#1F5C3F] dark:text-emerald-400">
-                        {roleDetails.demoCredentials.email}
-                      </code>
-                    </div>
-                    <div className="flex items-center p-2 bg-white dark:bg-white/5 rounded-lg">
-                      <span className="font-medium text-muted-foreground w-20">
-                        Password:
-                      </span>
-                      <code className="text-[#1F5C3F] dark:text-emerald-400">
-                        {roleDetails.demoCredentials.password}
-                      </code>
-                    </div>
+                  <div className="flex items-center p-2 bg-white dark:bg-white/5 rounded-lg">
+                    <span className="font-medium text-muted-foreground w-20">
+                      Password:
+                    </span>
+                    <code className="text-[#1F5C3F] dark:text-emerald-400">
+                      {roleDetails.demoCredentials.password}
+                    </code>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Form Fields */}
               <div className="space-y-4">
-                {userType === "patient" ? (
-                  <div>
-                    <Label
-                      htmlFor="abha-id"
-                      className="text-foreground font-semibold text-sm font-sans flex items-center gap-2"
-                    >
-                      <User className="h-4 w-4 text-[#1F5C3F] dark:text-emerald-400" />
-                      ABHA ID
-                    </Label>
-                    <div className="relative mt-1.5">
-                      <Input
-                        id="abha-id"
-                        type="text"
-                        value={formData.abhaId}
-                        onChange={(e) =>
-                          handleInputChange("abhaId", e.target.value)
-                        }
-                        placeholder="Enter your ABHA ID"
-                        className="border-[#1F5C3F]/10 dark:border-emerald-500/10 focus:border-[#10B981] focus:ring-[#10B981]/20 rounded-xl h-12 pl-4"
-                        data-testid="input-abha-id"
-                        required
-                      />
-                      {formData.abhaId && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#10B981]">
-                          <CheckCircle className="h-5 w-5" />
-                        </div>
-                      )}
-                    </div>
+                <div>
+                  <Label
+                    htmlFor={`email-${userType}`}
+                    className="text-foreground font-semibold text-sm font-sans flex items-center gap-2"
+                  >
+                    <Globe className="h-4 w-4 text-[#1F5C3F] dark:text-emerald-400" />
+                    Email Address
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <Input
+                      id={`email-${userType}`}
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
+                      placeholder="Enter your email"
+                      className="border-[#1F5C3F]/10 dark:border-emerald-500/10 focus:border-[#10B981] focus:ring-[#10B981]/20 rounded-xl h-12 pl-4"
+                      data-testid="input-email"
+                      required
+                    />
+                    {formData.email && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#10B981]">
+                        <CheckCircle className="h-5 w-5" />
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <>
-                    <div>
-                      <Label
-                        htmlFor={`email-${userType}`}
-                        className="text-foreground font-semibold text-sm font-sans flex items-center gap-2"
-                      >
-                        <Globe className="h-4 w-4 text-[#1F5C3F] dark:text-emerald-400" />
-                        Email Address
-                      </Label>
-                      <div className="relative mt-1.5">
-                        <Input
-                          id={`email-${userType}`}
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
-                          placeholder="Enter your email"
-                          className="border-[#1F5C3F]/10 dark:border-emerald-500/10 focus:border-[#10B981] focus:ring-[#10B981]/20 rounded-xl h-12 pl-4"
-                          data-testid="input-email"
-                          required
-                        />
-                        {formData.email && (
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#10B981]">
-                            <CheckCircle className="h-5 w-5" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <Label
-                        htmlFor={`password-${userType}`}
-                        className="text-foreground font-semibold text-sm font-sans flex items-center gap-2"
-                      >
-                        <Shield className="h-4 w-4 text-[#1F5C3F] dark:text-emerald-400" />
-                        Password
-                      </Label>
-                      <div className="relative mt-1.5">
-                        <Input
-                          id={`password-${userType}`}
-                          type={showPassword ? "text" : "password"}
-                          value={formData.password}
-                          onChange={(e) =>
-                            handleInputChange("password", e.target.value)
-                          }
-                          placeholder="Enter your password"
-                          className="border-[#1F5C3F]/10 dark:border-emerald-500/10 focus:border-[#10B981] focus:ring-[#10B981]/20 rounded-xl h-12 pl-4 pr-12"
-                          data-testid="input-password"
-                          required
-                        />
-                        <button
-                          type="button"
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeOff size={18} />
-                          ) : (
-                            <Eye size={18} />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="remember"
-                          checked={formData.rememberMe}
-                          onCheckedChange={(checked) =>
-                            handleInputChange(
-                              "rememberMe",
-                              checked as boolean,
-                            )
-                          }
-                          data-testid="checkbox-remember"
-                          className="border-[#1F5C3F]/20 data-[state=checked]:bg-[#1F5C3F] data-[state=checked]:border-[#1F5C3F]"
-                        />
-                        <Label
-                          htmlFor="remember"
-                          className="text-sm text-muted-foreground cursor-pointer font-sans"
-                        >
-                          Remember me
-                        </Label>
-                      </div>
-                      <button
-                        type="button"
-                        className="text-sm font-medium text-[#1F5C3F] dark:text-emerald-400 hover:underline font-sans"
-                      >
-                        Forgot password?
-                      </button>
-                    </div>
-                  </>
-                )}
+                </div>
+                <div>
+                  <Label
+                    htmlFor={`password-${userType}`}
+                    className="text-foreground font-semibold text-sm font-sans flex items-center gap-2"
+                  >
+                    <Shield className="h-4 w-4 text-[#1F5C3F] dark:text-emerald-400" />
+                    Password
+                  </Label>
+                  <div className="relative mt-1.5">
+                    <Input
+                      id={`password-${userType}`}
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={(e) =>
+                        handleInputChange("password", e.target.value)
+                      }
+                      placeholder="Enter your password"
+                      className="border-[#1F5C3F]/10 dark:border-emerald-500/10 focus:border-[#10B981] focus:ring-[#10B981]/20 rounded-xl h-12 pl-4 pr-12"
+                      data-testid="input-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="remember"
+                      checked={formData.rememberMe}
+                      onCheckedChange={(checked) =>
+                        handleInputChange(
+                          "rememberMe",
+                          checked as boolean,
+                        )
+                      }
+                      data-testid="checkbox-remember"
+                      className="border-[#1F5C3F]/20 data-[state=checked]:bg-[#1F5C3F] data-[state=checked]:border-[#1F5C3F]"
+                    />
+                    <Label
+                      htmlFor="remember"
+                      className="text-sm text-muted-foreground cursor-pointer font-sans"
+                    >
+                      Remember me
+                    </Label>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-[#1F5C3F] dark:text-emerald-400 hover:underline font-sans"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -354,15 +290,15 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
                 <Button
                   onClick={handleLogin}
                   disabled={
-                    isLoading || loginMutation.isPending ||
-                    (userType === "patient"
-                      ? !formData.abhaId
-                      : !formData.email || !formData.password)
+                    staffLoginMutation.isPending ||
+                    patientLoginMutation.isPending ||
+                    !formData.email ||
+                    !formData.password
                   }
                   className="w-full h-12 bg-[#1F5C3F] hover:bg-[#174A32] dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 font-sans"
                   data-testid="button-login"
                 >
-                  {isLoading || loginMutation.isPending ? (
+                  {staffLoginMutation.isPending || patientLoginMutation.isPending ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                       Signing in...
@@ -370,9 +306,7 @@ export default function LoginForm({ userType = "patient" }: LoginFormProps) {
                   ) : (
                     <div className="flex items-center gap-2">
                       <RoleIcon className="h-4 w-4" />
-                      {userType === "patient"
-                        ? "Sign in with ABHA ID"
-                        : `Sign in as ${userType.charAt(0).toUpperCase() + userType.slice(1)}`}
+                      {`Sign in as ${userType.charAt(0).toUpperCase() + userType.slice(1)}`}
                     </div>
                   )}
                 </Button>

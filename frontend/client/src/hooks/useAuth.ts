@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { authApi } from '../api/auth.api';
 import { useLocation } from 'wouter';
 import { useToast } from './use-toast';
+import useNavigate from '@/lib/navigate';
 
 export const useStaffLogin = () => {
     const [, setLocation] = useLocation();
@@ -25,6 +26,24 @@ export const useStaffLogin = () => {
             } else {
                 toast({ title: "Login Successful", description: `Redirecting ${role}` });
             }
+        },
+        onError: (error: Error) => {
+            toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+        }
+    });
+};
+
+export const usePatientLogin = () => {
+    const navigate = useNavigate();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: authApi.patientLogin,
+        onSuccess: (data: any) => {
+            // Save safe user data to localStorage
+            localStorage.setItem('triveda_user', JSON.stringify({ ...data.user, portal: 'PATIENT' }));
+            toast({ title: `Welcome back, ${data.user.name}!` });
+            navigate('/patient-dashboard'); // Send them to the Patient Portal!
         },
         onError: (error: Error) => {
             toast({ title: "Login Failed", description: error.message, variant: "destructive" });
