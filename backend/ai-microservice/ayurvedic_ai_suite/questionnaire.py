@@ -8,7 +8,7 @@ class DynamicQuestionnaireOllama:
     def __init__(self):
         self.model = OllamaModel()
         
-        self.system_context = """You are an expert Ayurvedic practitioner conducting a patient interview. 
+        self.system_context = """You are an expert Ayurvedic doctor conducting a patient interview. 
 Your task is to ask ONE dynamic follow-up question at a time based on the patient's previous answers.
 
 CONTEXT:

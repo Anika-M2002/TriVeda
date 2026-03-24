@@ -13,7 +13,7 @@ import adminRoutes from './routes/admin.routes.js';
 import profileRoutes from './routes/profile.routes.js';
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 
 // Configurations
 app.use(cors({
