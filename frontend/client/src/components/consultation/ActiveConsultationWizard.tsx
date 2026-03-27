@@ -52,6 +52,7 @@ export type AssessmentAnswer = {
 };
 
 type ManualDietMeal = {
+  id: string;
   meal: string;
   foods: string[];
   time: string;
@@ -149,12 +150,15 @@ export default function ActiveConsultationWizard({
 
   const [dietQuickSearch, setDietQuickSearch] = useState("");
   const [dietFlowStep, setDietFlowStep] = useState(1);
-  const [dietSelectedMealIdx, setDietSelectedMealIdx] = useState(0);
+  const [dietSelectedMealId, setDietSelectedMealId] = useState("meal-breakfast");
+  const [newMealSlotName, setNewMealSlotName] = useState("");
+  const [newMealSlotTime, setNewMealSlotTime] = useState("6:30 AM");
   const [asanaQuickSearch, setAsanaQuickSearch] = useState("");
   const [medicineQuickSearch, setMedicineQuickSearch] = useState("");
   const [manualDietChart, setManualDietChart] = useState<ManualDietChart>({
     meals: [
       {
+        id: "meal-breakfast",
         meal: "Breakfast",
         foods: [],
         time: "8:00 AM",
@@ -162,6 +166,7 @@ export default function ActiveConsultationWizard({
         calories: 0,
       },
       {
+        id: "meal-lunch",
         meal: "Lunch",
         foods: [],
         time: "1:00 PM",
@@ -169,6 +174,7 @@ export default function ActiveConsultationWizard({
         calories: 0,
       },
       {
+        id: "meal-snack",
         meal: "Snack",
         foods: [],
         time: "4:30 PM",
@@ -176,6 +182,7 @@ export default function ActiveConsultationWizard({
         calories: 0,
       },
       {
+        id: "meal-dinner",
         meal: "Dinner",
         foods: [],
         time: "7:00 PM",
@@ -209,9 +216,7 @@ export default function ActiveConsultationWizard({
     medicine.medicineName.toLowerCase().includes(medicineQuickSearch.toLowerCase())
   );
 
-  const canGoNextFromDiagnosis =
-    consultationData.diagnosis.finalPrakriti.trim().length > 0 &&
-    consultationData.diagnosis.finalVikriti.trim().length > 0;
+  const progressValue = useMemo(() => (currentStep / 4) * 100, [currentStep]);
 
   const vataScore = Number(prakritiScores?.vata || 0);
   const pittaScore = Number(prakritiScores?.pitta || 0);
@@ -221,10 +226,7 @@ export default function ActiveConsultationWizard({
   const pittaPercent = Math.round((pittaScore / totalPrakritiScore) * 100);
   const kaphaPercent = Math.round((kaphaScore / totalPrakritiScore) * 100);
 
-  const progressValue = useMemo(() => (currentStep / 4) * 100, [currentStep]);
-
   const goNext = () => {
-    if (currentStep === 1 && !canGoNextFromDiagnosis) return;
     setCurrentStep((previous) => Math.min(4, previous + 1));
   };
 
@@ -237,7 +239,11 @@ export default function ActiveConsultationWizard({
     setCurrentStep((previous) => Math.max(1, previous - 1));
   };
 
-  const skipStep = (step: 2 | 3) => {
+  const skipStep = (step: 1 | 2 | 3) => {
+    if (step === 1) {
+      setCurrentStep(2);
+      return;
+    }
     if (step === 2) {
       setConsultationData((previous) => ({
         ...previous,
@@ -344,10 +350,36 @@ export default function ActiveConsultationWizard({
     return map;
   }, [foodCatalog]);
 
+  const parseTimeToMinutes = (time: string) => {
+    const trimmed = time.trim();
+    const match = trimmed.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return Number.MAX_SAFE_INTEGER;
+
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    const period = match[3].toUpperCase();
+
+    if (hours < 1 || hours > 12 || minutes < 0 || minutes > 59) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    const normalizedHours = hours % 12;
+    const total = normalizedHours * 60 + minutes + (period === "PM" ? 12 * 60 : 0);
+    return total;
+  };
+
+  const sortMealsByTime = (meals: ManualDietMeal[]) =>
+    [...meals].sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
+
+  const selectedMeal =
+    manualDietChart.meals.find((meal) => meal.id === dietSelectedMealId) || manualDietChart.meals[0];
+
   const addManualDietFood = (food: FoodCatalogItem) => {
+    if (!selectedMeal) return;
+
     setManualDietChart((previous) => {
-      const nextMeals = previous.meals.map((meal, index) => {
-        if (index !== dietSelectedMealIdx) return meal;
+      const nextMeals = previous.meals.map((meal) => {
+        if (meal.id !== selectedMeal.id) return meal;
 
         if (meal.foods.includes(food.name)) {
           return meal;
@@ -371,9 +403,11 @@ export default function ActiveConsultationWizard({
   };
 
   const removeManualDietFood = (foodIndex: number) => {
+    if (!selectedMeal) return;
+
     setManualDietChart((previous) => {
-      const nextMeals = previous.meals.map((meal, index) => {
-        if (index !== dietSelectedMealIdx) return meal;
+      const nextMeals = previous.meals.map((meal) => {
+        if (meal.id !== selectedMeal.id) return meal;
 
         const foodName = meal.foods[foodIndex];
         const nextFoods = meal.foods.filter((_, idx) => idx !== foodIndex);
@@ -397,10 +431,12 @@ export default function ActiveConsultationWizard({
   };
 
   const updateManualMealRationale = (value: string) => {
+    if (!selectedMeal) return;
+
     setManualDietChart((previous) => ({
       ...previous,
-      meals: previous.meals.map((meal, index) =>
-        index === dietSelectedMealIdx
+      meals: previous.meals.map((meal) =>
+        meal.id === selectedMeal.id
           ? {
               ...meal,
               rationale: value,
@@ -424,6 +460,77 @@ export default function ActiveConsultationWizard({
       syncDietDataFromManualChart(nextChart);
       return nextChart;
     });
+  };
+
+  const updateSelectedMealMeta = (key: "meal" | "time", value: string) => {
+    if (!selectedMeal) return;
+
+    setManualDietChart((previous) => {
+      const nextMeals = previous.meals.map((meal) =>
+        meal.id === selectedMeal.id
+          ? {
+              ...meal,
+              [key]: value,
+            }
+          : meal
+      );
+
+      const sortedMeals = key === "time" ? sortMealsByTime(nextMeals) : nextMeals;
+      const nextChart = {
+        ...previous,
+        meals: sortedMeals,
+      };
+
+      syncDietDataFromManualChart(nextChart);
+      return nextChart;
+    });
+  };
+
+  const addMealSlot = () => {
+    const slotName = newMealSlotName.trim();
+    if (!slotName) return;
+
+    const newSlotId = `meal-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const newSlot: ManualDietMeal = {
+      id: newSlotId,
+      meal: slotName,
+      foods: [],
+      time: newMealSlotTime.trim() || "6:30 AM",
+      rationale: "",
+      calories: 0,
+    };
+
+    setManualDietChart((previous) => {
+      const nextChart = {
+        ...previous,
+        meals: sortMealsByTime([...previous.meals, newSlot]),
+      };
+
+      syncDietDataFromManualChart(nextChart);
+      return nextChart;
+    });
+
+    setDietSelectedMealId(newSlotId);
+    setNewMealSlotName("");
+  };
+
+  const deleteMealSlot = (slotId: string) => {
+    if (manualDietChart.meals.length <= 1) return;
+
+    setManualDietChart((previous) => {
+      const nextMeals = previous.meals.filter((meal) => meal.id !== slotId);
+      const nextChart = {
+        ...previous,
+        meals: nextMeals,
+      };
+
+      syncDietDataFromManualChart(nextChart);
+      return nextChart;
+    });
+
+    if (dietSelectedMealId === slotId) {
+      setDietSelectedMealId(manualDietChart.meals[0]?.id || "");
+    }
   };
 
   const addAsanaLine = (asana: AsanaCatalogItem) => {
@@ -906,18 +1013,54 @@ export default function ActiveConsultationWizard({
                     <div>
                       <h3 className="mb-4 text-lg font-semibold text-slate-900">Select Foods for Meals</h3>
 
-                      <div className="mb-4 flex space-x-1 rounded-lg bg-slate-100 p-1">
-                        {["Breakfast", "Lunch", "Snack", "Dinner"].map((meal, idx) => (
-                          <Button
-                            key={meal}
-                            type="button"
-                            size="sm"
-                            variant={dietSelectedMealIdx === idx ? "default" : "ghost"}
-                            onClick={() => setDietSelectedMealIdx(idx)}
-                            className={`flex-1 ${dietSelectedMealIdx === idx ? "bg-white shadow-sm text-slate-900" : ""}`}
-                          >
-                            {meal}
+                      <div className="mb-4 rounded-lg bg-slate-50 p-4">
+                        <div className="mb-3 flex items-end gap-2">
+                          <div className="flex-1">
+                            <label className="mb-1 block text-xs font-medium text-slate-600">New Slot Name</label>
+                            <Input
+                              value={newMealSlotName}
+                              onChange={(event) => setNewMealSlotName(event.target.value)}
+                              placeholder="e.g. Early Morning"
+                            />
+                          </div>
+                          <div className="w-36">
+                            <label className="mb-1 block text-xs font-medium text-slate-600">Time</label>
+                            <Input
+                              value={newMealSlotTime}
+                              onChange={(event) => setNewMealSlotTime(event.target.value)}
+                              placeholder="6:30 AM"
+                            />
+                          </div>
+                          <Button type="button" onClick={addMealSlot} className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90">
+                            Add Slot
                           </Button>
+                        </div>
+                      </div>
+
+                      <div className="mb-4 flex flex-wrap gap-2 rounded-lg bg-slate-100 p-2">
+                        {manualDietChart.meals.map((meal) => (
+                          <div key={meal.id} className="flex items-center gap-1 rounded-md bg-white">
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant={dietSelectedMealId === meal.id ? "default" : "ghost"}
+                              onClick={() => setDietSelectedMealId(meal.id)}
+                              className={`${dietSelectedMealId === meal.id ? "bg-emerald-500 text-white" : ""}`}
+                            >
+                              {meal.meal}
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => deleteMealSlot(meal.id)}
+                              disabled={manualDietChart.meals.length === 1}
+                              className="text-red-600 hover:bg-red-50"
+                              title="Delete this meal slot"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         ))}
                       </div>
 
@@ -969,24 +1112,24 @@ export default function ActiveConsultationWizard({
 
                         <div>
                           <h4 className="mb-3 font-medium text-slate-900">
-                            Selected for {manualDietChart.meals[dietSelectedMealIdx].meal}
+                            Selected for {selectedMeal?.meal || "Meal"}
                           </h4>
                           <div className="rounded-lg bg-emerald-50 p-4">
                             <div className="mb-3 flex items-center justify-between">
                               <span className="text-sm font-medium text-[#1F5C3F]">Total Calories</span>
                               <span className="text-lg font-bold text-[#1F5C3F]">
-                                {manualDietChart.meals[dietSelectedMealIdx].calories} kcal
+                                {selectedMeal?.calories || 0} kcal
                               </span>
                             </div>
 
-                            {manualDietChart.meals[dietSelectedMealIdx].foods.length === 0 ? (
+                            {!selectedMeal || selectedMeal.foods.length === 0 ? (
                               <div className="py-8 text-center text-slate-500">
                                 <Utensils className="mx-auto mb-2 h-8 w-8 opacity-50" />
                                 <p>No foods selected for this meal</p>
                               </div>
                             ) : (
                               <div className="space-y-2">
-                                {manualDietChart.meals[dietSelectedMealIdx].foods.map((food, idx) => (
+                                {selectedMeal.foods.map((food, idx) => (
                                   <div key={`${food}-${idx}`} className="flex items-center justify-between rounded-lg bg-white p-3">
                                     <span className="font-medium text-slate-900">{food}</span>
                                     <Button
@@ -1025,28 +1168,61 @@ export default function ActiveConsultationWizard({
                     <div>
                       <h3 className="mb-4 text-lg font-semibold text-slate-900">Add Therapeutic Rationale</h3>
 
-                      <div className="mb-4 flex space-x-1 rounded-lg bg-slate-100 p-1">
-                        {["Breakfast", "Lunch", "Snack", "Dinner"].map((meal, idx) => (
-                          <Button
-                            key={meal}
-                            type="button"
-                            size="sm"
-                            variant={dietSelectedMealIdx === idx ? "default" : "ghost"}
-                            onClick={() => setDietSelectedMealIdx(idx)}
-                            className={`flex-1 ${dietSelectedMealIdx === idx ? "bg-white shadow-sm text-slate-900" : ""}`}
-                          >
-                            {meal} ({manualDietChart.meals[idx].foods.length})
-                          </Button>
+                      <div className="mb-4 flex flex-wrap gap-2 rounded-lg bg-slate-100 p-2">
+                        {manualDietChart.meals.map((meal) => (
+                          <div key={meal.id} className="flex items-center gap-1 rounded-md bg-white">
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant={dietSelectedMealId === meal.id ? "default" : "ghost"}
+                              onClick={() => setDietSelectedMealId(meal.id)}
+                              className={`${dietSelectedMealId === meal.id ? "bg-emerald-500 text-white" : ""}`}
+                            >
+                              {meal.meal} ({meal.foods.length})
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => deleteMealSlot(meal.id)}
+                              disabled={manualDietChart.meals.length === 1}
+                              className="text-red-600 hover:bg-red-50"
+                              title="Delete this meal slot"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         ))}
+                      </div>
+
+                      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-slate-700">Meal Slot Name</label>
+                          <Input
+                            value={selectedMeal?.meal || ""}
+                            onChange={(event) => updateSelectedMealMeta("meal", event.target.value)}
+                            placeholder="Meal name"
+                            disabled={!selectedMeal}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-slate-700">Meal Time</label>
+                          <Input
+                            value={selectedMeal?.time || ""}
+                            onChange={(event) => updateSelectedMealMeta("time", event.target.value)}
+                            placeholder="e.g. 6:30 AM"
+                            disabled={!selectedMeal}
+                          />
+                        </div>
                       </div>
 
                       <div className="rounded-lg bg-slate-50 p-6">
                         <div className="mb-4">
                           <h4 className="mb-2 font-medium text-slate-900">
-                            {manualDietChart.meals[dietSelectedMealIdx].meal} - {manualDietChart.meals[dietSelectedMealIdx].time}
+                            {selectedMeal?.meal || "Meal"} - {selectedMeal?.time || "Not set"}
                           </h4>
                           <div className="mb-3 flex flex-wrap gap-2">
-                            {manualDietChart.meals[dietSelectedMealIdx].foods.map((food, idx) => (
+                            {(selectedMeal?.foods || []).map((food, idx) => (
                               <Badge key={`${food}-${idx}`} className="bg-emerald-100 text-[#1F5C3F]">
                                 {food}
                               </Badge>
@@ -1060,8 +1236,9 @@ export default function ActiveConsultationWizard({
                             className="border-slate-300"
                             rows={4}
                             placeholder="Explain the therapeutic benefits of this meal combination for the patient's constitution and condition..."
-                            value={manualDietChart.meals[dietSelectedMealIdx].rationale}
+                            value={selectedMeal?.rationale || ""}
                             onChange={(event) => updateManualMealRationale(event.target.value)}
+                            disabled={!selectedMeal}
                           />
                           <p className="mt-1 text-xs text-slate-500">
                             Describe how these foods support the patient's dosha balance and health goals.
@@ -1409,11 +1586,7 @@ export default function ActiveConsultationWizard({
           <Button
             type="button"
             onClick={goNext}
-            disabled={
-              currentStep === 4 ||
-              (currentStep === 2 && dietFlowStep < 4) ||
-              (currentStep === 1 && !canGoNextFromDiagnosis)
-            }
+            disabled={currentStep === 4 || (currentStep === 2 && dietFlowStep < 4)}
             className="min-w-[112px] bg-[#1F5C3F] text-white hover:bg-[#184734]"
           >
             Next
