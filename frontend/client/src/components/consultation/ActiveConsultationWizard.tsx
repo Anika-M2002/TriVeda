@@ -65,11 +65,43 @@ type ManualDietChart = {
   recommendations: string[];
 };
 
+type AsanaActivityEntry = {
+  id: string;
+  name: string;
+  repsOrDuration: string;
+  notes: string;
+};
+
+type AsanaActivitySlot = {
+  id: string;
+  name: string;
+  time: string;
+  asanas: AsanaActivityEntry[];
+  rationale: string;
+};
+
+type SleepSlot = {
+  id: string;
+  name: string;
+  sleepTime: string;
+  wakeupTime: string;
+  duration?: string;
+};
+
+type ManualActivityChart = {
+  slots: AsanaActivitySlot[];
+  sleepSlots: SleepSlot[];
+  rules: string;
+};
+
 type MedicineDraft = {
   id: string;
   name: string;
   dosage: string;
-  timing: string;
+  timingTime: string;
+  timingPeriod: "AM" | "PM";
+  medicineType: string;
+  duration: string;
   notes: string;
 };
 
@@ -142,7 +174,10 @@ export default function ActiveConsultationWizard({
         id: `med-${Date.now()}`,
         name: "",
         dosage: "",
-        timing: "",
+        timingTime: "08:00",
+        timingPeriod: "AM",
+        medicineType: "",
+        duration: "",
         notes: "",
       },
     ] as MedicineDraft[],
@@ -191,6 +226,44 @@ export default function ActiveConsultationWizard({
       },
     ],
     recommendations: [],
+  });
+
+  const [activityFlowStep, setActivityFlowStep] = useState(1);
+  const [activitySelectedSlotId, setActivitySelectedSlotId] = useState("activity-morning");
+  const [newActivitySlotName, setNewActivitySlotName] = useState("");
+  const [newActivitySlotTime, setNewActivitySlotTime] = useState("6:00 AM");
+  const [asanaQuickSearchActivity, setAsanaQuickSearchActivity] = useState("");
+  const [newSleepSlotName, setNewSleepSlotName] = useState("");
+  const [newSleepTime, setNewSleepTime] = useState("10:00 PM");
+  const [newWakeupTime, setNewWakeupTime] = useState("6:00 AM");
+  const [selectedSleepSlotId, setSelectedSleepSlotId] = useState("sleep-night");
+  const [manualActivityChart, setManualActivityChart] = useState<ManualActivityChart>({
+    slots: [
+      {
+        id: "activity-morning",
+        name: "Morning",
+        time: "6:00 AM",
+        asanas: [],
+        rationale: "",
+      },
+      {
+        id: "activity-evening",
+        name: "Evening",
+        time: "5:00 PM",
+        asanas: [],
+        rationale: "",
+      },
+    ],
+    sleepSlots: [
+      {
+        id: "sleep-night",
+        name: "Night Sleep",
+        sleepTime: "10:00 PM",
+        wakeupTime: "6:00 AM",
+        duration: "8 hours",
+      },
+    ],
+    rules: "",
   });
 
   const saveDoctorPlanMutation = useSaveDoctorPlan();
@@ -266,6 +339,40 @@ export default function ActiveConsultationWizard({
     setCurrentStep(4);
   };
 
+  const getPeriodFromTime24 = (time24: string): "AM" | "PM" => {
+    const [hourString] = time24.split(":");
+    const hour = Number(hourString || 0);
+    return hour >= 12 ? "PM" : "AM";
+  };
+
+  const to12HourTime = (time24: string) => {
+    const [hourString, minuteString] = time24.split(":");
+    const hour = Number(hourString || 0);
+    const minute = (minuteString || "00").padStart(2, "0");
+    const hour12 = ((hour + 11) % 12) + 1;
+    return `${hour12}:${minute}`;
+  };
+
+  const applyPeriodToTime24 = (time24: string, period: "AM" | "PM") => {
+    const [hourString, minuteString] = time24.split(":");
+    let hour = Number(hourString || 0);
+    const minute = (minuteString || "00").padStart(2, "0");
+
+    if (period === "AM" && hour >= 12) {
+      hour -= 12;
+    }
+    if (period === "PM" && hour < 12) {
+      hour += 12;
+    }
+
+    return `${String(hour).padStart(2, "0")}:${minute}`;
+  };
+
+  const formatMedicineTiming = (medicine: MedicineDraft) => {
+    if (!medicine.timingTime) return "";
+    return `${to12HourTime(medicine.timingTime)} ${medicine.timingPeriod}`;
+  };
+
   const addMedicine = () => {
     setConsultationData((previous) => ({
       ...previous,
@@ -275,7 +382,10 @@ export default function ActiveConsultationWizard({
           id: `med-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
           name: "",
           dosage: "",
-          timing: "",
+          timingTime: "08:00",
+          timingPeriod: "AM",
+          medicineType: "",
+          duration: "",
           notes: "",
         },
       ],
@@ -291,11 +401,32 @@ export default function ActiveConsultationWizard({
           id: `med-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
           name: medicine.medicineName,
           dosage: "",
-          timing: "",
-          notes: medicine.medicineType || "",
+          timingTime: "08:00",
+          timingPeriod: "AM",
+          medicineType: medicine.medicineType || "",
+          duration: "",
+          notes: "",
         },
       ],
     }));
+  };
+
+  const duplicateMedicine = (id: string) => {
+    setConsultationData((previous) => {
+      const source = previous.medicines.find((medicine) => medicine.id === id);
+      if (!source) return previous;
+
+      return {
+        ...previous,
+        medicines: [
+          ...previous.medicines,
+          {
+            ...source,
+            id: `med-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          },
+        ],
+      };
+    });
   };
 
   const removeMedicine = (id: string) => {
@@ -533,6 +664,233 @@ export default function ActiveConsultationWizard({
     }
   };
 
+  const sortActivitySlotsByTime = (slots: AsanaActivitySlot[]) =>
+    [...slots].sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
+
+  const selectedActivitySlot =
+    manualActivityChart.slots.find((slot) => slot.id === activitySelectedSlotId) || 
+    manualActivityChart.slots[0];
+
+  const addActivitySlot = () => {
+    const slotName = newActivitySlotName.trim();
+    if (!slotName) return;
+
+    const newSlotId = `activity-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const newSlot: AsanaActivitySlot = {
+      id: newSlotId,
+      name: slotName,
+      time: newActivitySlotTime.trim() || "6:00 AM",
+      asanas: [],
+      rationale: "",
+    };
+
+    setManualActivityChart((previous) => {
+      const nextChart = {
+        ...previous,
+        slots: sortActivitySlotsByTime([...previous.slots, newSlot]),
+      };
+      return nextChart;
+    });
+
+    setActivitySelectedSlotId(newSlotId);
+    setNewActivitySlotName("");
+  };
+
+  const deleteActivitySlot = (slotId: string) => {
+    if (manualActivityChart.slots.length <= 1) return;
+
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.slots.filter((slot) => slot.id !== slotId);
+      return {
+        ...previous,
+        slots: nextSlots,
+      };
+    });
+
+    if (activitySelectedSlotId === slotId) {
+      setActivitySelectedSlotId(manualActivityChart.slots[0]?.id || "");
+    }
+  };
+
+  const updateActivitySlotMeta = (key: "name" | "time", value: string) => {
+    if (!selectedActivitySlot) return;
+
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.slots.map((slot) =>
+        slot.id === selectedActivitySlot.id
+          ? {
+              ...slot,
+              [key]: value,
+            }
+          : slot
+      );
+
+      const sortedSlots = key === "time" ? sortActivitySlotsByTime(nextSlots) : nextSlots;
+      return {
+        ...previous,
+        slots: sortedSlots,
+      };
+    });
+  };
+
+  const addAsanaToActivitySlot = (asana: AsanaCatalogItem) => {
+    if (!selectedActivitySlot) return;
+
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.slots.map((slot) => {
+        if (slot.id !== selectedActivitySlot.id) return slot;
+
+        const asanaExists = slot.asanas.some((a) => a.name === asana.name);
+        if (asanaExists) return slot;
+
+        return {
+          ...slot,
+          asanas: [
+            ...slot.asanas,
+            {
+              id: `asana-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+              name: asana.name,
+              repsOrDuration: "",
+              notes: "",
+            },
+          ],
+        };
+      });
+
+      return {
+        ...previous,
+        slots: nextSlots,
+      };
+    });
+  };
+
+  const removeAsanaFromActivitySlot = (asanaId: string) => {
+    if (!selectedActivitySlot) return;
+
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.slots.map((slot) => {
+        if (slot.id !== selectedActivitySlot.id) return slot;
+
+        return {
+          ...slot,
+          asanas: slot.asanas.filter((a) => a.id !== asanaId),
+        };
+      });
+
+      return {
+        ...previous,
+        slots: nextSlots,
+      };
+    });
+  };
+
+  const updateAsanaInActivitySlot = (asanaId: string, key: "repsOrDuration" | "notes", value: string) => {
+    if (!selectedActivitySlot) return;
+
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.slots.map((slot) => {
+        if (slot.id !== selectedActivitySlot.id) return slot;
+
+        return {
+          ...slot,
+          asanas: slot.asanas.map((a) =>
+            a.id === asanaId
+              ? {
+                  ...a,
+                  [key]: value,
+                }
+              : a
+          ),
+        };
+      });
+
+      return {
+        ...previous,
+        slots: nextSlots,
+      };
+    });
+  };
+
+  const updateActivitySlotRationale = (value: string) => {
+    if (!selectedActivitySlot) return;
+
+    setManualActivityChart((previous) => ({
+      ...previous,
+      slots: previous.slots.map((slot) =>
+        slot.id === selectedActivitySlot.id
+          ? {
+              ...slot,
+              rationale: value,
+            }
+          : slot
+      ),
+    }));
+  };
+
+  const sortSleepSlotsByTime = (slots: SleepSlot[]) =>
+    [...slots].sort((a, b) => parseTimeToMinutes(a.sleepTime) - parseTimeToMinutes(b.sleepTime));
+
+  const addSleepSlot = () => {
+    const slotName = newSleepSlotName.trim();
+    if (!slotName) return;
+
+    const newSlotId = `sleep-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const newSlot: SleepSlot = {
+      id: newSlotId,
+      name: slotName,
+      sleepTime: newSleepTime.trim() || "10:00 PM",
+      wakeupTime: newWakeupTime.trim() || "6:00 AM",
+    };
+
+    setManualActivityChart((previous) => {
+      const nextChart = {
+        ...previous,
+        sleepSlots: sortSleepSlotsByTime([...previous.sleepSlots, newSlot]),
+      };
+      return nextChart;
+    });
+
+    setSelectedSleepSlotId(newSlotId);
+    setNewSleepSlotName("");
+    setNewSleepTime("10:00 PM");
+    setNewWakeupTime("6:00 AM");
+  };
+
+  const deleteSleepSlot = (slotId: string) => {
+    if (manualActivityChart.sleepSlots.length <= 1) return;
+
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.sleepSlots.filter((slot) => slot.id !== slotId);
+      return {
+        ...previous,
+        sleepSlots: nextSlots,
+      };
+    });
+
+    if (selectedSleepSlotId === slotId) {
+      setSelectedSleepSlotId(manualActivityChart.sleepSlots[0]?.id || "");
+    }
+  };
+
+  const updateSleepSlot = (slotId: string, key: "name" | "sleepTime" | "wakeupTime", value: string) => {
+    setManualActivityChart((previous) => {
+      const nextSlots = previous.sleepSlots.map((slot) =>
+        slot.id === slotId
+          ? {
+              ...slot,
+              [key]: value,
+            }
+          : slot
+      );
+
+      const sortedSlots = key === "sleepTime" ? sortSleepSlotsByTime(nextSlots) : nextSlots;
+      return {
+        ...previous,
+        sleepSlots: sortedSlots,
+      };
+    });
+  };
+
   const addAsanaLine = (asana: AsanaCatalogItem) => {
     setConsultationData((previous) => ({
       ...previous,
@@ -554,15 +912,33 @@ export default function ActiveConsultationWizard({
         (medicine) =>
           medicine.name.trim() ||
           medicine.dosage.trim() ||
-          medicine.timing.trim() ||
+          medicine.duration.trim() ||
           medicine.notes.trim()
       )
       .map((medicine) => ({
         name: medicine.name,
         dosage: medicine.dosage,
-        timing: medicine.timing,
-        doctorNotes: medicine.notes,
+        timing: formatMedicineTiming(medicine),
+        doctorNotes: [
+          medicine.medicineType ? `Type: ${medicine.medicineType}` : "",
+          medicine.duration ? `Duration: ${medicine.duration} days` : "",
+          medicine.notes,
+        ]
+          .filter(Boolean)
+          .join(" | "),
       }));
+
+    // Build asanas from activity chart
+    const asanasFromChart = manualActivityChart.slots
+      .flatMap((slot) =>
+        slot.asanas.map((asana) => ({
+          name: asana.name,
+          repsOrDuration: asana.repsOrDuration,
+          notes: asana.notes,
+          timeSlot: slot.name,
+          slotTime: slot.time,
+        }))
+      );
 
     const payload = {
       doctorNotes: consultationData.diagnosis.chiefComplaint,
@@ -592,22 +968,17 @@ export default function ActiveConsultationWizard({
           : [],
       },
       routinePlan: {
-        exercisesAndAsanas: consultationData.lifestyle.include
-          ? consultationData.lifestyle.asanas
-              .split("\n")
-              .map((line) => line.trim())
-              .filter(Boolean)
+        exercisesAndAsanas: asanasFromChart.length > 0
+          ? asanasFromChart.map((asana) => `${asana.name} (${asana.repsOrDuration || "as recommended"})`)
           : [],
         mode: "manual",
-        sleepSchedule: consultationData.lifestyle.include
-          ? consultationData.lifestyle.sleepSchedule
-          : "",
-        therapy: consultationData.lifestyle.include
-          ? consultationData.lifestyle.rules
-              .split("\n")
-              .map((line) => line.trim())
-              .filter(Boolean)
-          : [],
+        sleepSchedule: manualActivityChart.sleepSlots
+          .map((slot) => `${slot.name}: Sleep at ${slot.sleepTime}, Wake up at ${slot.wakeupTime}`)
+          .join(" | "),
+        therapy: manualActivityChart.rules
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean),
         tests: [],
       },
       medications,
@@ -1387,87 +1758,531 @@ export default function ActiveConsultationWizard({
                   <Activity className="h-4 w-4" />
                   Lifestyle & Asanas (Optional)
                 </CardTitle>
+                <div className="mt-3 flex gap-1 border-b border-sky-200">
+                  {[1, 2, 3, 4].map((step) => (
+                    <button
+                      key={step}
+                      type="button"
+                      onClick={() => setActivityFlowStep(step)}
+                      className={`px-3 py-2 text-xs font-medium transition-colors ${
+                        activityFlowStep === step
+                          ? "border-b-2 border-sky-700 text-sky-700"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      {step === 1 && "Activity Slots"}
+                      {step === 2 && "Add Asanas"}
+                      {step === 3 && "Sleep & Rules"}
+                      {step === 4 && "Review"}
+                    </button>
+                  ))}
+                </div>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-4 xl:grid-cols-12">
-                <div className="xl:col-span-5 space-y-3">
-                  <Input
-                    value={asanaQuickSearch}
-                    onChange={(event) => setAsanaQuickSearch(event.target.value)}
-                    placeholder="Search asana"
-                    className="border-sky-200"
-                  />
-                  <div className="max-h-64 overflow-y-auto rounded-lg border border-sky-100 bg-white p-3">
-                    <div className="space-y-2">
-                      {filteredAsanas.slice(0, 10).map((asana) => (
-                        <div key={asana.id} className="flex items-center justify-between rounded-md border border-sky-100 px-3 py-2">
-                          <p className="text-sm font-medium text-slate-900">{asana.name}</p>
-                          <Button type="button" size="sm" className="bg-sky-700 text-white" onClick={() => addAsanaLine(asana)}>
-                            Add
+              <CardContent className="space-y-4">
+                {/* Sub-step 1: Activity Slot Selection */}
+                {activityFlowStep === 1 && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="mb-3 text-sm font-semibold text-slate-900">Create Custom Activity Slots</h3>
+                      <div className="space-y-2 rounded-lg bg-sky-50 p-4">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+                          <Input
+                            value={newActivitySlotName}
+                            onChange={(event) => setNewActivitySlotName(event.target.value)}
+                            placeholder="Slot name (e.g., 'Morning Yoga')"
+                            className="border-sky-200"
+                          />
+                          <Input
+                            type="time"
+                            value={newActivitySlotTime.includes(":") && !newActivitySlotTime.includes(" ") 
+                              ? newActivitySlotTime.split(" ")[0] 
+                              : newActivitySlotTime.includes("AM") || newActivitySlotTime.includes("PM")
+                                ? (() => {
+                                    const [time, period] = newActivitySlotTime.split(" ");
+                                    const [hours, minutes] = time.split(":");
+                                    let h = parseInt(hours);
+                                    if (period === "PM" && h !== 12) h += 12;
+                                    if (period === "AM" && h === 12) h = 0;
+                                    return `${String(h).padStart(2, "0")}:${minutes}`;
+                                  })()
+                                : "06:00"}
+                            onChange={(event) => {
+                              const [hours, minutes] = event.target.value.split(":");
+                              let h = parseInt(hours);
+                              const period = h >= 12 ? "PM" : "AM";
+                              if (h > 12) h -= 12;
+                              if (h === 0) h = 12;
+                              setNewActivitySlotTime(`${h}:${minutes} ${period}`);
+                            }}
+                            className="border-sky-200"
+                          />
+                          <Button
+                            type="button"
+                            onClick={addActivitySlot}
+                            disabled={!newActivitySlotName.trim()}
+                            className="bg-sky-700 text-white hover:bg-sky-800"
+                          >
+                            <Plus className="h-4 w-4" />
+                            Add Slot
                           </Button>
                         </div>
-                      ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="mb-3 text-sm font-semibold text-slate-900">Activity Slots</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {sortActivitySlotsByTime(manualActivityChart.slots).map((slot) => (
+                          <div
+                            key={slot.id}
+                            className={`flex items-center gap-1 rounded-lg border-2 px-3 py-2 transition-colors ${
+                              activitySelectedSlotId === slot.id
+                                ? "border-sky-700 bg-sky-100"
+                                : "border-sky-200 bg-white hover:border-sky-300"
+                            }`}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => setActivitySelectedSlotId(slot.id)}
+                              className="font-medium text-slate-900"
+                            >
+                              {slot.name} <span className="text-xs text-slate-500">({slot.time})</span>
+                            </button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteActivitySlot(slot.id)}
+                              disabled={manualActivityChart.slots.length <= 1}
+                              className="h-5 w-5 p-0 text-red-600 hover:bg-red-100"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button type="button" variant="outline" onClick={() => skipStep(3)}>
+                        Skip this step
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => setActivityFlowStep(2)}
+                        className="ml-auto bg-sky-700 text-white hover:bg-sky-800"
+                      >
+                        Next: Add Asanas
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="xl:col-span-7 space-y-3">
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-slate-700">Selected Asanas</label>
-                    <Textarea
-                      value={consultationData.lifestyle.asanas}
-                      onChange={(event) =>
-                        setConsultationData((previous) => ({
-                          ...previous,
-                          lifestyle: {
-                            ...previous.lifestyle,
-                            include: true,
-                            asanas: event.target.value,
-                          },
-                        }))
-                      }
-                      rows={5}
-                      className="border-sky-200"
-                    />
+                {/* Sub-step 2: Add Asanas - with tabs for switching slots */}
+                {activityFlowStep === 2 && (
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="mb-3 text-sm font-semibold text-slate-900">Activity Slots</h3>
+                      <div className="flex flex-wrap gap-1 rounded-lg bg-sky-50 p-2 border border-sky-200">
+                        {sortActivitySlotsByTime(manualActivityChart.slots).map((slot) => (
+                          <button
+                            key={slot.id}
+                            type="button"
+                            onClick={() => setActivitySelectedSlotId(slot.id)}
+                            className={`rounded-md px-3 py-2 text-xs font-medium transition-colors ${
+                              activitySelectedSlotId === slot.id
+                                ? "bg-sky-700 text-white"
+                                : "bg-white text-slate-700 border border-sky-200 hover:bg-sky-100"
+                            }`}
+                          >
+                            {slot.name} <span className="ml-1 text-xs">({slot.time})</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                      <div className="xl:col-span-4 space-y-3">
+                        <div>
+                          <h3 className="mb-2 text-sm font-semibold text-slate-900">Search & Add Asanas</h3>
+                          <Input
+                            value={asanaQuickSearchActivity}
+                            onChange={(event) => setAsanaQuickSearchActivity(event.target.value)}
+                            placeholder="Search asana"
+                            className="border-sky-200"
+                          />
+                        </div>
+                        <div className="max-h-96 overflow-y-auto rounded-lg border border-sky-100 bg-white p-3">
+                          <div className="space-y-2">
+                            {asanaCatalog
+                              .filter((asana) =>
+                                asana.name.toLowerCase().includes(asanaQuickSearchActivity.toLowerCase())
+                              )
+                              .slice(0, 15)
+                              .map((asana) => (
+                                <div
+                                  key={asana.id}
+                                  className="flex items-center justify-between rounded-md border border-sky-100 px-3 py-2"
+                                >
+                                  <p className="text-sm font-medium text-slate-900">{asana.name}</p>
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    className="bg-sky-700 text-white"
+                                    onClick={() => addAsanaToActivitySlot(asana)}
+                                  >
+                                    Add
+                                  </Button>
+                                </div>
+                              ))}
+                            {asanaCatalog.filter((asana) =>
+                              asana.name.toLowerCase().includes(asanaQuickSearchActivity.toLowerCase())
+                            ).length === 0 && (
+                              <p className="py-8 text-center text-xs text-slate-500">No asanas found</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="xl:col-span-8 space-y-4">
+                        <div>
+                          <h3 className="mb-3 text-sm font-semibold text-slate-900">
+                            Asanas for <span className="text-sky-700">{selectedActivitySlot?.name}</span>
+                          </h3>
+                          <div className="space-y-2 max-h-96 overflow-y-auto rounded-lg border border-sky-200 bg-sky-50/50 p-3">
+                            {selectedActivitySlot?.asanas && selectedActivitySlot.asanas.length > 0 ? (
+                              selectedActivitySlot.asanas.map((asana) => (
+                                <div
+                                  key={asana.id}
+                                  className="rounded-md border border-sky-200 bg-white p-3 space-y-2"
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <span className="font-medium text-slate-900">{asana.name}</span>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeAsanaFromActivitySlot(asana.id)}
+                                      className="h-5 w-5 p-0 text-red-600 hover:bg-red-100"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                    <Input
+                                      value={asana.repsOrDuration}
+                                      onChange={(event) =>
+                                        updateAsanaInActivitySlot(asana.id, "repsOrDuration", event.target.value)
+                                      }
+                                      placeholder="Reps / Duration (e.g., '10 reps' or '5 minutes')"
+                                      className="border-sky-200 text-xs"
+                                    />
+                                    <Input
+                                      value={asana.notes}
+                                      onChange={(event) =>
+                                        updateAsanaInActivitySlot(asana.id, "notes", event.target.value)
+                                      }
+                                      placeholder="Notes (optional)"
+                                      className="border-sky-200 text-xs"
+                                    />
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="py-8 text-center text-xs text-slate-500">
+                                No asanas added for this slot. Search and add asanas from the left panel.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-sm font-medium text-slate-700">Rationale (Optional)</label>
+                          <Textarea
+                            value={selectedActivitySlot?.rationale || ""}
+                            onChange={(event) => updateActivitySlotRationale(event.target.value)}
+                            placeholder="Why these asanas are recommended for this slot..."
+                            rows={3}
+                            className="border-sky-200 text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-slate-700">Sleep Schedule</label>
-                    <Input
-                      value={consultationData.lifestyle.sleepSchedule}
-                      onChange={(event) =>
-                        setConsultationData((previous) => ({
-                          ...previous,
-                          lifestyle: {
-                            ...previous.lifestyle,
-                            include: true,
-                            sleepSchedule: event.target.value,
-                          },
-                        }))
-                      }
-                      className="border-sky-200"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-slate-700">Lifestyle Rules</label>
-                    <Textarea
-                      value={consultationData.lifestyle.rules}
-                      onChange={(event) =>
-                        setConsultationData((previous) => ({
-                          ...previous,
-                          lifestyle: {
-                            ...previous.lifestyle,
-                            include: true,
+                )}
+
+                {/* Sub-step 3: Sleep Slots & Lifestyle Rules */}
+                {activityFlowStep === 3 && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="mb-3 text-sm font-semibold text-slate-900">Sleep Slots</h3>
+                      <div className="space-y-3 rounded-lg bg-blue-50 p-4 border border-blue-200">
+                        <div>
+                          <p className="text-xs text-slate-600 mb-3">Create sleep slots (e.g., Night Sleep, Afternoon Nap)</p>
+                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-4">
+                            <Input
+                              value={newSleepSlotName}
+                              onChange={(event) => setNewSleepSlotName(event.target.value)}
+                              placeholder="Slot name (e.g., 'Night Sleep')"
+                              className="border-blue-200"
+                            />
+                            <input
+                              type="time"
+                              value={
+                                newSleepTime.includes(":") && !newSleepTime.includes(" ")
+                                  ? newSleepTime
+                                  : (() => {
+                                      const [time, period] = newSleepTime.split(" ");
+                                      const [h, m] = time.split(":");
+                                      let hours = parseInt(h);
+                                      if (period === "PM" && hours !== 12) hours += 12;
+                                      if (period === "AM" && hours === 12) hours = 0;
+                                      return `${String(hours).padStart(2, "0")}:${m}`;
+                                    })()
+                              }
+                              onChange={(event) => {
+                                const [hours, minutes] = event.target.value.split(":");
+                                let h = parseInt(hours);
+                                const period = h >= 12 ? "PM" : "AM";
+                                if (h > 12) h -= 12;
+                                if (h === 0) h = 12;
+                                setNewSleepTime(`${h}:${minutes} ${period}`);
+                              }}
+                              className="rounded-md border border-blue-200 px-3 py-2 text-sm"
+                              title="Sleep time"
+                            />
+                            <input
+                              type="time"
+                              value={
+                                newWakeupTime.includes(":") && !newWakeupTime.includes(" ")
+                                  ? newWakeupTime
+                                  : (() => {
+                                      const [time, period] = newWakeupTime.split(" ");
+                                      const [h, m] = time.split(":");
+                                      let hours = parseInt(h);
+                                      if (period === "PM" && hours !== 12) hours += 12;
+                                      if (period === "AM" && hours === 12) hours = 0;
+                                      return `${String(hours).padStart(2, "0")}:${m}`;
+                                    })()
+                              }
+                              onChange={(event) => {
+                                const [hours, minutes] = event.target.value.split(":");
+                                let h = parseInt(hours);
+                                const period = h >= 12 ? "PM" : "AM";
+                                if (h > 12) h -= 12;
+                                if (h === 0) h = 12;
+                                setNewWakeupTime(`${h}:${minutes} ${period}`);
+                              }}
+                              className="rounded-md border border-blue-200 px-3 py-2 text-sm"
+                              title="Wake-up time"
+                            />
+                            <Button
+                              type="button"
+                              onClick={addSleepSlot}
+                              disabled={!newSleepSlotName.trim()}
+                              className="bg-blue-700 text-white hover:bg-blue-800"
+                            >
+                              <Plus className="h-4 w-4" />
+                              Add Slot
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          {sortSleepSlotsByTime(manualActivityChart.sleepSlots).map((slot) => (
+                            <div
+                              key={slot.id}
+                              className="flex items-center justify-between rounded-md border border-blue-200 bg-white p-3"
+                            >
+                              <div className="flex-1">
+                                <input
+                                  type="text"
+                                  value={slot.name}
+                                  onChange={(event) => updateSleepSlot(slot.id, "name", event.target.value)}
+                                  className="w-full rounded border border-blue-100 px-2 py-1 text-sm font-medium text-slate-900 hover:border-blue-300 focus:border-blue-400 focus:outline-none"
+                                />
+                                <div className="mt-2 flex items-center gap-2 text-xs text-slate-600">
+                                  <span>Sleep:</span>
+                                  <input
+                                    type="time"
+                                    value={
+                                      slot.sleepTime.includes(":") && !slot.sleepTime.includes(" ")
+                                        ? slot.sleepTime
+                                        : (() => {
+                                            const [time, period] = slot.sleepTime.split(" ");
+                                            const [h, m] = time.split(":");
+                                            let hours = parseInt(h);
+                                            if (period === "PM" && hours !== 12) hours += 12;
+                                            if (period === "AM" && hours === 12) hours = 0;
+                                            return `${String(hours).padStart(2, "0")}:${m}`;
+                                          })()
+                                    }
+                                    onChange={(event) => {
+                                      const [hours, minutes] = event.target.value.split(":");
+                                      let h = parseInt(hours);
+                                      const period = h >= 12 ? "PM" : "AM";
+                                      if (h > 12) h -= 12;
+                                      if (h === 0) h = 12;
+                                      updateSleepSlot(slot.id, "sleepTime", `${h}:${minutes} ${period}`);
+                                    }}
+                                    className="rounded border border-blue-100 px-2 py-1 text-xs"
+                                  />
+                                  <span className="ml-2">Wake:</span>
+                                  <input
+                                    type="time"
+                                    value={
+                                      slot.wakeupTime.includes(":") && !slot.wakeupTime.includes(" ")
+                                        ? slot.wakeupTime
+                                        : (() => {
+                                            const [time, period] = slot.wakeupTime.split(" ");
+                                            const [h, m] = time.split(":");
+                                            let hours = parseInt(h);
+                                            if (period === "PM" && hours !== 12) hours += 12;
+                                            if (period === "AM" && hours === 12) hours = 0;
+                                            return `${String(hours).padStart(2, "0")}:${m}`;
+                                          })()
+                                    }
+                                    onChange={(event) => {
+                                      const [hours, minutes] = event.target.value.split(":");
+                                      let h = parseInt(hours);
+                                      const period = h >= 12 ? "PM" : "AM";
+                                      if (h > 12) h -= 12;
+                                      if (h === 0) h = 12;
+                                      updateSleepSlot(slot.id, "wakeupTime", `${h}:${minutes} ${period}`);
+                                    }}
+                                    className="rounded border border-blue-100 px-2 py-1 text-xs"
+                                  />
+                                </div>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => deleteSleepSlot(slot.id)}
+                                disabled={manualActivityChart.sleepSlots.length <= 1}
+                                className="h-5 w-5 p-0 text-red-600 hover:bg-red-100 ml-2"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="mb-3 text-sm font-semibold text-slate-900">Lifestyle Rules</h3>
+                      <Textarea
+                        value={manualActivityChart.rules}
+                        onChange={(event) =>
+                          setManualActivityChart((prev) => ({
+                            ...prev,
                             rules: event.target.value,
-                          },
-                        }))
-                      }
-                      rows={4}
-                      className="border-sky-200"
-                    />
+                          }))
+                        }
+                        placeholder={`Enter lifestyle recommendations, one per line:\n• Avoid stressful situations during the day\n• Take a short walk after meals\n• Avoid heavy or oily foods at night\n• Practice meditation or pranayama for 15 minutes daily\n• Keep a consistent sleep schedule\n• Avoid excessive screen time before bed`}
+                        rows={6}
+                        className="border-sky-200"
+                      />
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setActivityFlowStep(2)}
+                        className="bg-white"
+                      >
+                        <ChevronLeft className="mr-1 h-4 w-4" />
+                        Back
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => setActivityFlowStep(4)}
+                        className="ml-auto bg-sky-700 text-white hover:bg-sky-800"
+                      >
+                        Next: Review
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <Button type="button" variant="outline" onClick={() => skipStep(3)}>
-                    Skip this step
-                  </Button>
-                </div>
+                )}
+
+                {/* Sub-step 4: Review */}
+                {activityFlowStep === 4 && (
+                  <div className="space-y-4">
+                    <div className="rounded-lg bg-sky-50 p-4 border border-sky-200">
+                      <h3 className="mb-3 font-semibold text-slate-900">Activity Slots Summary</h3>
+                      <div className="space-y-3">
+                        {sortActivitySlotsByTime(manualActivityChart.slots).map((slot) => (
+                          <div key={slot.id} className="rounded-lg border border-sky-200 bg-white p-3">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="font-medium text-slate-900">{slot.name}</span>
+                              <span className="text-xs text-slate-600">{slot.time}</span>
+                            </div>
+                            {slot.asanas.length > 0 ? (
+                              <div className="space-y-1 text-xs text-slate-700">
+                                {slot.asanas.map((asana) => (
+                                  <div key={asana.id} className="pl-3">
+                                    • {asana.name} {asana.repsOrDuration && `(${asana.repsOrDuration})`}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-slate-500 italic">No asanas added</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg bg-blue-50 p-4 border border-blue-200">
+                      <h3 className="mb-3 font-semibold text-slate-900">Sleep Schedule</h3>
+                      <div className="space-y-2">
+                        {sortSleepSlotsByTime(manualActivityChart.sleepSlots).map((slot) => (
+                          <div key={slot.id} className="text-sm text-slate-700">
+                            <span className="font-medium">{slot.name}:</span> Sleep at {slot.sleepTime}, Wake at {slot.wakeupTime}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {manualActivityChart.rules && (
+                      <div className="rounded-lg bg-sky-50 p-4 border border-sky-200">
+                        <h3 className="mb-2 font-semibold text-slate-900">Lifestyle Rules</h3>
+                        <ul className="text-sm text-slate-700 space-y-1">
+                          {manualActivityChart.rules
+                            .split("\n")
+                            .map((rule, idx) => rule.trim() && <li key={idx}>• {rule.trim()}</li>)}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setActivityFlowStep(3)}
+                        className="bg-white"
+                      >
+                        <ChevronLeft className="mr-1 h-4 w-4" />
+                        Back
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => skipStep(3)} className="ml-auto">
+                        Skip remaining
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={goNext}
+                        className="bg-sky-700 text-white hover:bg-sky-800"
+                      >
+                        Next: Continue
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
@@ -1524,17 +2339,62 @@ export default function ActiveConsultationWizard({
                           placeholder="Dosage"
                         />
                         <Input
-                          value={medicine.timing}
-                          onChange={(event) => updateMedicine(medicine.id, "timing", event.target.value)}
-                          placeholder="Timing"
+                          value={medicine.medicineType}
+                          placeholder="Type"
+                          readOnly
+                          className="bg-slate-100 text-slate-600"
                         />
+                        <Input
+                          value={medicine.duration}
+                          onChange={(event) => updateMedicine(medicine.id, "duration", event.target.value)}
+                          placeholder="Duration (days)"
+                        />
+                      </div>
+
+                      <div className="mb-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+                        <Input
+                          type="time"
+                          value={medicine.timingTime}
+                          onChange={(event) => {
+                            const nextTime = event.target.value || "08:00";
+                            updateMedicine(medicine.id, "timingTime", nextTime);
+                            updateMedicine(medicine.id, "timingPeriod", getPeriodFromTime24(nextTime));
+                          }}
+                        />
+                        <Select
+                          value={medicine.timingPeriod}
+                          onValueChange={(value) => {
+                            const nextPeriod = value as "AM" | "PM";
+                            updateMedicine(medicine.id, "timingPeriod", nextPeriod);
+                            updateMedicine(
+                              medicine.id,
+                              "timingTime",
+                              applyPeriodToTime24(medicine.timingTime || "08:00", nextPeriod)
+                            );
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="AM/PM" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="AM">AM</SelectItem>
+                            <SelectItem value="PM">PM</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <Input
                           value={medicine.notes}
                           onChange={(event) => updateMedicine(medicine.id, "notes", event.target.value)}
-                          placeholder="Notes"
+                          placeholder="Notes (optional)"
                         />
                       </div>
-                      <div className="flex justify-end">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => duplicateMedicine(medicine.id)}
+                        >
+                          Duplicate
+                        </Button>
                         <Button
                           type="button"
                           variant="ghost"
@@ -1586,7 +2446,7 @@ export default function ActiveConsultationWizard({
           <Button
             type="button"
             onClick={goNext}
-            disabled={currentStep === 4 || (currentStep === 2 && dietFlowStep < 4)}
+            disabled={currentStep === 4 || (currentStep === 2 && dietFlowStep < 4) || (currentStep === 3 && activityFlowStep < 4)}
             className="min-w-[112px] bg-[#1F5C3F] text-white hover:bg-[#184734]"
           >
             Next
