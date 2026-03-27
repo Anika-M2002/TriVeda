@@ -8,43 +8,42 @@ datasource db {
 }
 
 model Patient {
-  id              String        @id @default(uuid())
-  email           String?       @unique
-  phoneNumber     String?       @unique
-  password        String?
-  name            String
-  isAppRegistered Boolean       @default(false)
-  age             Int?
-  dateOfBirth     DateTime?
-  gender          String?
-  bloodGroup      String?
-  profileImageData Bytes?
+  id                   String               @id @default(uuid())
+  email                String?              @unique
+  phoneNumber          String?              @unique
+  password             String?
+  name                 String
+  isAppRegistered      Boolean              @default(false)
+  age                  Int?
+  gender               String?
+  bloodGroup           String?
+  prakriti             String?
+  vikriti              String?
+  vataScore            Int?
+  pittaScore           Int?
+  kaphaScore           Int?
+  allergies            String[]             @default([])
+  dietaryPref          String?
+  clinicalData         Json?
+  createdAt            DateTime             @default(now())
+  dateOfBirth          DateTime?
+  profileImageData     Bytes?
   profileImageMimeType String?
-  prakriti        String?
-  vikriti         String?
-  vataScore       Int?
-  pittaScore      Int?
-  kaphaScore      Int?
-  allergies       String[]      @default([])
-  dietaryPref     String?
-  clinicalData    Json?
-  createdAt       DateTime      @default(now())
-  appointments    Appointment[]
-  assessments     PrakritiAssessment[]
-  reports         PatientReport[]
+  appointments         Appointment[]
+  reports              PatientReport[]
+  assessments          PrakritiAssessment[]
 }
 
 model PatientReport {
-  id         String   @id @default(uuid())
-  patientId  String
-  fileName   String
-  mimeType   String
-  sizeBytes  Int
-  fileData   Bytes
-  summary    String?
-  createdAt  DateTime @default(now())
-
-  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  patientId String
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+  fileData  Bytes
+  summary   String?
+  createdAt DateTime @default(now())
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
   @@index([patientId, createdAt])
 }
@@ -66,8 +65,7 @@ model PrakritiAssessment {
   primaryDosha String
   timeSpentSec Int?
   createdAt    DateTime @default(now())
-
-  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
   @@index([patientId, createdAt])
 }
@@ -77,12 +75,12 @@ model HospitalStaff {
   email             String            @unique
   password          String
   name              String
-  age               Int?
-  dateOfBirth       DateTime?
-  gender            String?
   role              StaffRole
   hospitalId        String
   createdAt         DateTime          @default(now())
+  age               Int?
+  dateOfBirth       DateTime?
+  gender            String?
   appointmentsAsDoc Appointment[]
   doctorProfile     DoctorProfile?
   hospital          Hospital          @relation(fields: [hospitalId], references: [id])
@@ -90,22 +88,22 @@ model HospitalStaff {
 }
 
 model DoctorProfile {
-  id            String        @id @default(uuid())
-  specialty     String
-  experienceYrs Int
-  qualifications String[]     @default([])
-  locality      String?
-  certificates  String?
-  previousWork  String?
-  extraInfo     String?
-  languages     String[]      @default([])
-  caseSummaries String[]      @default([])
-  education     String[]      @default([])
-  isAvailable   Boolean       @default(true)
-  departmentId  String?
-  staffId       String        @unique
-  department    Department?   @relation(fields: [departmentId], references: [id])
-  staff         HospitalStaff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  id             String        @id @default(uuid())
+  specialty      String
+  experienceYrs  Int
+  isAvailable    Boolean       @default(true)
+  departmentId   String?
+  staffId        String        @unique
+  languages      String[]      @default([])
+  caseSummaries  String[]      @default([])
+  education      String[]      @default([])
+  qualifications String[]      @default([])
+  locality       String?
+  certificates   String?
+  previousWork   String?
+  extraInfo      String?
+  department     Department?   @relation(fields: [departmentId], references: [id])
+  staff          HospitalStaff @relation(fields: [staffId], references: [id], onDelete: Cascade)
 }
 
 model TherapistProfile {
@@ -130,25 +128,89 @@ model Department {
 }
 
 model Appointment {
-  id              String            @id @default(uuid())
-  patientId       String
-  doctorId        String
-  scheduledAt     DateTime
-  status          AppointmentStatus @default(SCHEDULED)
+  id                 String            @id @default(uuid())
+  patientId          String
+  doctorId           String
+  scheduledAt        DateTime
+  status             AppointmentStatus @default(SCHEDULED)
+  patientSymptoms    String?
+  aiSummary          String?
+  createdAt          DateTime          @default(now())
+  dietChart          Json?
+  doctorNotes        String?
+  isCompleted        Boolean           @default(false)
+  medications        Json?
+  routinePlan        Json?
+  paymentStatus      String            @default("PENDING")
   problemDescription String?
-  patientSymptoms String?
-  severity        String?
-  duration        String?
-  aiSummary       String?
-  createdAt       DateTime          @default(now())
-  dietChart       Json?
-  doctorNotes     String?
-  isCompleted     Boolean           @default(false)
-  medications     Json?
-  routinePlan     Json?
-  paymentStatus   String            @default("PENDING")
-  doctor          HospitalStaff     @relation(fields: [doctorId], references: [id])
-  patient         Patient           @relation(fields: [patientId], references: [id])
+  severity           String?
+  duration           String?
+  doctor             HospitalStaff     @relation(fields: [doctorId], references: [id])
+  patient            Patient           @relation(fields: [patientId], references: [id])
+}
+
+model foods {
+  food_id        String           @id
+  food_name      String
+  category       String?
+  serving_size   Int?
+  calories       Int?
+  protein        Int?
+  carbs          Int?
+  fat            Int?
+  vit_c          Int?
+  iron           Int?
+  preparation    String?
+  ayurveda_props ayurveda_props[]
+
+  @@index([category], map: "idx_foods_category")
+  @@index([food_name], map: "idx_foods_name")
+}
+
+model ayurveda_props {
+  id           Int     @id
+  food_id      String
+  rasa         String?
+  virya        String?
+  vipaka       String?
+  gunas        String?
+  dosha_impact String?
+  foods        foods   @relation(fields: [food_id], references: [food_id])
+
+  @@index([food_id], map: "idx_ayurveda_props_food_id")
+}
+
+model asanas {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String   @unique(map: "asanas_name_unique")
+  category             String?
+  ayurvedic_properties String[] @default([])
+  effect_profile       String[] @default([])
+  contraindications    String[] @default([])
+  notes                String?
+  is_active            Boolean  @default(true)
+  created_at           DateTime @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active, name], map: "idx_asanas_active_name")
+  @@index([category], map: "idx_asanas_category")
+}
+
+model medicines {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  medicine_name        String   @unique(map: "medicines_name_unique")
+  medicine_type        String?
+  herbs_used           String[] @default([])
+  ayurvedic_properties String[] @default([])
+  dosage_guideline     String?
+  contraindications    String[] @default([])
+  notes                String?
+  is_active            Boolean  @default(true)
+  created_at           DateTime @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active, medicine_name], map: "idx_medicines_active_name")
+  @@index([medicine_type], map: "idx_medicines_type")
 }
 
 enum StaffRole {

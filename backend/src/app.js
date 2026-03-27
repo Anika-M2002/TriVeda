@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import profileRoutes from './routes/profile.routes.js';
+import catalogRoutes from './routes/catalog.routes.js';
 import { updateDoctorProfile } from './controllers/profile.controller.js';
 
 const app = express();
@@ -48,6 +49,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/catalogs', catalogRoutes);
 app.put('/api/doctor/profile', updateDoctorProfile);
 
 // Global error handler

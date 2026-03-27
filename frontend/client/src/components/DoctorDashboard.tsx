@@ -71,6 +71,12 @@ import { useDoctorPatients } from "@/hooks/useDoctorPatients";
 import { useDoctorAppointments } from "@/hooks/useAppointments";
 import { useSaveDoctorPlan } from "@/hooks/useAppointments";
 import { useLatestPrakritiAssessment, useSavePrakritiAssessment } from "@/hooks/useAppointments";
+import { useTreatmentCatalogs } from "@/hooks/useTreatmentCatalogs";
+import type {
+  AsanaCatalogItem,
+  FoodCatalogItem,
+  MedicineCatalogItem,
+} from "@/api/catalog.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -168,54 +174,6 @@ const doshaReviewConfig = {
   },
 } as const;
 
-const mockFoodDatabase = [
-  { id: "1", name: "Poha", category: "Breakfast", rasa: "Sweet", dosha: "Balances Pitta", calories: 180 },
-  { id: "2", name: "Brown Rice", category: "Grains", rasa: "Sweet", dosha: "Balances all Doshas", calories: 220 },
-  { id: "3", name: "Moong Dal", category: "Legumes", rasa: "Sweet", dosha: "Balances Pitta", calories: 150 },
-  { id: "4", name: "Cucumber", category: "Vegetables", rasa: "Sweet", dosha: "Balances Pitta", calories: 15 },
-  { id: "5", name: "Coconut Water", category: "Beverages", rasa: "Sweet", dosha: "Balances Pitta", calories: 45 },
-  { id: "6", name: "Khichdi", category: "Complete Meals", rasa: "Sweet", dosha: "Balances all Doshas", calories: 200 },
-  { id: "7", name: "Ghee", category: "Fats", rasa: "Sweet", dosha: "Balances Vata", calories: 120 },
-  { id: "8", name: "Buttermilk", category: "Beverages", rasa: "Sour", dosha: "Balances Pitta", calories: 60 },
-];
-
-const remedyCatalog = [
-  {
-    id: "r1",
-    medicineName: "Triphala Churna",
-    herbsUsed: ["Amalaki", "Bibhitaki", "Haritaki"],
-    ayurvedicProperties: ["Mild Detox", "Digestive Support", "Tridosha Balancing"],
-    medicineType: "Powder",
-  },
-  {
-    id: "r2",
-    medicineName: "Brahmi Ghrita",
-    herbsUsed: ["Brahmi", "Cow Ghee"],
-    ayurvedicProperties: ["Cooling", "Nervine Tonic", "Supports Sleep"],
-    medicineType: "Medicated Ghee",
-  },
-  {
-    id: "r3",
-    medicineName: "Ashwagandha Lehyam",
-    herbsUsed: ["Ashwagandha", "Ghee", "Jaggery"],
-    ayurvedicProperties: ["Strengthening", "Warming", "Vata Support"],
-    medicineType: "Paste",
-  },
-  {
-    id: "r4",
-    medicineName: "Avipattikar Churna",
-    herbsUsed: ["Trikatu", "Musta", "Vidanga"],
-    ayurvedicProperties: ["Pitta Pacifying", "Acidity Support", "Cooling Digestive"],
-    medicineType: "Powder",
-  },
-  {
-    id: "r5",
-    medicineName: "Dashamoola Kwath",
-    herbsUsed: ["Bilva", "Agnimantha", "Shyonaka"],
-    ayurvedicProperties: ["Anti-inflammatory", "Vata-Kapha Support", "Deepana"],
-    medicineType: "Liquid Decoction",
-  },
-];
 
 type MedicationSlot = {
   id: string;
@@ -235,43 +193,15 @@ type ExerciseSlot = {
   importantDetails: string;
 };
 
-const exerciseCatalog = [
-  {
-    id: "e1",
-    name: "Nadi Shodhana Pranayama",
-    category: "Pranayama",
-    ayurvedicProperties: ["Calming", "Balances Vata", "Mind Clarity"],
-    effectProfile: ["Improves sleep quality", "Reduces stress load"],
-  },
-  {
-    id: "e2",
-    name: "Surya Namaskar",
-    category: "Yoga Sequence",
-    ayurvedicProperties: ["Warming", "Stimulates Agni", "Kapha Reduction"],
-    effectProfile: ["Improves metabolism", "Can increase heat if overdone"],
-  },
-  {
-    id: "e3",
-    name: "Vajrasana",
-    category: "Asana",
-    ayurvedicProperties: ["Post-meal digestion support", "Grounding"],
-    effectProfile: ["Supports digestion", "Low impact posture"],
-  },
-  {
-    id: "e4",
-    name: "Shavasana",
-    category: "Restorative",
-    ayurvedicProperties: ["Deep relaxation", "Pitta calming"],
-    effectProfile: ["Helps light sleepers", "Reduces over-exertion"],
-  },
-  {
-    id: "e5",
-    name: "Brisk Walking",
-    category: "Exercise",
-    ayurvedicProperties: ["Kapha mobilizing", "Cardio support"],
-    effectProfile: ["Weight support", "Avoid too late at night"],
-  },
-];
+type FoodSlot = {
+  id: string;
+  foodId: string | null;
+  mealType: "Breakfast" | "Lunch" | "Snack" | "Dinner" | "Other";
+  portion: string;
+  timing: string;
+  doctorNotes: string;
+  calories: number;
+};
 
 interface DoctorDashboardProps {
   onNavigate?: (view: string) => void;
@@ -302,6 +232,18 @@ export default function DoctorDashboard({
   const saveDoctorPlanMutation = useSaveDoctorPlan();
   const savePrakritiAssessmentMutation = useSavePrakritiAssessment();
   const updatePatientProfileMutation = useUpdatePatientProfile();
+  const { data: treatmentCatalogData } = useTreatmentCatalogs();
+
+  const treatmentCatalogPayload: any = treatmentCatalogData || {};
+  const foodCatalog: FoodCatalogItem[] = Array.isArray(treatmentCatalogPayload?.foods)
+    ? treatmentCatalogPayload.foods
+    : [];
+  const asanaCatalog: AsanaCatalogItem[] = Array.isArray(treatmentCatalogPayload?.asanas)
+    ? treatmentCatalogPayload.asanas
+    : [];
+  const medicineCatalog: MedicineCatalogItem[] = Array.isArray(treatmentCatalogPayload?.medicines)
+    ? treatmentCatalogPayload.medicines
+    : [];
 
   const [sharedAppointments, setSharedAppointments] = useState<AppointmentBooking[]>([]);
   // Reschedule Modal State
@@ -442,6 +384,9 @@ export default function DoctorDashboard({
   const [exerciseSlots, setExerciseSlots] = useState<ExerciseSlot[]>([]);
   const [exerciseSlotsDraft, setExerciseSlotsDraft] = useState<ExerciseSlot[]>([]);
   const [activeExerciseSlotId, setActiveExerciseSlotId] = useState<string | null>(null);
+  const [foodSlots, setFoodSlots] = useState<FoodSlot[]>([]);
+  const [foodSlotsDraft, setFoodSlotsDraft] = useState<FoodSlot[]>([]);
+  const [activeFoodSlotId, setActiveFoodSlotId] = useState<string | null>(null);
   const [therapyFlowText, setTherapyFlowText] = useState("");
   const [testsFlowText, setTestsFlowText] = useState("");
   const [dietQuickSearch, setDietQuickSearch] = useState("");
@@ -468,6 +413,28 @@ export default function DoctorDashboard({
     setShowGuidelineModal(false);
     setGuidelinePatient(null);
   };
+
+  useEffect(() => {
+    if (!selectedPatient) return;
+
+    const resolvedName = selectedPatient.name || "Patient";
+    const resolvedPrakriti = selectedPatient.prakriti || "Not Assessed";
+
+    setDietFlowChart((previousChart: any) => {
+      if (
+        previousChart.patientName === resolvedName &&
+        previousChart.prakriti === resolvedPrakriti
+      ) {
+        return previousChart;
+      }
+
+      return {
+        ...previousChart,
+        patientName: resolvedName,
+        prakriti: resolvedPrakriti,
+      };
+    });
+  }, [selectedPatient?.id, selectedPatient?.name, selectedPatient?.prakriti]);
 
   useEffect(() => {
     if (!patientId) {
@@ -597,6 +564,24 @@ export default function DoctorDashboard({
     (appointment) => appointment.id === selectedAppointmentId
   ) || null;
 
+  useEffect(() => {
+    if (selectedAppointmentId || !selectedPatient?.id || sharedAppointments.length === 0) {
+      return;
+    }
+
+    const patientAppointments = sharedAppointments
+      .filter((appointment) => appointment.patientId === selectedPatient.id)
+      .sort(
+        (appointmentA, appointmentB) =>
+          getAppointmentDateTime(appointmentA).getTime() -
+          getAppointmentDateTime(appointmentB).getTime()
+      );
+
+    if (patientAppointments.length > 0) {
+      setSelectedAppointmentId(patientAppointments[0].id);
+    }
+  }, [selectedAppointmentId, selectedPatient?.id, sharedAppointments]);
+
   const openPatientProfile = (patientIdToOpen: string, mode: "view" | "consult", appointmentId?: string) => {
     if (!patientIdToOpen) return;
     window.sessionStorage.setItem(`doctor:patient-mode:${patientIdToOpen}`, mode);
@@ -619,10 +604,19 @@ export default function DoctorDashboard({
       .map((line) => line.trim())
       .filter(Boolean);
 
-    const routineLines = routinePlan
+    const routineLinesFromEditor = routinePlan
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean);
+
+    const routineLinesFromSlots = compileRoutinePlanFromSlots(exerciseSlots)
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    const routineLines = routineLinesFromSlots.length > 0
+      ? routineLinesFromSlots
+      : routineLinesFromEditor;
 
     const dosLines = dietStats
       .split("\n")
@@ -636,7 +630,7 @@ export default function DoctorDashboard({
 
     const medicationsFromSlots = medicationSlots
       .map((slot) => {
-        const selectedRemedy = remedyCatalog.find((remedy) => remedy.id === slot.remedyId);
+        const selectedRemedy = medicineCatalog.find((remedy) => remedy.id === slot.remedyId);
         if (!selectedRemedy) return null;
 
         return {
@@ -662,6 +656,24 @@ export default function DoctorDashboard({
           },
         ].filter((item) => item.name || item.timing || item.properties);
 
+    const foodsFromSlots = foodSlots
+      .map((slot) => {
+        const selectedFood = foodCatalog.find((food) => food.id === slot.foodId);
+        if (!selectedFood) return null;
+
+        return {
+          name: selectedFood.name,
+          mealType: slot.mealType,
+          portion: slot.portion,
+          timing: slot.timing,
+          doctorNotes: slot.doctorNotes,
+          calories: slot.calories,
+          category: selectedFood.category,
+          dosha: selectedFood.dosha,
+        };
+      })
+      .filter(Boolean) as any[];
+
     try {
       await saveDoctorPlanMutation.mutateAsync({
         appointmentId: selectedAppointmentId,
@@ -671,6 +683,7 @@ export default function DoctorDashboard({
             items: dietLines,
             pathya: dosLines,
             apathya: dontsLines,
+            selectedFoods: foodsFromSlots,
           },
           routinePlan: {
             exercisesAndAsanas: routineLines,
@@ -779,7 +792,7 @@ export default function DoctorDashboard({
     setDietFlowChart((prev: any) => {
       const nextMeals = [...prev.meals];
       const foodName = nextMeals[dietFlowSelectedMealIdx].foods[foodIndex];
-      const food = mockFoodDatabase.find((item) => item.name === foodName);
+      const food = foodCatalog.find((item) => item.name === foodName);
       if (food) nextMeals[dietFlowSelectedMealIdx].calories -= Number(food.calories || 0);
       nextMeals[dietFlowSelectedMealIdx].foods = nextMeals[dietFlowSelectedMealIdx].foods.filter(
         (_item: string, index: number) => index !== foodIndex
@@ -871,7 +884,7 @@ export default function DoctorDashboard({
       setMedicationSlots(normalizedSlots);
 
       const firstSlot = normalizedSlots[0];
-      const firstRemedy = remedyCatalog.find((remedy) => remedy.id === firstSlot?.remedyId);
+      const firstRemedy = medicineCatalog.find((remedy) => remedy.id === firstSlot?.remedyId);
       if (firstSlot && firstRemedy) {
         setMedicationName(firstRemedy.medicineName);
         setMedicationTime(firstSlot.timing);
@@ -888,7 +901,7 @@ export default function DoctorDashboard({
       setRoutinePlan(
         normalizedSlots
           .map((slot) => {
-            const selectedExercise = exerciseCatalog.find((exercise) => exercise.id === slot.exerciseId);
+            const selectedExercise = asanaCatalog.find((exercise) => exercise.id === slot.exerciseId);
             return selectedExercise
               ? `${slot.timing} - ${selectedExercise.name} (${slot.duration || "duration not set"})`
               : null;
@@ -969,8 +982,8 @@ export default function DoctorDashboard({
     }
 
     const selectedRemedies = selectedSlots
-      .map((slot) => remedyCatalog.find((remedy) => remedy.id === slot.remedyId))
-      .filter(Boolean) as typeof remedyCatalog;
+      .map((slot) => medicineCatalog.find((remedy) => remedy.id === slot.remedyId))
+      .filter((remedy): remedy is MedicineCatalogItem => Boolean(remedy));
 
     findings.push({ level: "good", text: `${selectedSlots.length} medication slot(s) configured and ready for timeline sorting.` });
 
@@ -1061,8 +1074,8 @@ export default function DoctorDashboard({
     }
 
     const selectedExercises = selectedSlots
-      .map((slot) => exerciseCatalog.find((exercise) => exercise.id === slot.exerciseId))
-      .filter(Boolean) as typeof exerciseCatalog;
+      .map((slot) => asanaCatalog.find((exercise) => exercise.id === slot.exerciseId))
+      .filter((exercise): exercise is AsanaCatalogItem => Boolean(exercise));
 
     findings.push({ level: "good", text: `${selectedSlots.length} exercise slot(s) configured with timing.` });
 
@@ -1098,7 +1111,7 @@ export default function DoctorDashboard({
   const compileRoutinePlanFromSlots = (slots: ExerciseSlot[]) =>
     slots
       .map((slot) => {
-        const selectedExercise = exerciseCatalog.find(
+        const selectedExercise = asanaCatalog.find(
           (exercise) => exercise.id === slot.exerciseId
         );
         return selectedExercise
@@ -1108,19 +1121,19 @@ export default function DoctorDashboard({
       .filter(Boolean)
       .join("\n");
 
-  const filteredDietOptions = mockFoodDatabase.filter((food) =>
+  const filteredDietOptions = foodCatalog.filter((food) =>
     food.name.toLowerCase().includes(dietQuickSearch.toLowerCase())
   );
 
-  const filteredExerciseOptions = exerciseCatalog.filter((exercise) =>
+  const filteredExerciseOptions = asanaCatalog.filter((exercise) =>
     exercise.name.toLowerCase().includes(asanaQuickSearch.toLowerCase())
   );
 
-  const filteredRemedies = remedyCatalog.filter((remedy) =>
+  const filteredRemedies = medicineCatalog.filter((remedy) =>
     remedy.medicineName.toLowerCase().includes(medicineSearch.toLowerCase())
   );
 
-  const addDietItemQuick = (food: (typeof mockFoodDatabase)[number]) => {
+  const addDietItemQuick = (food: FoodCatalogItem) => {
     const withPortion = dietQuickPortion.trim()
       ? `${food.name} (${dietQuickPortion.trim()})`
       : food.name;
@@ -1135,22 +1148,35 @@ export default function DoctorDashboard({
 
   const addExerciseSlotQuick = (exerciseId: string) => {
     const draft = exerciseDraftInputs[exerciseId] || { duration: "", timing: "" };
+    const normalizedTiming = draft.timing.trim() || "Not specified";
+    const normalizedDuration = draft.duration.trim() || "Not specified";
+
     const nextSlot: ExerciseSlot = {
       id: `slot-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       exerciseId,
-      timing: draft.timing.trim(),
-      duration: draft.duration.trim(),
+      timing: normalizedTiming,
+      duration: normalizedDuration,
       doctorNotes: "",
       importantDetails: "",
     };
 
-    if (!nextSlot.timing) return;
-
     setExerciseSlots((previousSlots) => {
+      const alreadyExists = previousSlots.some(
+        (slot) => slot.exerciseId === nextSlot.exerciseId && slot.timing === nextSlot.timing
+      );
+      if (alreadyExists) {
+        return previousSlots;
+      }
+
       const nextSlots = [...previousSlots, nextSlot];
       setRoutinePlan(compileRoutinePlanFromSlots(nextSlots));
       return nextSlots;
     });
+
+    setExerciseDraftInputs((prev) => ({
+      ...prev,
+      [exerciseId]: { duration: "", timing: "" },
+    }));
   };
 
   const removeExerciseSlotQuick = (slotId: string) => {
@@ -1162,7 +1188,7 @@ export default function DoctorDashboard({
   };
 
   const addMedicationSlotQuick = (remedyId: string) => {
-    const selectedRemedy = remedyCatalog.find((item) => item.id === remedyId);
+    const selectedRemedy = medicineCatalog.find((item) => item.id === remedyId);
     if (!selectedRemedy) return;
 
     const nextSlot: MedicationSlot = {
@@ -1198,6 +1224,48 @@ export default function DoctorDashboard({
 
   const removeMedicationSlotQuick = (slotId: string) => {
     setMedicationSlots((previousSlots) =>
+      previousSlots.filter((slot) => slot.id !== slotId)
+    );
+  };
+
+  const addFoodSlotQuick = (foodId: string, mealType: "Breakfast" | "Lunch" | "Snack" | "Dinner" | "Other" = "Breakfast") => {
+    const selectedFood = foodCatalog.find((item) => item.id === foodId);
+    if (!selectedFood) return;
+
+    const nextSlot: FoodSlot = {
+      id: `food-slot-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      foodId,
+      mealType,
+      portion: "",
+      timing: "",
+      doctorNotes: "",
+      calories: Number(selectedFood.calories || 0),
+    };
+
+    setFoodSlots((previousSlots) => [...previousSlots, nextSlot]);
+    setDietQuickSearch("");
+    setDietQuickPortion("");
+  };
+
+  const updateFoodSlotQuick = (
+    slotId: string,
+    key: keyof FoodSlot,
+    value: string | number
+  ) => {
+    setFoodSlots((previousSlots) =>
+      previousSlots.map((slot) =>
+        slot.id === slotId
+          ? {
+              ...slot,
+              [key]: value,
+            }
+          : slot
+      )
+    );
+  };
+
+  const removeFoodSlotQuick = (slotId: string) => {
+    setFoodSlots((previousSlots) =>
       previousSlots.filter((slot) => slot.id !== slotId)
     );
   };
@@ -1486,7 +1554,7 @@ export default function DoctorDashboard({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-5">
               <div className="bg-gradient-to-br from-red-50 to-white rounded-xl p-5 border border-red-200 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-base font-semibold flex items-center">
@@ -1560,7 +1628,7 @@ export default function DoctorDashboard({
               </h3>
 
               <div className="mb-6">
-                <h4 className="font-medium text-gray-900 mb-3">Primary Health Issues</h4>
+                <h4 className="font-medium text-gray-900 mb-3">Primary Health Goals</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedPatient.issues.map((issue: string, idx: number) => (
                     <span
@@ -1573,27 +1641,31 @@ export default function DoctorDashboard({
                 </div>
               </div>
 
-              <hr className="my-6" />
+              {Array.isArray(selectedPatient.medications) && selectedPatient.medications.length > 0 && (
+                <>
+                  <hr className="my-6" />
 
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-900 mb-3">Current Medications</h4>
-                <div className="space-y-3">
-                  {selectedPatient.medications.map((med: string, idx: number) => (
-                    <div
-                      key={idx}
-                      className="flex items-center space-x-3 p-4 bg-emerald-50 rounded-lg"
-                    >
-                      <div className="w-10 h-10 bg-emerald-200 rounded-full flex items-center justify-center">
-                        <Pill className="w-5 h-5 text-[#1F5C3F]" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900">{med}</div>
-                        <div className="text-sm text-gray-600">Take as prescribed</div>
-                      </div>
+                  <div className="mb-6">
+                    <h4 className="font-medium text-gray-900 mb-3">Current Medications</h4>
+                    <div className="space-y-3">
+                      {selectedPatient.medications.map((med: string, idx: number) => (
+                        <div
+                          key={idx}
+                          className="flex items-center space-x-3 p-4 bg-emerald-50 rounded-lg"
+                        >
+                          <div className="w-10 h-10 bg-emerald-200 rounded-full flex items-center justify-center">
+                            <Pill className="w-5 h-5 text-[#1F5C3F]" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-900">{med}</div>
+                            <div className="text-sm text-gray-600">Take as prescribed</div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                </>
+              )}
 
               <hr className="my-6" />
 
@@ -1616,9 +1688,9 @@ export default function DoctorDashboard({
               </div>
 
               {profileMode === "consult" ? (
-                <div className="mt-6 grid grid-cols-1 2xl:grid-cols-12 gap-5 sm:gap-6">
+                <div className="mt-6 grid grid-cols-1 xl:grid-cols-12 gap-3 sm:gap-4">
                   {/* Diet Flow Interface - Step-based */}
-                  <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:p-5 md:p-6 2xl:col-span-8 w-full">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:p-5 md:p-6 xl:col-span-8 w-full">
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                       <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                         <Utensils className="w-5 h-5 text-emerald-600" />
@@ -1690,10 +1762,10 @@ export default function DoctorDashboard({
                           <div>
                             <h4 className="font-medium text-gray-900 mb-3">Available Foods</h4>
                             <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto space-y-2">
-                              {mockFoodDatabase
+                              {foodCatalog
                                 .filter((food) =>
                                   food.name.toLowerCase().includes(dietFlowSearch.toLowerCase()) ||
-                                  food.category.toLowerCase().includes(dietFlowSearch.toLowerCase())
+                                  String(food.category || "").toLowerCase().includes(dietFlowSearch.toLowerCase())
                                 )
                                 .map((food) => (
                                   <div key={food.id} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-emerald-300 hover:shadow-sm transition">
@@ -1900,9 +1972,9 @@ export default function DoctorDashboard({
                   </div>
 
                   {/* E-commerce Style Consultation Cards */}
-                  <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:p-5 md:p-6 2xl:col-span-4 h-full w-full">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Add Consultations</h4>
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:p-5 md:p-6 xl:col-span-4 w-full">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Quick Add Consultations</h4>
+                  <div className="grid grid-cols-1 gap-2">
                     {/* Yoga & Asanas Card */}
                     <div className="rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-3 sm:p-4 shadow-sm hover:shadow-md transition">
                       <div className="flex items-center gap-2 mb-4">
@@ -1971,6 +2043,64 @@ export default function DoctorDashboard({
                       </div>
                     </div>
 
+                    {/* Foods & Nutrition Card */}
+                    <div className="hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-3 sm:p-4 shadow-sm hover:shadow-md transition">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="p-2 rounded-lg bg-emerald-100">
+                          <Utensils className="w-5 h-5 text-emerald-700" />
+                        </div>
+                        <h5 className="text-base font-semibold text-emerald-900">Foods & Nutrition</h5>
+                      </div>
+                      <input
+                        value={dietQuickSearch}
+                        onChange={(event) => setDietQuickSearch(event.target.value)}
+                        placeholder="Search food"
+                        className="w-full mb-3 px-3 py-2 text-sm border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      />
+                      <div className="flex-1 space-y-2 max-h-64 overflow-y-auto">
+                        {filteredDietOptions.slice(0, 6).map((food) => (
+                          <div key={food.id} className="bg-white border border-emerald-100 rounded-lg p-3 hover:border-emerald-300 transition">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
+                                <Utensils className="w-3 h-3" />
+                              </div>
+                              <p className="text-sm font-medium text-gray-900">{food.name}</p>
+                            </div>
+                            <div className="flex gap-2 mb-2">
+                              <input
+                                value={dietQuickPortion}
+                                onChange={(event) => setDietQuickPortion(event.target.value)}
+                                placeholder="Portion"
+                                className="flex-1 px-2 py-1.5 text-xs border border-emerald-200 rounded"
+                              />
+                              <select
+                                defaultValue="Breakfast"
+                                onChange={(event) => {
+                                  const mealType = event.target.value as "Breakfast" | "Lunch" | "Snack" | "Dinner" | "Other";
+                                  addFoodSlotQuick(food.id, mealType);
+                                }}
+                                className="px-2 py-1.5 text-xs border border-emerald-200 rounded"
+                              >
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Snack">Snack</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Other">Other</option>
+                              </select>
+                            </div>
+                            <p className="text-xs text-emerald-700 mb-2 font-medium">{food.calories} cal</p>
+                            <button
+                              type="button"
+                              onClick={() => addFoodSlotQuick(food.id, "Breakfast")}
+                              className="w-full text-xs bg-emerald-700 hover:bg-emerald-800 text-white py-1.5 rounded transition"
+                            >
+                              Add Food
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Remedies & Medicines Card */}
                     <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-3 sm:p-4 shadow-sm hover:shadow-md transition">
                       <div className="flex items-center gap-2 mb-4">
@@ -2007,9 +2137,9 @@ export default function DoctorDashboard({
                   </div>
 
                   {/* Selected Items Summary Cards */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 2xl:col-span-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 xl:col-span-6">
                     <div className="bg-white border border-sky-200 rounded-2xl p-5 min-h-[220px] flex flex-col">
-                      <h5 className="text-base font-semibold text-sky-900 mb-3 flex items-center gap-2">
+                      <h5 className="text-base font-semibold text-sky-900 mb-3 flex items-center justify-center gap-2">
                         <Activity className="w-4 h-4" />
                         Selected Asanas
                       </h5>
@@ -2018,7 +2148,7 @@ export default function DoctorDashboard({
                       ) : (
                         <div className="space-y-2 flex-1 overflow-y-auto">
                           {exerciseSlots.map((slot) => {
-                            const exercise = exerciseCatalog.find((item) => item.id === slot.exerciseId);
+                            const exercise = asanaCatalog.find((item) => item.id === slot.exerciseId);
                             return (
                               <div key={slot.id} className="flex items-center justify-between bg-sky-50 border border-sky-100 rounded-lg px-3 py-2 hover:bg-sky-100 transition">
                                 <p className="text-xs font-medium text-sky-900 pr-2 break-words">
@@ -2038,8 +2168,70 @@ export default function DoctorDashboard({
                       )}
                     </div>
 
+                    <div className="bg-white border border-emerald-200 rounded-2xl p-5 min-h-[220px] flex flex-col">
+                      <h5 className="text-base font-semibold text-emerald-900 mb-3 flex items-center justify-center gap-2">
+                        <Utensils className="w-4 h-4" />
+                        Selected Foods
+                      </h5>
+                      {foodSlots.length === 0 ? (
+                        <p className="text-xs text-gray-500">No food selected yet.</p>
+                      ) : (
+                        <div className="space-y-3 flex-1 overflow-y-auto max-h-96 pr-1">
+                          {foodSlots.map((slot) => {
+                            const food = foodCatalog.find((item) => item.id === slot.foodId);
+                            return (
+                              <div key={slot.id} className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 space-y-2 hover:bg-emerald-100 transition">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="text-sm font-medium text-emerald-900">{food?.name || "Food"}</p>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeFoodSlotQuick(slot.id)}
+                                    className="text-red-600 hover:text-red-700 shrink-0"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                  <select
+                                    value={slot.mealType}
+                                    onChange={(event) => updateFoodSlotQuick(slot.id, "mealType", event.target.value as any)}
+                                    className="px-2.5 py-1.5 border border-emerald-200 rounded-md"
+                                  >
+                                    <option>Breakfast</option>
+                                    <option>Lunch</option>
+                                    <option>Snack</option>
+                                    <option>Dinner</option>
+                                    <option>Other</option>
+                                  </select>
+                                  <input
+                                    value={slot.portion}
+                                    onChange={(event) => updateFoodSlotQuick(slot.id, "portion", event.target.value)}
+                                    placeholder="Portion"
+                                    className="px-2.5 py-1.5 border border-emerald-200 rounded-md"
+                                  />
+                                  <input
+                                    value={slot.timing}
+                                    onChange={(event) => updateFoodSlotQuick(slot.id, "timing", event.target.value)}
+                                    placeholder="Timing"
+                                    className="px-2.5 py-1.5 border border-emerald-200 rounded-md"
+                                  />
+                                  <input
+                                    value={slot.doctorNotes}
+                                    onChange={(event) => updateFoodSlotQuick(slot.id, "doctorNotes", event.target.value)}
+                                    placeholder="Notes"
+                                    className="px-2.5 py-1.5 border border-emerald-200 rounded-md"
+                                  />
+                                </div>
+                                <p className="text-xs text-emerald-700 font-medium">Calories: {slot.calories}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+
                     <div className="bg-white border border-amber-200 rounded-2xl p-5 min-h-[220px] flex flex-col">
-                      <h5 className="text-base font-semibold text-amber-900 mb-3 flex items-center gap-2">
+                      <h5 className="text-base font-semibold text-amber-900 mb-3 flex items-center justify-center gap-2">
                         <Pill className="w-4 h-4" />
                         Selected Prescriptions
                       </h5>
@@ -2048,7 +2240,7 @@ export default function DoctorDashboard({
                       ) : (
                         <div className="space-y-3 flex-1 overflow-y-auto max-h-72 pr-1">
                           {medicationSlots.map((slot) => {
-                            const remedy = remedyCatalog.find((item) => item.id === slot.remedyId);
+                            const remedy = medicineCatalog.find((item) => item.id === slot.remedyId);
                             return (
                               <div key={slot.id} className="bg-amber-50 border border-amber-100 rounded-lg p-3 space-y-2 hover:bg-amber-100 transition">
                                 <div className="flex items-center justify-between gap-2">
@@ -2096,10 +2288,11 @@ export default function DoctorDashboard({
                   </div>
 
                   {/* Treatment Summary and Save */}
-                  <div className="bg-white border border-gray-200 rounded-2xl p-5 md:p-6 2xl:col-span-6 space-y-5">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-5 md:p-6 xl:col-span-6 space-y-5">
                   <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-xs text-emerald-800 space-y-1">
                     <p className="font-semibold mb-2">Treatment Configuration Summary:</p>
-                    <p><span className="font-medium">Diet Chart:</span> {dietFlowChart.meals.some(m => m.foods.length > 0) ? "✓ Configured" : "○ Not configured"}</p>
+                    <p><span className="font-medium">Diet Chart:</span> {dietFlowChart.meals.some((m: any) => m.foods.length > 0) ? "✓ Configured" : "○ Not configured"}</p>
+                    <p><span className="font-medium">Foods:</span> {foodSlots.length > 0 ? `✓ ${foodSlots.length} selected` : "○ Not configured"}</p>
                     <p><span className="font-medium">Asanas:</span> {exerciseSlots.length > 0 ? `✓ ${exerciseSlots.length} selected` : "○ Not configured"}</p>
                     <p><span className="font-medium">Medicines:</span> {medicationSlots.length > 0 ? `✓ ${medicationSlots.length} selected` : "○ Not configured"}</p>
                   </div>
@@ -2389,12 +2582,12 @@ export default function DoctorDashboard({
                       <div>
                         <h4 className="font-medium text-slate-900 mb-3">Available Foods</h4>
                         <div className="bg-slate-50 rounded-lg p-4 max-h-96 overflow-y-auto space-y-2">
-                          {mockFoodDatabase
+                          {foodCatalog
                             .filter((food) =>
                               food.name.toLowerCase().includes(dietFlowSearch.toLowerCase()) ||
-                              food.category.toLowerCase().includes(dietFlowSearch.toLowerCase()) ||
-                              food.rasa.toLowerCase().includes(dietFlowSearch.toLowerCase()) ||
-                              food.dosha.toLowerCase().includes(dietFlowSearch.toLowerCase())
+                              String(food.category || "").toLowerCase().includes(dietFlowSearch.toLowerCase()) ||
+                              String(food.rasa || "").toLowerCase().includes(dietFlowSearch.toLowerCase()) ||
+                              String(food.dosha || "").toLowerCase().includes(dietFlowSearch.toLowerCase())
                             )
                             .map((food) => (
                               <div key={food.id} className="bg-white rounded-lg p-3 shadow-sm">
@@ -2685,7 +2878,7 @@ export default function DoctorDashboard({
                               .slice()
                               .sort((slotA, slotB) => (slotA.timing || "99:99").localeCompare(slotB.timing || "99:99"))
                               .map((slot, index) => {
-                                const selectedRemedy = remedyCatalog.find((remedy) => remedy.id === slot.remedyId);
+                                const selectedRemedy = medicineCatalog.find((remedy) => remedy.id === slot.remedyId);
                                 return (
                                   <div key={slot.id} className="border border-slate-200 rounded-lg p-3 bg-slate-50">
                                     <div className="flex items-center justify-between mb-2">
@@ -2768,7 +2961,7 @@ export default function DoctorDashboard({
                             Select a slot first, then choose a remedy card to attach it.
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[260px] overflow-y-auto pr-1">
-                            {remedyCatalog.map((remedy) => (
+                            {medicineCatalog.map((remedy) => (
                               <button
                                 key={remedy.id}
                                 disabled={!activeMedicationSlotId}
@@ -2825,7 +3018,7 @@ export default function DoctorDashboard({
                             .slice()
                             .sort((slotA, slotB) => slotA.timing.localeCompare(slotB.timing))
                             .map((slot, index) => {
-                              const selectedRemedy = remedyCatalog.find((remedy) => remedy.id === slot.remedyId);
+                              const selectedRemedy = medicineCatalog.find((remedy) => remedy.id === slot.remedyId);
                               if (!selectedRemedy) return null;
                               return (
                                 <div key={slot.id} className="border border-emerald-200 bg-emerald-50 rounded-lg p-3">
@@ -2907,7 +3100,7 @@ export default function DoctorDashboard({
                               .slice()
                               .sort((slotA, slotB) => (slotA.timing || "99:99").localeCompare(slotB.timing || "99:99"))
                               .map((slot, index) => {
-                                const selectedExercise = exerciseCatalog.find((exercise) => exercise.id === slot.exerciseId);
+                                const selectedExercise = asanaCatalog.find((exercise) => exercise.id === slot.exerciseId);
                                 return (
                                   <div key={slot.id} className="border border-slate-200 rounded-lg p-3 bg-slate-50">
                                     <div className="flex items-center justify-between mb-2">
@@ -2988,7 +3181,7 @@ export default function DoctorDashboard({
                           <div className="text-sm font-semibold text-slate-900 mb-2">Asana/Yoga/Exercise Browser</div>
                           <p className="text-xs text-slate-500 mb-3">Select a slot first, then choose an activity card.</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[260px] overflow-y-auto pr-1">
-                            {exerciseCatalog.map((exercise) => (
+                            {asanaCatalog.map((exercise) => (
                               <button
                                 key={exercise.id}
                                 disabled={!activeExerciseSlotId}
@@ -3043,7 +3236,7 @@ export default function DoctorDashboard({
                             .slice()
                             .sort((slotA, slotB) => slotA.timing.localeCompare(slotB.timing))
                             .map((slot, index) => {
-                              const selectedExercise = exerciseCatalog.find((exercise) => exercise.id === slot.exerciseId);
+                              const selectedExercise = asanaCatalog.find((exercise) => exercise.id === slot.exerciseId);
                               if (!selectedExercise) return null;
                               return (
                                 <div key={slot.id} className="border border-emerald-200 bg-emerald-50 rounded-lg p-3">
