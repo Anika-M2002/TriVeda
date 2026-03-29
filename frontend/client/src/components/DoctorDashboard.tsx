@@ -48,6 +48,7 @@ import {
   Utensils,
   BookOpen,
   ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 import {
   BarChart as RechartsBarChart,
@@ -1585,6 +1586,23 @@ export default function DoctorDashboard({
 
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden p-3 sm:p-6 lg:p-7 max-w-[1500px] mx-auto">
+        <div className="mb-4 sm:mb-5 flex justify-start">
+          <button
+            type="button"
+            onClick={() => {
+              if (selectedPatient?.id) {
+                window.sessionStorage.removeItem(`doctor:patient-mode:${selectedPatient.id}`);
+                window.sessionStorage.removeItem(`doctor:patient-appointment:${selectedPatient.id}`);
+              }
+              window.location.href = "/doctor/dashboard";
+            }}
+            className="bg-[#1F5C3F] hover:bg-[#1F5C3F]/90 text-white px-4 py-2.5 rounded-lg flex items-center justify-center space-x-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Dashboard</span>
+          </button>
+        </div>
+
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 mb-8">
           <div className="flex items-start sm:items-center space-x-4 min-w-0">
             <div className="w-20 h-20 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-full flex items-center justify-center text-white text-2xl font-semibold">

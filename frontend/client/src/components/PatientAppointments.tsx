@@ -561,7 +561,7 @@ function PatientAppointments({ showSidebar = false }: PatientAppointmentsProps) 
                         disabled={!matchedDepartmentId || doctors.length === 0}
                         className="flex-1 py-2 bg-emerald-500 text-white rounded-lg disabled:opacity-50"
                       >
-                        Assign Doctor
+                        Assign Doctor For Me
                       </button>
                       <button
                         type="button"

@@ -71,8 +71,9 @@ const normalizeList = (value: unknown): string[] => {
 export default function DoctorProfile() {
   const { toast } = useToast();
   const user = JSON.parse(localStorage.getItem("triveda_user") || "{}");
+  const doctorId = user?.role === "DOCTOR" ? String(user?.id || user?.staffId || "") : "";
 
-  const { data: doctorProfileData, isLoading, isError } = useDoctorProfile(user?.id);
+  const { data: doctorProfileData, isLoading, isError, error } = useDoctorProfile(doctorId);
   const updateDoctorProfileMutation = useUpdateDoctorProfile();
   const changePasswordMutation = useChangePassword();
 
@@ -321,9 +322,20 @@ export default function DoctorProfile() {
   }
 
   if (isError) {
+    const errorMessage = error instanceof Error ? error.message : "Unable to load doctor profile.";
     return (
       <div className="min-h-screen bg-background text-foreground p-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 text-red-700 p-4">Unable to load doctor profile.</div>
+        <div className="rounded-xl border border-red-200 bg-red-50 text-red-700 p-4">{errorMessage}</div>
+      </div>
+    );
+  }
+
+  if (!doctorId) {
+    return (
+      <div className="min-h-screen bg-background text-foreground p-6">
+        <div className="rounded-xl border border-amber-200 bg-amber-50 text-amber-700 p-4">
+          Doctor session not found. Please sign in from the doctor portal.
+        </div>
       </div>
     );
   }

@@ -3,9 +3,11 @@ import {
   Calendar,
   Clock,
   Download,
+  Eye,
   RefreshCw,
   Stethoscope,
   User,
+  Video,
 } from "lucide-react";
 import { downloadAppointmentPdf } from "@/lib/appointment-booking";
 import { useDoctorAppointments, useSetAppointmentLive } from "@/hooks/useAppointments";
@@ -30,6 +32,10 @@ type DoctorAppointmentItem = {
 };
 
 type StatusFilter = "ALL" | "SCHEDULED" | "LIVE" | "COMPLETED";
+
+const categoryLabelMap: Record<string, string> = {
+  general: "General Consultation",
+};
 
 export default function DoctorAppointmentsFlow() {
   const loggedInUser = JSON.parse(localStorage.getItem("triveda_user") || "{}");
@@ -75,6 +81,24 @@ export default function DoctorAppointmentsFlow() {
       );
   }, [filteredAppointments]);
 
+  const getAppointmentLifecycle = (status?: DoctorAppointmentItem["status"]) => {
+    const normalized = String(status || "SCHEDULED").toUpperCase();
+
+    if (normalized === "LIVE") {
+      return {
+        label: "Live",
+        badgeClass: "bg-green-100 text-green-700 border border-green-200",
+        ctaLabel: "Live Appointment",
+      };
+    }
+
+    return {
+      label: "Scheduled",
+      badgeClass: "bg-blue-100 text-blue-700 border border-blue-200",
+      ctaLabel: "Start Appointment",
+    };
+  };
+
   const getStatusBadgeClass = (status: DoctorAppointmentItem["status"]) => {
     if (status === "LIVE") return "bg-green-100 text-green-700 border-green-200";
     if (status === "COMPLETED") return "bg-slate-100 text-slate-700 border-slate-200";
@@ -107,6 +131,13 @@ export default function DoctorAppointmentsFlow() {
 
     window.sessionStorage.setItem(`doctor:patient-mode:${appointment.patient.id}`, "consult");
     window.sessionStorage.setItem(`doctor:patient-appointment:${appointment.patient.id}`, appointment.id);
+    window.location.href = `/doctor/${appointment.patient.id}`;
+  };
+
+  const handleOpenProfile = (appointment: DoctorAppointmentItem) => {
+    if (!appointment?.patient?.id) return;
+    window.sessionStorage.setItem(`doctor:patient-mode:${appointment.patient.id}`, "view");
+    window.sessionStorage.removeItem(`doctor:patient-appointment:${appointment.patient.id}`);
     window.location.href = `/doctor/${appointment.patient.id}`;
   };
 
@@ -199,42 +230,110 @@ export default function DoctorAppointmentsFlow() {
                       No upcoming appointments for selected filter.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                       {upcomingAppointments.map((appointment) => {
                         const { dateLabel, timeLabel } = formatDateTime(appointment.scheduledAt);
+                        const lifecycle = getAppointmentLifecycle(appointment.status);
+                        const severity = String(appointment.severity || "").toLowerCase();
+                        const normalizedSeverity =
+                          severity === "severe" ? "severe" : severity === "moderate" ? "moderate" : "mild";
+
                         return (
-                          <div key={appointment.id} className="bg-white border border-emerald-200 rounded-xl p-4 shadow-sm">
-                            <div className="flex items-start justify-between gap-3 mb-3">
-                              <div>
-                                <p className="font-semibold text-slate-900">{appointment.patient?.name || "Patient"}</p>
-                                <p className="text-xs text-slate-500">APT-{String(appointment.id).slice(0, 6).toUpperCase()}</p>
+                          <div
+                            key={appointment.id}
+                            className="bg-gradient-to-br from-emerald-50 via-white to-green-50 border border-emerald-200 rounded-2xl p-5 hover:shadow-xl transition-shadow h-full group"
+                          >
+                            <div className="flex items-start justify-between gap-3 mb-4">
+                              <div className="flex items-start gap-3 flex-1 min-w-0">
+                                <div className="w-10 h-10 bg-gradient-to-br from-[#1F5C3F] to-[#10B981] rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
+                                  {(appointment.patient?.name || "P")[0]}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-semibold text-gray-900 group-hover:text-[#10B981] transition-colors line-clamp-2">
+                                    {appointment.patient?.name || "Patient"}
+                                  </p>
+                                  <p className="text-xs text-gray-500 mt-1">APT-{String(appointment.id).slice(0, 6).toUpperCase()}</p>
+                                </div>
                               </div>
-                              <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeClass(appointment.status)}`}>
-                                {appointment.status}
+                              <span className={`text-xs px-2 py-1 rounded-full font-medium shrink-0 ${lifecycle.badgeClass}`}>
+                                {lifecycle.label}
                               </span>
                             </div>
 
-                            <div className="space-y-2 text-sm text-slate-700 mb-4">
-                              <p><Calendar className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {dateLabel}</p>
-                              <p><Clock className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {timeLabel}</p>
-                              <p><User className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {appointment.patient?.age ?? "-"}y, {appointment.patient?.gender || "-"}</p>
-                              <p><Stethoscope className="w-4 h-4 inline mr-1 text-[#1F5C3F]" /> {appointment.problemDescription || appointment.aiSummary || "Consultation"}</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-[#1F5C3F] border border-emerald-200">
+                                {appointment.patient?.age ?? "-"}y • {appointment.patient?.gender || "-"}
+                              </span>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-semibold border ${
+                                  normalizedSeverity === "severe"
+                                    ? "bg-red-100 text-red-700 border-red-200"
+                                    : normalizedSeverity === "moderate"
+                                    ? "bg-amber-100 text-amber-700 border-amber-200"
+                                    : "bg-green-100 text-green-700 border-green-200"
+                                }`}
+                              >
+                                {normalizedSeverity.charAt(0).toUpperCase() + normalizedSeverity.slice(1)} Priority
+                              </span>
                             </div>
 
-                            <div className="flex flex-wrap gap-2">
-                              <button
-                                type="button"
-                                onClick={() => handleOpenConsultation(appointment)}
-                                className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#1F5C3F] to-[#10B981] text-white text-sm font-medium"
-                              >
-                                {appointment.status === "LIVE" ? "Live Appointment" : "Start Appointment"}
-                              </button>
+                            <div className="space-y-3 mb-4">
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Calendar className="w-4 h-4 text-[#1F5C3F] shrink-0" />
+                                <span className="font-medium">{dateLabel}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Clock className="w-4 h-4 text-[#1F5C3F] shrink-0" />
+                                <span className="font-medium">{timeLabel}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Stethoscope className="w-4 h-4 text-[#1F5C3F] shrink-0" />
+                                <span className="font-medium">{loggedInUser?.name || "Doctor"}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <User className="w-4 h-4 text-[#1F5C3F] shrink-0" />
+                                <span>{appointment.patient?.age ?? "-"} years, {appointment.patient?.gender || "-"}</span>
+                              </div>
+                              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2">
+                                <p className="text-xs font-medium text-[#1F5C3F]">{categoryLabelMap.general}</p>
+                              </div>
+
+                              <div className="bg-white border border-gray-200 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">Assessment</p>
+                                <p className="text-sm font-medium text-gray-800 line-clamp-2">
+                                  {appointment.problemDescription || appointment.aiSummary || "Consultation follow-up"}
+                                </p>
+                              </div>
+
+                              <div className="bg-white border border-gray-200 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">Symptoms / Notes</p>
+                                <p className="text-sm text-gray-700 line-clamp-2">
+                                  {appointment.patientSymptoms || appointment.doctorNotes || "No additional notes"}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-emerald-200 space-y-2">
                               <button
                                 type="button"
                                 onClick={() => downloadAppointmentPdf(toPdfBooking(appointment))}
-                                className="px-3 py-2 rounded-lg border border-[#1F5C3F]/30 text-[#1F5C3F] text-sm"
+                                className="w-full py-2 px-3 border border-[#1F5C3F]/30 text-[#1F5C3F] rounded-lg text-sm font-medium hover:bg-[#1F5C3F]/5 transition-colors flex items-center justify-center gap-2"
                               >
-                                <Download className="w-4 h-4 inline mr-1" /> PDF
+                                <Download className="w-4 h-4" /> Download PDF
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenProfile(appointment)}
+                                className="w-full py-2 px-3 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors flex items-center justify-center gap-2"
+                              >
+                                <Eye className="w-4 h-4" /> View Profile
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenConsultation(appointment)}
+                                className="w-full py-2 px-3 bg-gradient-to-r from-[#1F5C3F] to-[#10B981] text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                              >
+                                <Video className="w-4 h-4" /> {lifecycle.ctaLabel}
                               </button>
                             </div>
                           </div>

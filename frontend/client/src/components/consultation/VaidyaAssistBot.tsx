@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Bot, Loader2, Send, Sparkles, User2 } from "lucide-react";
 import {
   Sheet,
@@ -34,14 +34,7 @@ export default function VaidyaAssistBot({
     },
   ]);
 
-  const ragApiUrl = useMemo(() => {
-    const envBase =
-      (typeof process !== "undefined" && process?.env?.VITE_PYTHON_API_URL) ||
-      (import.meta as any)?.env?.VITE_PYTHON_API_URL ||
-      "";
-    const base = String(envBase).replace(/\/$/, "");
-    return `${base}/api/rag/ask`;
-  }, []);
+  const ragApiUrl = "/api/appointments/vaidya-assist";
 
   const sendMessage = async () => {
     const query = input.trim();
@@ -65,11 +58,12 @@ export default function VaidyaAssistBot({
       }
 
       const data = await response.json();
+      const payload = data?.data || data;
       const answer =
-        data?.answer ||
-        data?.response ||
-        data?.text ||
-        data?.message ||
+        payload?.answer ||
+        payload?.response ||
+        payload?.text ||
+        payload?.message ||
         "I could not generate a response right now.";
 
       setMessages((previous) => [

@@ -416,6 +416,48 @@ export const getDepartments = asyncHandler(async (_req, res) => {
     .json(new ApiResponse(200, departments, "Departments fetched."));
 });
 
+export const askVaidyaAssist = asyncHandler(async (req, res) => {
+  const query = toSafeString(req.body?.query, "query", 2000);
+  if (!query) {
+    throw new ApiError(400, "query is required.");
+  }
+
+  const parsedTopK = Number(req.body?.topK ?? req.body?.top_k ?? 5);
+  const topK = Number.isFinite(parsedTopK)
+    ? Math.min(Math.max(Math.trunc(parsedTopK), 1), 10)
+    : 5;
+
+  try {
+    const aiMicroserviceUrl =
+      process.env.AI_MICROSERVICE_URL || "http://localhost:8000";
+
+    const aiResponse = await axios.post(
+      `${aiMicroserviceUrl}/api/rag/ask`,
+      {
+        query,
+        top_k: topK,
+      },
+      {
+        timeout: 120000,
+      }
+    );
+
+    const payload = aiResponse?.data || {};
+    return res
+      .status(200)
+      .json(new ApiResponse(200, payload, "Vaidya Assist response generated."));
+  } catch (error) {
+    const statusCode = Number(error?.response?.status) || 502;
+    const detail =
+      error?.response?.data?.detail ||
+      error?.response?.data?.message ||
+      error?.message ||
+      "Vaidya Assist service is currently unavailable.";
+
+    throw new ApiError(statusCode, String(detail));
+  }
+});
+
 export const getDoctorsByDepartment = asyncHandler(async (req, res) => {
   const departmentId = req.query?.departmentId
     ? String(req.query.departmentId)
@@ -940,6 +982,7 @@ export const getPatientAppointments = asyncHandler(async (req, res) => {
     include: {
       doctor: {
         select: {
+          id: true,
           name: true,
           doctorProfile: {
             select: {
@@ -949,6 +992,16 @@ export const getPatientAppointments = asyncHandler(async (req, res) => {
                   name: true,
                 },
               },
+            },
+          },
+        },
+      },
+      treatmentPlan: {
+        include: {
+          medications: true,
+          dietPlan: {
+            include: {
+              items: true,
             },
           },
         },

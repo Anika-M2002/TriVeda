@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   bookAppointment,
   diagnoseSymptoms,
+  askVaidyaAssist,
   getDepartments,
   getDoctorsByDepartment,
   getAvailableSlots,
@@ -21,6 +22,7 @@ import { getDoctorPatients } from "../controllers/doctor.controller.js";
 const router = Router();
 
 router.post("/diagnose", diagnoseSymptoms);
+router.post("/vaidya-assist", askVaidyaAssist);
 router.get("/departments", getDepartments);
 router.get("/doctors", getDoctorsByDepartment);
 router.get("/slots", getAvailableSlots);

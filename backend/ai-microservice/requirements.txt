@@ -3,3 +3,7 @@ uvicorn
 google-genai
 pydantic
 dotenv
+numpy
+requests
+sentence-transformers
+faiss-cpu
